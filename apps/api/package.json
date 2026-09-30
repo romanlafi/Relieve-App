@@ -1,0 +1,18 @@
+{
+  "name": "@relieve/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --local",
+    "build": "tsc --noEmit && wrangler deploy --dry-run --outdir dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@relieve/shared": "*",
+    "hono": "^4.13.12"
+  },
+  "devDependencies": {
+    "wrangler": "^4.145.0"
+  }
+}
