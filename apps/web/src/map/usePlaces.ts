@@ -1,25 +1,23 @@
-import {useEffect, useState} from 'react';
-import {z} from 'zod';
-import type {Place} from '@relieve/shared';
-
-const placesSchema: z.ZodType<Place[]> = z.array(z.object({
-    id: z.uuid(),
-    name: z.string().min(1),
-    slug: z.string().min(1),
-    type: z.enum(['peak', 'lake', 'hut', 'pass', 'viewpoint']),
-    elevation: z.number().finite().nullable(),
-    latitude: z.number().min(-90).max(90),
-    longitude: z.number().min(-180).max(180),
-}));
+import {useEffect, useRef, useState} from 'react';
+import type {PlaceWithUserState, UpdateUserPlace, UserPlaceState} from '@relieve/shared';
+import {placesSchema, userPlaceSchema} from './placeSchemas';
 
 type PlacesState =
     | { status: 'loading' }
     | { status: 'error'; message: string }
-    | { status: 'success'; places: Place[] };
+    | { status: 'success'; places: PlaceWithUserState[] };
+
+export type PersonalSaveState = { placeId: string; status: 'saving' | 'saved' | 'error' } | null;
 
 export function usePlaces() {
     const [state, setState] = useState<PlacesState>({status: 'loading'});
     const [requestVersion, setRequestVersion] = useState(0);
+    const [personalSave, setPersonalSave] = useState<PersonalSaveState>(null);
+    const mutationController = useRef<AbortController | null>(null);
+
+    useEffect(() => () => {
+        mutationController.current?.abort();
+    }, []);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -61,5 +59,43 @@ export function usePlaces() {
         setRequestVersion((version) => version + 1);
     }
 
-    return {state, retry};
+    async function saveUserPlace(placeId: string, input: UpdateUserPlace | null): Promise<UserPlaceState | null | undefined> {
+        if (mutationController.current) return undefined;
+        const controller = new AbortController();
+        mutationController.current = controller;
+        setPersonalSave({placeId, status: 'saving'});
+        try {
+            const response = await fetch(`/api/user/places/${encodeURIComponent(placeId)}`, {
+                method: input === null ? 'DELETE' : 'PUT',
+                signal: controller.signal,
+                headers: {Accept: 'application/json', ...(input === null ? {} : {'Content-Type': 'application/json'})},
+                ...(input === null ? {} : {body: JSON.stringify(input)}),
+            });
+            if (!response.ok) throw new Error('Unable to save personal place');
+            let userState: UserPlaceState | null = null;
+            if (input !== null) {
+                const saved = userPlaceSchema.parse(await response.json());
+                if (saved.placeId !== placeId) throw new Error('Unexpected place ID');
+                userState = {
+                    status: saved.status,
+                    favorite: saved.favorite,
+                    visitedAt: saved.visitedAt,
+                    notes: saved.notes
+                };
+            }
+            if (controller.signal.aborted) return undefined;
+            setState((current) => current.status !== 'success' ? current : {
+                ...current, places: current.places.map((place) => place.id === placeId ? {...place, userState} : place),
+            });
+            setPersonalSave({placeId, status: 'saved'});
+            return userState;
+        } catch {
+            if (!controller.signal.aborted) setPersonalSave({placeId, status: 'error'});
+            return undefined;
+        } finally {
+            mutationController.current = null;
+        }
+    }
+
+    return {state, retry, personalSave, saveUserPlace};
 }

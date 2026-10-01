@@ -114,5 +114,23 @@ sin claves. Los lugares proceden únicamente de nuestra API. La estructura,
 el ciclo de vida de MapLibre y las decisiones de proveedores están documentados
 en [apps/web/src/map/README.md](./apps/web/src/map/README.md).
 
-GPX, edición, estados personales, favoritos, estadísticas y autenticación real
-quedan pendientes para las siguientes fases.
+## Registro personal de desarrollo
+
+`GET /places` y `GET /places/:id` incluyen `userState` (o `null` si no existe
+registro). Un `LEFT JOIN` filtrado por usuario recupera lugares y estados en
+una única consulta, sin N+1. El panel permite guardar estado, favorito, fecha y
+notas sin recargar la página. Los detalles del contrato están en
+[apps/api/README.md](./apps/api/README.md).
+
+Se usa exclusivamente el usuario de desarrollo existente. **No hay autenticación
+ni aislamiento entre visitantes HTTP**: todos consultan y modifican ese mismo
+usuario. No exponer esta API personal públicamente antes de implementar
+autenticación y resolución del usuario por petición. No se aceptan IDs de
+usuario enviados por el cliente; las respuestas personales no se cachean.
+
+El seed no inventa visitas y no sobrescribe registros personales al repetirse.
+No se necesitan migraciones nuevas: se reutilizan los constraints, índices y
+trigger de `user_places` ya existentes.
+
+GPX, edición de lugares globales, estadísticas y autenticación real quedan
+pendientes para las siguientes fases.

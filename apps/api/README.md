@@ -1,0 +1,70 @@
+# Estado personal de lugares
+
+## Endpoints
+
+Todos usan el usuario definido en `packages/database/src/developmentUser.ts`,
+el mismo que crea el seed. Esta resolución fija es temporal y no autentica a
+quien llama: debe sustituirse antes de publicar la API personal.
+
+| Método | Ruta                    | Respuesta                                                   |
+|--------|-------------------------|-------------------------------------------------------------|
+| GET    | `/places`               | Array de lugares con `userState` nullable                   |
+| GET    | `/places/:id`           | Lugar con `userState` nullable                              |
+| GET    | `/user/places`          | Array de relaciones personales                              |
+| GET    | `/user/places/:placeId` | Relación personal, o `null` si el lugar existe sin registro |
+| PUT    | `/user/places/:placeId` | Upsert; devuelve la relación guardada                       |
+| DELETE | `/user/places/:placeId` | 204; elimina exclusivamente la relación personal            |
+
+La relación expuesta contiene `placeId`, `status`, `favorite`, `visitedAt` y
+`notes`. Dentro de `userState` se omite `placeId`, ya disponible en el lugar.
+Los lugares inexistentes responden 404; los UUID o cuerpos inválidos, 400.
+DELETE es idempotente para un lugar existente, aunque no tuviera registro.
+
+## PUT parcial
+
+```json
+{
+  "status": "visited",
+  "visitedAt": "2026-08-12",
+  "favorite": true,
+  "notes": "Nota personal"
+}
+```
+
+- Se exige al menos un campo reconocido. No se admiten claves adicionales.
+- `status`: únicamente `pending` o `visited`.
+- `favorite`: booleano independiente; funciona en ambos estados.
+- `notes`: string de hasta 5000 caracteres o `null` para borrarlas.
+- `visitedAt`: fecha real `YYYY-MM-DD` o `null`, sin hora ni zona horaria.
+- Los campos omitidos se conservan en un registro existente. Al crear uno,
+  los defaults son `pending`, `favorite: false`, fecha y notas nulas.
+  Por tanto, un PUT de solo favorito sobre un lugar sin registro crea un pendiente.
+- Pasar de `visited` a `pending` **borra siempre `visitedAt`**, incluso cuando
+  se omite el campo. Conserva favorito y notas. Volver a visitado no recupera
+  la fecha anterior. Un visitado sin fecha es válido.
+- Una fecha no nula requiere estado efectivo `visited`: se rechaza si se
+  envía junto a `pending`, o sin estado sobre un pendiente/sin registro.
+  En un visitado existente se puede actualizar solo la fecha.
+
+Se conserva el tipo `timestamptz` del esquema existente: las fechas nuevas se
+almacenan a medianoche UTC y los DTO usan la fecha UTC, sin conversiones de
+zona local. No se necesita una migración. Si se admiten horas de visita en
+el futuro, habrá que revisar este contrato de fecha sin hora.
+
+## Separación y concurrencia
+
+`validation/userPlaces.ts` valida con Zod; `handlers/userPlaces.ts` resuelve HTTP;
+`packages/database/src/userPlaces.ts` contiene las consultas y
+`packages/database/src/dto/userPlace.ts` transforma filas a DTO.
+
+`places.ts` combina lugares y relaciones con un LEFT JOIN cuyo filtro de usuario
+está en el ON: no elimina lugares sin registro ni mezcla datos de otros usuarios.
+La restricción única `(user_id, place_id)` permite el upsert; el merge de campos
+omitidos se hace en SQL usando los valores vigentes, no sobrescribiendo una
+copia previamente leída. La fecha se limpia con CASE cuando el estado efectivo
+es pendiente, conservando el constraint incluso ante escrituras concurrentes.
+La lectura previa comprueba existencia y compatibilidad de la fecha; si otra
+petición cambia simultáneamente a pendiente, prevalece la limpieza de fecha.
+
+Runtime conserva `DATABASE_URL` pooled. Herramientas, migraciones y seed
+mantienen `DATABASE_URL_DIRECT`; ninguna credencial se envía al frontend.

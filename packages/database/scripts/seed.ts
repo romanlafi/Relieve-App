@@ -5,6 +5,7 @@ import {sql} from 'drizzle-orm';
 import {z} from 'zod';
 import {places, regions, users} from '../src/schema/index.js';
 import {databaseUrl} from './environment.js';
+import {developmentUserId} from '../src/developmentUser.js';
 
 const datasetSchema = z.object({
     type: z.literal('FeatureCollection'),
@@ -42,7 +43,7 @@ async function main() {
                 .onConflictDoUpdate({target: regions.slug, set: {name: 'Pirineos'}}).returning({id: regions.id});
             if (!region) throw new Error('Unable to seed region');
             await transaction.insert(users).values({
-                id: '00000000-0000-4000-8000-000000000001',
+                id: developmentUserId,
                 name: 'Usuario de desarrollo'
             })
                 .onConflictDoNothing({target: users.id});

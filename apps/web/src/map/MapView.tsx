@@ -1,19 +1,20 @@
 import {useMemo, useRef, useState} from 'react';
-import type {Place} from '@relieve/shared';
+import type {PlaceWithUserState} from '@relieve/shared';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {placesToGeoJson, visiblePlaceTypes} from './placesGeoJson';
 import {usePlaces} from './usePlaces';
 import {usePlacesMap} from './usePlacesMap';
+import {PlacePersonalForm} from './PlacePersonalForm';
 import * as styles from './MapView.css';
 
-const emptyPlaces: Place[] = [];
+const emptyPlaces: PlaceWithUserState[] = [];
 const placeTypeLabels = {peak: 'Pico', lake: 'Ibón', hut: 'Refugio', pass: 'Collado', viewpoint: 'Mirador'};
 const elevationFormat = new Intl.NumberFormat('es-ES');
 
 export function MapView() {
     const container = useRef<HTMLDivElement>(null);
     const [selectedId, setSelectedId] = useState<string | null>(null);
-    const {state, retry} = usePlaces();
+    const {state, retry, personalSave, saveUserPlace} = usePlaces();
     const places = state.status === 'success' ? state.places : emptyPlaces;
     const geoJson = useMemo(() => placesToGeoJson(places), [places]);
     const {status, terrainUnavailable} = usePlacesMap(container, geoJson, selectedId, setSelectedId);
@@ -40,10 +41,12 @@ export function MapView() {
                     : `${geoJson.features.length} lugares · selecciona un punto`}</p>}
                 {terrainUnavailable && <p>Relieve 3D no disponible. Puedes seguir explorando el mapa.</p>}
             </div>
-            <div className={styles.legend} aria-label="Tipos de lugares">
+            <div className={styles.legend} aria-label="Leyenda del mapa">
                 {visiblePlaceTypes.map((type) => <span className={styles.legendItem} key={type}>
                     <span className={styles.swatch[type]} aria-hidden="true"/>{placeTypeLabels[type]}
                 </span>)}
+                <span className={styles.legendItem}><span className={styles.pendingSwatch} aria-hidden="true"/>Pendiente: hueco</span>
+                <span className={styles.legendItem}><span className={styles.visitedSwatch} aria-hidden="true"/>Visitado: borde claro</span>
             </div>
             {places.length > 0 && <div className={styles.placePicker}>
                 <label htmlFor="place-picker">Explorar lugares</label>
@@ -54,7 +57,7 @@ export function MapView() {
                         <option key={place.id} value={place.id}>{place.name}</option>)}
                 </select>
             </div>}
-            {selectedPlace && <aside className={styles.details} aria-label="Lugar seleccionado" aria-live="polite"
+            {selectedPlace && <aside className={styles.details} aria-label="Lugar seleccionado"
                                      data-place-id={selectedPlace.id}>
                 <button className={styles.close} type="button" aria-label="Cerrar lugar seleccionado"
                         onClick={() => setSelectedId(null)}>×
@@ -63,6 +66,8 @@ export function MapView() {
                 <h2 className={styles.placeName}>{selectedPlace.name}</h2>
                 <p className={styles.elevation}>{selectedPlace.elevation === null
                     ? 'Altitud no verificada' : `${elevationFormat.format(selectedPlace.elevation)} m`}</p>
+                <PlacePersonalForm key={selectedPlace.id} place={selectedPlace} saveState={personalSave}
+                                   onSave={saveUserPlace}/>
             </aside>}
         </section>
     );

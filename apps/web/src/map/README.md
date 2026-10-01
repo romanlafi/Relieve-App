@@ -5,7 +5,7 @@
 - `MapView.tsx` y `MapView.css.ts`: composición a pantalla completa, leyenda,
   estados de carga/error/vacío, selector accesible y panel del lugar seleccionado.
 - `usePlaces.ts`: petición abortable a `/api/places`, validación Zod del contrato
-  `Place[]` compartido y reintento sin reconstruir el mapa.
+  `PlaceWithUserState[]` compartido y reintento sin reconstruir el mapa.
 - `placesGeoJson.ts`: conversión de DTOs a `FeatureCollection<Point>` con orden
   `[longitude, latitude]`. Solo se representan peak, lake y hut; el UUID se
   conserva como `feature.id` y en las propiedades.
@@ -15,6 +15,35 @@
   con `setData`, selección mediante feature-state y limpieza al desmontar.
 - `mapConfig.ts`: cámara inicial, proveedores, terrain, hillshade y adaptación
   mínima de los sprites del mapa base.
+- `placeSchemas.ts`: validación de DTOs de lectura y respuestas de guardado.
+- `PlacePersonalForm.tsx` y `.css.ts`: controles HTML accesibles para el registro
+  personal, sin dependencias de formularios.
+
+## Estado personal
+
+`/api/places` ya incluye `userState`; no se hace una petición por punto ni una
+segunda descarga para combinar estados en el navegador. Guardar llama a
+`PUT /api/user/places/:placeId`; quitar el registro usa DELETE. Solo se actualiza
+el array React tras una respuesta válida del servidor, sin actualización
+optimista. Los errores conservan el borrador y los datos anteriores. Durante
+la petición el formulario se deshabilita y un ref bloquea envíos simultáneos,
+incluyendo un cambio de selección. Al desmontar se aborta la petición pendiente.
+Las modificaciones locales se aplican al pulsar Guardar.
+
+El GeoJSON añade `status` (`unregistered`, `pending`, `visited`) y `favorite`;
+las notas y fechas no se copian a la source cartográfica. `setData()` actualiza
+la source existente, conservando UUIDs, selección, cámara e instancia WebGL.
+
+Se mantiene el color de tipo. Pendiente: círculo casi hueco con borde del tipo.
+Visitado: relleno del tipo y borde claro grueso. Sin registro: relleno del tipo
+y borde oscuro fino. La selección aumenta el tamaño y resalta el borde. Son
+expresiones de MapLibre, sin Markers DOM ni una segunda paleta de estados.
+El favorito se indica y edita en el panel; su iconografía en el mapa queda
+pendiente para evitar sobrecargar esta primera capa.
+
+Pasar a pendiente elimina la fecha de visita, pero conserva notas y favorito.
+El panel permite dejar la fecha vacía para un visitado. Quitar registro borra
+también favorito, fecha y notas de la relación, nunca el lugar global.
 
 ## React y MapLibre
 
@@ -85,3 +114,14 @@ features renderizados, IDs correctos, colores, selección por clic, cursor,
 resaltado, panel con cota conocida/null, cámara, viewport móvil y ausencia de
 errores/avisos de consola. También se simularon carga diferida, array vacío,
 respuesta 503 con reintento y fallo del DEM con continuidad en 2D.
+
+Para el registro personal se comprobó el ciclo sin registro → pendiente →
+visitado, fecha, notas y favorito, recarga con persistencia, vuelta a pendiente
+con limpieza de fecha, desmarcado de favorito y eliminación sin borrar el lugar.
+El GeoJSON cambió en la misma instancia/canvas y mantuvo la selección.
+También se comprobó un fallo de guardado conservando el borrador y un doble
+submit bloqueado durante la petición, controles en móvil y consola sin errores.
+Las comprobaciones HTTP incluyeron upserts parciales, defaults, fechas inválidas
+y bisiestas, notas nulas/límite, claves desconocidas, 400/404 y DELETE repetido.
+Se eliminaron los registros temporales creados al probar; no se dejaron visitas
+ficticias en el usuario de desarrollo.

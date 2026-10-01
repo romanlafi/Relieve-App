@@ -27,16 +27,22 @@ export const status = style([floatingPanel, {
 }]);
 globalStyle(`${status} p`, {margin: 0});
 export const legend = style([floatingPanel, {
-    bottom: '64px', left: vars.space.md, display: 'flex', gap: vars.space.md,
+    bottom: '64px', left: vars.space.md, display: 'flex', flexWrap: 'wrap', gap: vars.space.md,
+    maxWidth: 'min(360px, calc(100% - 32px))',
     padding: vars.space.sm, fontSize: '0.75rem',
 }]);
 export const legendItem = style({display: 'flex', alignItems: 'center', gap: vars.space.sm});
 const swatchBase = style({display: 'inline-block', width: '9px', height: '9px', borderRadius: '50%'});
+export const pendingSwatch = style([swatchBase, {border: `2px solid ${vars.color.textMuted}`}]);
+export const visitedSwatch = style([swatchBase, {
+    background: vars.color.textMuted,
+    border: `2px solid ${vars.color.text}`
+}]);
 export const swatch = styleVariants({
     peak: {background: vars.color.peak}, lake: {background: vars.color.lake}, hut: {background: vars.color.hut},
 }, (color) => [swatchBase, color]);
 export const placePicker = style([floatingPanel, {
-    bottom: '116px', left: vars.space.md, display: 'grid', gap: vars.space.sm,
+    bottom: '152px', left: vars.space.md, display: 'grid', gap: vars.space.sm,
     width: 'min(280px, calc(100% - 32px))', fontSize: '0.75rem',
 }]);
 export const select = style({
@@ -50,8 +56,9 @@ export const button = style({
     ':hover': {borderColor: vars.color.textMuted},
 });
 export const details = style([floatingPanel, {
-    bottom: '64px', right: vars.space.md, width: 'min(300px, calc(100% - 32px))', paddingRight: '48px',
-    '@media': {'(max-width: 640px)': {bottom: '206px', left: vars.space.md, right: 'auto'}},
+    bottom: '64px', right: vars.space.md, width: 'min(340px, calc(100% - 32px))',
+    maxHeight: 'calc(100% - 160px)', overflowY: 'auto',
+    '@media': {'(max-width: 640px)': {bottom: '64px', left: vars.space.md, right: 'auto', maxHeight: '65%'}},
 }]);
 export const close = style({
     position: 'absolute', top: vars.space.sm, right: vars.space.sm,
@@ -60,7 +67,12 @@ export const close = style({
     ':hover': {background: vars.color.background},
 });
 export const type = style({margin: 0, color: vars.color.textMuted, fontSize: '0.75rem'});
-export const placeName = style({margin: `${vars.space.sm} 0`, fontSize: '1.2rem', lineHeight: 1.2});
+export const placeName = style({
+    margin: `${vars.space.sm} 0`,
+    paddingRight: '32px',
+    fontSize: '1.2rem',
+    lineHeight: 1.2
+});
 export const elevation = style({margin: 0, fontSize: '0.875rem'});
 
 globalStyle(`${view} .maplibregl-ctrl-top-right`, {top: vars.space.sm, right: vars.space.sm});
