@@ -31,4 +31,16 @@ export interface Place {
 
 export interface PlaceWithUserState extends Place {
     userState: UserPlaceState | null;
+    regionId: string | null;
+}
+
+export interface PlaceFilters {
+    type?: PlaceType | undefined;
+    region?: string | undefined;
+    status?: PlaceStatus | 'unregistered' | undefined;
+    favorite?: boolean | undefined;
+    north?: number | undefined;
+    south?: number | undefined;
+    east?: number | undefined;
+    west?: number | undefined;
 }

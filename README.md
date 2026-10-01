@@ -71,6 +71,9 @@ solo se utiliza en el servidor de desarrollo/preview y no se expone al navegador
 npm run lint
 npm run typecheck
 npm run db:check
+npm run data:check
+npm test
+npm run test:integration
 npm run build
 ```
 
@@ -81,7 +84,10 @@ Para previsualizar la web compilada: `npm run preview --workspace=@relieve/web`.
 `package-lock.json` fija las versiones resueltas; usar `npm ci` en instalaciones
 reproducibles.
 
-No hay suites de tests previas en este repositorio. `db:check` ejecuta
+`npm test` ejecuta validaciones de dataset y filtros/rutas sin necesitar Neon.
+`test:integration` requiere las conexiones locales y comprueba filtros reales,
+jerarquía y seed repetido sin modificar estados del usuario de desarrollo.
+Las pruebas temporales se limpian o se ejecutan con rollback. `db:check` ejecuta
 comprobaciones de integración reales contra Neon: conexiones, DTO, tipo/SRID,
 índices, viewport y proximidad. `/health` es una comprobación de disponibilidad
 del Worker; la conexión a la base de datos se verifica con `db:check` y `/places`.
@@ -100,8 +106,10 @@ Las variables `VITE_*` son públicas: nunca deben contener secretos. Los archivo
 locales de entorno están ignorados por Git.
 
 `GET /places` devuelve un array de DTOs compartidos con las coordenadas
-extraídas desde PostGIS (`ST_Y`/`ST_X`). Esta fase sirve el dataset pequeño
-completo; los filtros HTTP y la paginación se incorporarán al ampliar la API.
+extraídas desde PostGIS (`ST_Y`/`ST_X`). Los 74 lugares del dataset inicial pueden
+filtrarse por tipo, región y estado personal, combinados con viewport. La
+paginación queda pendiente cuando el volumen la requiera. `/regions` expone la
+jerarquía y las regiones padre incluyen sus descendientes en las consultas.
 `GET /places/:id` valida UUIDs y devuelve 400/404 cuando corresponda. Los errores
 internos se responden con un JSON genérico sin consultas, stack traces ni secretos.
 

@@ -3,33 +3,1601 @@
   "features": [
     {
       "type": "Feature",
-      "properties": {"name": "Aneto", "slug": "aneto", "type": "peak", "elevation": 3404, "source": "https://es.wikipedia.org/wiki/Pico_Aneto"},
-      "geometry": {"type": "Point", "coordinates": [0.65668611111111, 42.630991666667]}
+      "properties": {
+        "name": "Aneto",
+        "slug": "aneto",
+        "type": "peak",
+        "elevation": 3404,
+        "source": "https://es.wikipedia.org/wiki/Pico_Aneto",
+        "region": "valle-de-benasque"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.65668611111111,
+          42.630991666667
+        ]
+      },
+      "id": "1b00df94-28e7-4852-926c-060b9e65c87a"
     },
     {
       "type": "Feature",
-      "properties": {"name": "Posets", "slug": "posets", "type": "peak", "elevation": null, "source": "https://es.wikipedia.org/wiki/Pico_Posets"},
-      "geometry": {"type": "Point", "coordinates": [0.4352, 42.654481]}
+      "properties": {
+        "name": "Posets",
+        "slug": "posets",
+        "type": "peak",
+        "elevation": null,
+        "source": "https://es.wikipedia.org/wiki/Pico_Posets",
+        "region": "valle-de-benasque"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.4352,
+          42.654481
+        ]
+      },
+      "id": "2b419224-1097-4a4e-88fa-00d532673176"
     },
     {
       "type": "Feature",
-      "properties": {"name": "Monte Perdido", "slug": "monte-perdido", "type": "peak", "elevation": null, "source": "https://es.wikipedia.org/wiki/Monte_Perdido"},
-      "geometry": {"type": "Point", "coordinates": [0.033333333333333, 42.673888888889]}
+      "properties": {
+        "name": "Monte Perdido",
+        "slug": "monte-perdido",
+        "type": "peak",
+        "elevation": null,
+        "source": "https://es.wikipedia.org/wiki/Monte_Perdido",
+        "region": "ordesa-monte-perdido"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.033333333333333,
+          42.673888888889
+        ]
+      },
+      "id": "62bd828c-4a6d-48c3-8573-dd0f591fa250"
     },
     {
       "type": "Feature",
-      "properties": {"name": "Ibón de Plan", "slug": "ibon-de-plan", "type": "lake", "elevation": 1910, "source": "https://es.wikipedia.org/wiki/Ib%C3%B3n_de_Plan"},
-      "geometry": {"type": "Point", "coordinates": [0.325, 42.54611111]}
+      "properties": {
+        "name": "Ibón de Plan",
+        "slug": "ibon-de-plan",
+        "type": "lake",
+        "elevation": 1910,
+        "source": "https://es.wikipedia.org/wiki/Ib%C3%B3n_de_Plan",
+        "region": "pirineo-aragones"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.325,
+          42.54611111
+        ]
+      },
+      "id": "4d470bd8-78ca-4275-85f8-4f1f2a897ce5"
     },
     {
       "type": "Feature",
-      "properties": {"name": "Refugio de Góriz", "slug": "refugio-de-goriz", "type": "hut", "elevation": null, "source": "https://www.alberguesyrefugios.com/goriz/"},
-      "geometry": {"type": "Point", "coordinates": [0.015055555555555557, 42.66330555555555]}
+      "properties": {
+        "name": "Refugio de Góriz",
+        "slug": "refugio-de-goriz",
+        "type": "hut",
+        "elevation": null,
+        "source": "https://www.alberguesyrefugios.com/goriz/",
+        "region": "ordesa-monte-perdido"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.015055555555555556,
+          42.66330555555555
+        ]
+      },
+      "id": "f03e6b2f-7304-4fd4-98b2-eec853f8060f"
     },
     {
       "type": "Feature",
-      "properties": {"name": "Refugio Ángel Orús", "slug": "refugio-angel-orus", "type": "hut", "elevation": 2150, "source": "https://www.alberguesyrefugios.com/angelorus/"},
-      "geometry": {"type": "Point", "coordinates": [0.4573888888888889, 42.62741666666667]}
+      "properties": {
+        "name": "Refugio Ángel Orús",
+        "slug": "refugio-angel-orus",
+        "type": "hut",
+        "elevation": 2150,
+        "source": "https://www.alberguesyrefugios.com/angelorus/",
+        "region": "valle-de-benasque"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.4573888888888889,
+          42.62741666666667
+        ]
+      },
+      "id": "03e1a4f9-4148-4a39-b47a-e92a46cb61a9"
+    },
+    {
+      "type": "Feature",
+      "id": "942d6471-66c2-54a5-9728-8c4abce9b58c",
+      "properties": {
+        "name": "Pico de la Maladeta",
+        "slug": "pico-de-la-maladeta",
+        "type": "peak",
+        "elevation": null,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/node/623866300",
+        "osmId": "node/623866300",
+        "wikidataId": "Q1510073",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.6402759,
+          42.6464323
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "4e6a7b5f-8838-50e1-8490-10ece2232020",
+      "properties": {
+        "name": "Pico Perdiguero",
+        "slug": "pico-perdiguero",
+        "type": "peak",
+        "elevation": null,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/node/8280351615",
+        "osmId": "node/8280351615",
+        "wikidataId": "Q2746833",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.5188647,
+          42.6920006
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "3d2a658b-3531-53f0-a96c-60c252cb2a9f",
+      "properties": {
+        "name": "Pico Maldito",
+        "slug": "pico-maldito",
+        "type": "peak",
+        "elevation": null,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/node/255545541",
+        "osmId": "node/255545541",
+        "wikidataId": "Q3110793",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.641336,
+          42.639574
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "b7335a9c-ed73-50b6-be9c-3e95d48f86f5",
+      "properties": {
+        "name": "Pico de Tempestades",
+        "slug": "pico-de-tempestades",
+        "type": "peak",
+        "elevation": null,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/node/255545807",
+        "osmId": "node/255545807",
+        "wikidataId": "Q11941512",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.6627674,
+          42.6261131
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2381af2d-52f5-5144-b2d9-a0c004818854",
+      "properties": {
+        "name": "Margalida",
+        "slug": "margalida",
+        "type": "peak",
+        "elevation": null,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/node/255545818",
+        "osmId": "node/255545818",
+        "wikidataId": "Q11941434",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.6659243,
+          42.6244528
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "be8eace8-48e1-598b-aaae-6d95dc0a0d85",
+      "properties": {
+        "name": "Pico Salvaguardia",
+        "slug": "pico-salvaguardia",
+        "type": "peak",
+        "elevation": null,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/node/1060153622",
+        "osmId": "node/1060153622",
+        "wikidataId": "Q3382388",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.6309305,
+          42.6949418
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "f0b79525-06ee-5c1b-8578-aee3b9d0f8ec",
+      "properties": {
+        "name": "Tuca del Forau de Ixeia",
+        "slug": "tuca-del-forau-de-ixeia",
+        "type": "peak",
+        "elevation": null,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/node/6764370106",
+        "osmId": "node/6764370106",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.4998202,
+          42.626074
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "c021669c-a164-57c6-916c-c278fa0caac5",
+      "properties": {
+        "name": "Ibón de Cregüeña",
+        "slug": "ibon-de-creguena",
+        "type": "lake",
+        "elevation": null,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/way/49179030",
+        "osmId": "way/49179030",
+        "wikidataId": "Q13049186",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.6222128,
+          42.639142
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "f51df4cf-7e56-5428-9174-f8688c99f3ce",
+      "properties": {
+        "name": "Ibón Grande de Batisielles",
+        "slug": "ibon-grande-de-batisielles",
+        "type": "lake",
+        "elevation": null,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/way/173202553",
+        "osmId": "way/173202553",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.4974652,
+          42.6513133
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "d1e2e554-ae3b-540d-81da-b26b5e4570e4",
+      "properties": {
+        "name": "Ibón de la Escarpinosa",
+        "slug": "ibon-de-la-escarpinosa",
+        "type": "lake",
+        "elevation": null,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/way/121570345",
+        "osmId": "way/121570345",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.5046831,
+          42.6461301
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "c1eea287-4702-5024-a36f-addb8fb2ae6a",
+      "properties": {
+        "name": "Ibón Blanco de Literola",
+        "slug": "ibon-blanco-de-literola",
+        "type": "lake",
+        "elevation": null,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/way/96705557",
+        "osmId": "way/96705557",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.5326006,
+          42.6921076
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fe0fb36b-91a0-50f7-b831-589195586ad2",
+      "properties": {
+        "name": "Ibón de Llosás",
+        "slug": "ibon-de-llosas",
+        "type": "lake",
+        "elevation": null,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/way/49364182",
+        "osmId": "way/49364182",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.6536274,
+          42.6164517
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "bf17d365-16d6-5cf8-ac7c-a1fd87d1033f",
+      "properties": {
+        "name": "Ibón Bajo de Vallibierna",
+        "slug": "ibon-bajo-de-vallibierna",
+        "type": "lake",
+        "elevation": null,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/way/49364181",
+        "osmId": "way/49364181",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.6570812,
+          42.6048933
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "149be083-6803-5580-842d-0aba6b4570dc",
+      "properties": {
+        "name": "Ibón Alto de Vallibierna",
+        "slug": "ibon-alto-de-vallibierna",
+        "type": "lake",
+        "elevation": null,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/way/49364183",
+        "osmId": "way/49364183",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.6650588,
+          42.606171
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "bf1a2977-a5a1-56d1-9149-a0269eb08a2c",
+      "properties": {
+        "name": "Ibón Llardaneta",
+        "slug": "ibon-llardaneta",
+        "type": "lake",
+        "elevation": null,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/way/173202556",
+        "osmId": "way/173202556",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.4352261,
+          42.636791
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "c63a0fcf-9922-53ee-98d7-2704feb1042d",
+      "properties": {
+        "name": "Ibón de Perramó",
+        "slug": "ibon-de-perramo",
+        "type": "lake",
+        "elevation": null,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/relation/16439499",
+        "osmId": "relation/16439499",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.4997974,
+          42.6391626
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "52cd1a97-f1a4-574b-bd1b-d7b9887df2bd",
+      "properties": {
+        "name": "Ibón de Barrancs",
+        "slug": "ibon-de-barrancs",
+        "type": "lake",
+        "elevation": null,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/way/173198216",
+        "osmId": "way/173198216",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.6730121,
+          42.6454428
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "37cbd26a-53c4-5cb5-a12f-02377a284b0b",
+      "properties": {
+        "name": "Refugio de la Renclusa",
+        "slug": "refugio-de-la-renclusa",
+        "type": "hut",
+        "elevation": 2138,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/way/220270171",
+        "osmId": "way/220270171",
+        "wikidataId": "Q390006",
+        "additionalSources": [
+          "https://www.alberguesyrefugios.com/larenclusa/"
+        ],
+        "coordinateMethod": "official-published"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.6507777777777778,
+          42.669333333333334
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "93a97d3c-985d-51cd-981b-c8f9343fd047",
+      "properties": {
+        "name": "Refugio de Estós",
+        "slug": "refugio-de-estos",
+        "type": "hut",
+        "elevation": 1890,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/way/231866443",
+        "osmId": "way/231866443",
+        "wikidataId": "Q19368208",
+        "additionalSources": [
+          "https://www.alberguesyrefugios.com/estos/"
+        ],
+        "coordinateMethod": "official-published"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.4852777777777778,
+          42.67552777777777
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "b3ab15d1-66c4-5af9-92da-3c838b49e580",
+      "properties": {
+        "name": "Refugio de Coronas",
+        "slug": "refugio-de-coronas",
+        "type": "hut",
+        "elevation": null,
+        "region": "valle-de-benasque",
+        "source": "https://www.openstreetmap.org/way/374407667",
+        "osmId": "way/374407667",
+        "wikidataId": "Q55646958",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.6211039,
+          42.6103008
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "96133338-6dbc-5124-af6a-4c32447b11c5",
+      "properties": {
+        "name": "Cilindro de Marboré",
+        "slug": "cilindro-de-marbore",
+        "type": "peak",
+        "elevation": null,
+        "region": "ordesa-monte-perdido",
+        "source": "https://www.openstreetmap.org/node/1092109785",
+        "osmId": "node/1092109785",
+        "wikidataId": "Q507593",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.0238657,
+          42.6847945
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "6c16c772-7c17-5c53-94d0-e382e1ac9771",
+      "properties": {
+        "name": "El Casco",
+        "slug": "el-casco",
+        "type": "peak",
+        "elevation": null,
+        "region": "ordesa-monte-perdido",
+        "source": "https://www.openstreetmap.org/node/1092110096",
+        "osmId": "node/1092110096",
+        "wikidataId": "Q2941185",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.0267577,
+          42.6877707
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aa4672b7-bcfa-5688-8de1-75819af69111",
+      "properties": {
+        "name": "Tallón",
+        "slug": "tallon",
+        "type": "peak",
+        "elevation": null,
+        "region": "ordesa-monte-perdido",
+        "source": "https://www.openstreetmap.org/node/2192182868",
+        "osmId": "node/2192182868",
+        "wikidataId": "Q3141527",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.0512874,
+          42.6936421
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ec2bbc06-95d5-510c-9cfd-45637ceb7775",
+      "properties": {
+        "name": "Pico Marboré",
+        "slug": "pico-marbore",
+        "type": "peak",
+        "elevation": null,
+        "region": "ordesa-monte-perdido",
+        "source": "https://www.openstreetmap.org/node/2192182895",
+        "osmId": "node/2192182895",
+        "wikidataId": "Q2746829",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.0116476,
+          42.6928281
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "da2a24ea-908b-574d-ad1a-66efdf3b7420",
+      "properties": {
+        "name": "La Torre de Marboré",
+        "slug": "la-torre-de-marbore",
+        "type": "peak",
+        "elevation": null,
+        "region": "ordesa-monte-perdido",
+        "source": "https://www.openstreetmap.org/node/2192183388",
+        "osmId": "node/2192183388",
+        "wikidataId": "Q3091125",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.0170776,
+          42.685787
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1d7b12bc-cb72-5227-8ef1-a7dc233cb693",
+      "properties": {
+        "name": "Pico de Añisclo o Soum de Ramond",
+        "slug": "pico-de-anisclo-o-soum-de-ramond",
+        "type": "peak",
+        "elevation": null,
+        "region": "ordesa-monte-perdido",
+        "source": "https://www.openstreetmap.org/node/1250031353",
+        "osmId": "node/1250031353",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.0431364,
+          42.6695882
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "44b1b67b-45df-55bc-b2e8-847fcf4ef4c6",
+      "properties": {
+        "name": "Tobacor",
+        "slug": "tobacor",
+        "type": "peak",
+        "elevation": null,
+        "region": "ordesa-monte-perdido",
+        "source": "https://www.openstreetmap.org/node/1250039108",
+        "osmId": "node/1250039108",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.0135111,
+          42.6556506
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "d5e3e905-6c47-54b2-8dda-48835a678fe6",
+      "properties": {
+        "name": "Pico Mondarruego",
+        "slug": "pico-mondarruego",
+        "type": "peak",
+        "elevation": null,
+        "region": "ordesa-monte-perdido",
+        "source": "https://www.openstreetmap.org/node/1250018699",
+        "osmId": "node/1250018699",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.0806527,
+          42.6768295
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cd35864b-1362-53c1-9ced-7b95bdd000e2",
+      "properties": {
+        "name": "Lago de Marboré",
+        "slug": "lago-de-marbore",
+        "type": "lake",
+        "elevation": null,
+        "region": "ordesa-monte-perdido",
+        "source": "https://www.openstreetmap.org/way/40710432",
+        "osmId": "way/40710432",
+        "wikidataId": "Q41319183",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.0402559,
+          42.6955639
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2e5c13b6-6287-5dd5-98b5-d11a95c3eff2",
+      "properties": {
+        "name": "Lago Helado de Monte Perdido",
+        "slug": "lago-helado-de-monte-perdido",
+        "type": "lake",
+        "elevation": null,
+        "region": "ordesa-monte-perdido",
+        "source": "https://www.openstreetmap.org/way/140319959",
+        "osmId": "way/140319959",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.0264305,
+          42.6810031
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "617a2594-d09f-5486-b21f-b32c41a4316e",
+      "properties": {
+        "name": "Ibón de Bernatuara",
+        "slug": "ibon-de-bernatuara",
+        "type": "lake",
+        "elevation": null,
+        "region": "ordesa-monte-perdido",
+        "source": "https://www.openstreetmap.org/way/140315152",
+        "osmId": "way/140315152",
+        "wikidataId": "Q3215598",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.0996506,
+          42.7207099
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ae20f123-71a2-55a5-8734-fb0f3105fe9a",
+      "properties": {
+        "name": "Ibón de Lapazosa",
+        "slug": "ibon-de-lapazosa",
+        "type": "lake",
+        "elevation": null,
+        "region": "ordesa-monte-perdido",
+        "source": "https://www.openstreetmap.org/way/210041053",
+        "osmId": "way/210041053",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.069526,
+          42.7113819
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "746edb87-9e43-5371-b267-4cc7fd6285ad",
+      "properties": {
+        "name": "Refugio de Bujaruelo",
+        "slug": "refugio-de-bujaruelo",
+        "type": "hut",
+        "elevation": null,
+        "region": "ordesa-monte-perdido",
+        "source": "https://www.openstreetmap.org/way/140315121",
+        "osmId": "way/140315121",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.1069993,
+          42.6944988
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "133f4d92-a0fc-5652-8d8f-b75aa65d71ac",
+      "properties": {
+        "name": "Refugio de Tucarroya",
+        "slug": "refugio-de-tucarroya",
+        "type": "hut",
+        "elevation": null,
+        "region": "ordesa-monte-perdido",
+        "source": "https://www.openstreetmap.org/way/757649291",
+        "osmId": "way/757649291",
+        "wikidataId": "Q3423182",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.0401935,
+          42.6976714
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "0f2023f6-bd92-5921-bfdd-e6ca90a4ec00",
+      "properties": {
+        "name": "Refugio de Pineta",
+        "slug": "refugio-de-pineta",
+        "type": "hut",
+        "elevation": 1240,
+        "region": "ordesa-monte-perdido",
+        "source": "https://www.openstreetmap.org/way/289289283",
+        "osmId": "way/289289283",
+        "wikidataId": "Q41798923",
+        "additionalSources": [
+          "https://www.alberguesyrefugios.com/pineta/"
+        ],
+        "coordinateMethod": "official-published"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.10363888888888889,
+          42.666222222222224
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "d6d9075c-b66a-59fd-94ac-70e1f0435b80",
+      "properties": {
+        "name": "Garmo Negro",
+        "slug": "garmo-negro",
+        "type": "peak",
+        "elevation": null,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/node/590706409",
+        "osmId": "node/590706409",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.2641782,
+          42.7716445
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eab40c9d-8d53-5572-8842-72983dc8bd9d",
+      "properties": {
+        "name": "Pico Argualas",
+        "slug": "pico-argualas",
+        "type": "peak",
+        "elevation": null,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/node/652132454",
+        "osmId": "node/652132454",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.2668997,
+          42.7664853
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "3724254a-a13a-50e7-a27c-33d8167e50de",
+      "properties": {
+        "name": "Infierno Central",
+        "slug": "infierno-central",
+        "type": "peak",
+        "elevation": null,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/node/652132494",
+        "osmId": "node/652132494",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.2605587,
+          42.7814949
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "f6ad84bb-3548-505c-ae95-6e6a6d700a03",
+      "properties": {
+        "name": "Infierno Occidental",
+        "slug": "infierno-occidental",
+        "type": "peak",
+        "elevation": null,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/node/652132493",
+        "osmId": "node/652132493",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.2632365,
+          42.7831253
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2948b738-5ff9-5215-a2cd-0b8ad2ecad36",
+      "properties": {
+        "name": "Infierno Oriental",
+        "slug": "infierno-oriental",
+        "type": "peak",
+        "elevation": null,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/node/2917938909",
+        "osmId": "node/2917938909",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.2590393,
+          42.781345
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "708d3a0c-81ab-5e9f-be88-75ca45cb341a",
+      "properties": {
+        "name": "Pico de Anayet",
+        "slug": "pico-de-anayet",
+        "type": "peak",
+        "elevation": null,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/node/590706393",
+        "osmId": "node/590706393",
+        "wikidataId": "Q3043672",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.4543916,
+          42.7816162
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e5417227-7e37-5b35-9eff-4cd2e18063aa",
+      "properties": {
+        "name": "Peña Foratata",
+        "slug": "pena-foratata",
+        "type": "peak",
+        "elevation": null,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/node/444752584",
+        "osmId": "node/444752584",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.3456474,
+          42.7881647
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "6a967731-84dd-5b19-bac6-3774b0224b02",
+      "properties": {
+        "name": "Pico Algas",
+        "slug": "pico-algas",
+        "type": "peak",
+        "elevation": null,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/node/1250020602",
+        "osmId": "node/1250020602",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.2706457,
+          42.7683164
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "541389dc-42af-59bb-af66-0e15adc183b8",
+      "properties": {
+        "name": "Ibón de Sabocos",
+        "slug": "ibon-de-sabocos",
+        "type": "lake",
+        "elevation": null,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/way/27264449",
+        "osmId": "way/27264449",
+        "wikidataId": "Q2792169",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.2575459,
+          42.6924916
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "47146015-407b-59a7-9422-6cd70d875ad0",
+      "properties": {
+        "name": "Ibón de Brazato",
+        "slug": "ibon-de-brazato",
+        "type": "lake",
+        "elevation": null,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/way/42251877",
+        "osmId": "way/42251877",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.2090625,
+          42.7496979
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "99f45da7-a1df-5c42-ac1a-400c21e1cc2e",
+      "properties": {
+        "name": "Ibón Bajo de Brazato",
+        "slug": "ibon-bajo-de-brazato",
+        "type": "lake",
+        "elevation": null,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/way/46348908",
+        "osmId": "way/46348908",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.2134975,
+          42.7503075
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "bc7f3830-a6d8-5042-9c5c-2dc6183dc52e",
+      "properties": {
+        "name": "Ibón de Piedrafita",
+        "slug": "ibon-de-piedrafita",
+        "type": "lake",
+        "elevation": null,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/way/45638929",
+        "osmId": "way/45638929",
+        "wikidataId": "Q24021851",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.3553673,
+          42.695151
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "d65e478f-931c-595e-9d5a-878cbf38fb00",
+      "properties": {
+        "name": "Ibón de Anayet (grande)",
+        "slug": "ibon-de-anayet-grande",
+        "type": "lake",
+        "elevation": null,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/way/46267522",
+        "osmId": "way/46267522",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.4439537,
+          42.7787658
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "0ae385a1-044b-5b31-99f7-d3f63f48b4e3",
+      "properties": {
+        "name": "Ibón de Anayet (pequeño)",
+        "slug": "ibon-de-anayet-pequeno",
+        "type": "lake",
+        "elevation": null,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/way/46267523",
+        "osmId": "way/46267523",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.4424565,
+          42.7812781
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "97378b48-4e9c-59ab-b4e3-6ae5eb8b6556",
+      "properties": {
+        "name": "Ibon de Tebarray",
+        "slug": "ibon-de-tebarray",
+        "type": "lake",
+        "elevation": null,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/way/46348602",
+        "osmId": "way/46348602",
+        "wikidataId": "Q2791494",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.2672659,
+          42.7900836
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "9aa5c900-4210-5fd8-9c75-bcaa3b009e62",
+      "properties": {
+        "name": "Ibón de Espelunciecha",
+        "slug": "ibon-de-espelunciecha",
+        "type": "lake",
+        "elevation": null,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/way/103307404",
+        "osmId": "way/103307404",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.4299349,
+          42.7883532
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2ac9af4e-3f85-56d9-b921-c26940ade533",
+      "properties": {
+        "name": "Refugio de Respomuso",
+        "slug": "refugio-de-respomuso",
+        "type": "hut",
+        "elevation": null,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/way/122235593",
+        "osmId": "way/122235593",
+        "wikidataId": "Q19368209",
+        "additionalSources": [
+          "https://www.alberguesyrefugios.com/respomuso/"
+        ],
+        "coordinateMethod": "official-published"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.2876388888888889,
+          42.816972222222226
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "6017152c-ca6c-5c7c-847c-9b758bb82fbd",
+      "properties": {
+        "name": "Refugio Casa de Piedra",
+        "slug": "refugio-casa-de-piedra",
+        "type": "hut",
+        "elevation": 1636,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/way/288281193",
+        "osmId": "way/288281193",
+        "wikidataId": "Q41453270",
+        "additionalSources": [
+          "https://www.alberguesyrefugios.com/casadepiedra/"
+        ],
+        "coordinateMethod": "official-published"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.23358333333333334,
+          42.76261111111111
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "4bc15571-695b-5150-b632-df414183514c",
+      "properties": {
+        "name": "Refugio de los Ibones de Bachimaña",
+        "slug": "refugio-de-los-ibones-de-bachimana",
+        "type": "hut",
+        "elevation": 2200,
+        "region": "valle-de-tena",
+        "source": "https://www.openstreetmap.org/way/174653581",
+        "osmId": "way/174653581",
+        "wikidataId": "Q38234322",
+        "additionalSources": [
+          "https://www.alberguesyrefugios.com/ibonesdebachimana/"
+        ],
+        "coordinateMethod": "official-published"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.227646,
+          42.779932
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "69aecb65-853a-5759-a0b9-4290f8536f42",
+      "properties": {
+        "name": "Bisaurín",
+        "slug": "bisaurin",
+        "type": "peak",
+        "elevation": null,
+        "region": "hecho-anso",
+        "source": "https://www.openstreetmap.org/node/592426256",
+        "osmId": "node/592426256",
+        "wikidataId": "Q2904601",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.640004,
+          42.788488
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "6f19cedd-cf9c-53cf-a0f5-dfe50c4ab227",
+      "properties": {
+        "name": "Pico Agüerri",
+        "slug": "pico-aguerri",
+        "type": "peak",
+        "elevation": null,
+        "region": "hecho-anso",
+        "source": "https://www.openstreetmap.org/node/1250015949",
+        "osmId": "node/1250015949",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.6705327,
+          42.797991
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ee382fab-d0e2-58d8-b1db-5942f2c6d90e",
+      "properties": {
+        "name": "Acherito",
+        "slug": "acherito",
+        "type": "peak",
+        "elevation": null,
+        "region": "hecho-anso",
+        "source": "https://www.openstreetmap.org/node/1250017991",
+        "osmId": "node/1250017991",
+        "wikidataId": "Q24002087",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.7372228,
+          42.8914482
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "936ef5e6-5c31-5022-bb46-d952b99d7aef",
+      "properties": {
+        "name": "Chipeta Alto",
+        "slug": "chipeta-alto",
+        "type": "peak",
+        "elevation": null,
+        "region": "hecho-anso",
+        "source": "https://www.openstreetmap.org/node/1250021522",
+        "osmId": "node/1250021522",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.7279798,
+          42.8544131
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "24d4cc6c-a7bf-5043-bfa6-0e19d7968bc8",
+      "properties": {
+        "name": "Peña Forca",
+        "slug": "pena-forca",
+        "type": "peak",
+        "elevation": null,
+        "region": "hecho-anso",
+        "source": "https://www.openstreetmap.org/node/11063995093",
+        "osmId": "node/11063995093",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.755446,
+          42.8245008
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "65e55d1b-cca7-5a34-b9e6-0ec623ff4bd5",
+      "properties": {
+        "name": "Castillo de Acher",
+        "slug": "castillo-de-acher",
+        "type": "peak",
+        "elevation": null,
+        "region": "hecho-anso",
+        "source": "https://www.openstreetmap.org/node/4210410315",
+        "osmId": "node/4210410315",
+        "wikidataId": "Q5488790",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.6680591,
+          42.8228361
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "4916a98d-5b97-58ad-b504-08577d5c8f40",
+      "properties": {
+        "name": "Pico de Petrechema",
+        "slug": "pico-de-petrechema",
+        "type": "peak",
+        "elevation": null,
+        "region": "hecho-anso",
+        "source": "https://www.openstreetmap.org/node/1896334132",
+        "osmId": "node/1896334132",
+        "wikidataId": "Q3382346",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.7326009,
+          42.9029735
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "6dabe5d0-8a9a-586b-957d-5454e98ae245",
+      "properties": {
+        "name": "Cerro de Lenito",
+        "slug": "cerro-de-lenito",
+        "type": "peak",
+        "elevation": null,
+        "region": "hecho-anso",
+        "source": "https://www.openstreetmap.org/node/1250034582",
+        "osmId": "node/1250034582",
+        "coordinateMethod": "osm-node"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.7461195,
+          42.8211958
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1818d68d-be09-5440-b784-ed8441f33aef",
+      "properties": {
+        "name": "Ibón de Acherito",
+        "slug": "ibon-de-acherito",
+        "type": "lake",
+        "elevation": null,
+        "region": "hecho-anso",
+        "source": "https://www.openstreetmap.org/way/172537362",
+        "osmId": "way/172537362",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.7071468,
+          42.8797863
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "4093fbef-8a9b-57f1-84aa-ddd24fea7113",
+      "properties": {
+        "name": "Ibón de Estanés",
+        "slug": "ibon-de-estanes",
+        "type": "lake",
+        "elevation": null,
+        "region": "hecho-anso",
+        "source": "https://www.openstreetmap.org/way/42251268",
+        "osmId": "way/42251268",
+        "wikidataId": "Q1517048",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.590783,
+          42.7997055
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "9dd4c67d-9102-5490-ad79-832d5bdc2e6d",
+      "properties": {
+        "name": "Refugio de Linza",
+        "slug": "refugio-de-linza",
+        "type": "hut",
+        "elevation": null,
+        "region": "hecho-anso",
+        "source": "https://www.openstreetmap.org/way/320664347",
+        "osmId": "way/320664347",
+        "additionalSources": [
+          "https://www.alberguesyrefugios.com/linza/"
+        ],
+        "coordinateMethod": "official-published"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.7994722222222223,
+          42.89816666666667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fdefd353-e1b1-51fd-8d14-6497f936db1c",
+      "properties": {
+        "name": "Refugio de Gabardito",
+        "slug": "refugio-de-gabardito",
+        "type": "hut",
+        "elevation": null,
+        "region": "hecho-anso",
+        "source": "https://www.openstreetmap.org/way/320664346",
+        "osmId": "way/320664346",
+        "wikidataId": "Q41628400",
+        "additionalSources": [
+          "https://www.alberguesyrefugios.com/gabardito/"
+        ],
+        "coordinateMethod": "official-published"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.7116944444444444,
+          42.787305555555555
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "6a0c11cf-9170-586f-8473-70f906737c5d",
+      "properties": {
+        "name": "Refugio de Petrechema",
+        "slug": "refugio-de-petrechema",
+        "type": "hut",
+        "elevation": null,
+        "region": "hecho-anso",
+        "source": "https://www.openstreetmap.org/way/987809546",
+        "osmId": "way/987809546",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.7763119,
+          42.8973578
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2ab0b677-83bb-5f5b-a53a-ed5c562ff133",
+      "properties": {
+        "name": "Refugio Guarrinza",
+        "slug": "refugio-guarrinza",
+        "type": "hut",
+        "elevation": null,
+        "region": "hecho-anso",
+        "source": "https://www.openstreetmap.org/way/987809551",
+        "osmId": "way/987809551",
+        "coordinateMethod": "overpass-bounds-center"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.6882294,
+          42.8536858
+        ]
+      }
     }
   ]
 }

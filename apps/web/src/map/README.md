@@ -125,3 +125,46 @@ Las comprobaciones HTTP incluyeron upserts parciales, defaults, fechas inválida
 y bisiestas, notas nulas/límite, claves desconocidas, 400/404 y DELETE repetido.
 Se eliminaron los registros temporales creados al probar; no se dejaron visitas
 ficticias en el usuario de desarrollo.
+
+## Dataset ampliado y navegación
+
+`MapFilters.tsx` y `.css.ts` contienen controles nativos combinables de tipo,
+estado y región en un details plegable, inicialmente cerrado para no tapar el
+terreno. `useRegions.ts` obtiene y valida `/api/regions` con abort/reintento.
+`placeFilters.ts` serializa filtros y concilia el estado personal tras guardar.
+
+La API filtra los 74 lugares de PostgreSQL; el navegador no descarga todo para
+filtrarlo localmente. La jerarquía se reconstruye con parentId y se representa
+con opciones indentadas. Sin registrar mantiene userState null, sin sintetizar
+relaciones pending. El selector de lugares solo ofrece los resultados visibles.
+El alcance inicial se configura con el slug público `pirineo-aragones`, no un
+UUID. La lista, nombres, tipos y relaciones de regiones siempre llegan de la API.
+
+Cambiar filtros aborta la lectura anterior y elimina la selección anterior.
+La respuesta valida el contrato e instala el nuevo GeoJSON con setData (), sin
+recrear instancia, listeners o canvas. Cambiar región encuadra una vez sus datos;
+cambiar tipo/estado o guardar no vuelve a mover la cámara. El encuadre desktop
+deja margen para los controles. No se descarga por cada movimiento de cámara
+todavía; el endpoint admite viewport para incorporarlo cuando sea necesario.
+
+Después de guardar se aplica la respuesta y se retira inmediatamente un lugar
+que deje de cumplir el filtro personal; después se revalida el resultado con
+la misma consulta a la API. La comprobación local es únicamente conciliación
+post-mutación, no la estrategia de filtrado del dataset. Mientras se guarda se
+bloquean los filtros para evitar mezclar lecturas y escrituras. La selección
+se conserva si el lugar sigue cumpliendo los filtros; si desaparece se cierra
+el panel y aparece un mensaje de confirmación.
+
+Los radios interpolan según zoom (3 px en vista general, 6–8 px al acercarse,
+con prioridad para selección/visitado), conservando la diferenciación por tipo
+y estado. No se añadieron labels permanentes ni clustering: con el dataset
+real, puntos pequeños y navegación por región no hubo cobertura excesiva del
+terreno. Hay solapamientos puntuales en cumbres próximas a zoom general; se
+resuelven acercándose o con el selector accesible. Revisar clustering cuando
+crezca el dataset, no añadirlo solo por alcanzar una cifra.
+
+Se comprobaron las cuatro regiones, tres tipos, estados y combinaciones, cambios
+que conservan/retiran el POI, terrain, misma instancia/canvas, escritorio y móvil,
+panel desplazable y consola sin errores. Los tests de integración verifican
+queries combinadas, descendientes, userState null y seed repetido, incluida
+preservación de relaciones y registros ausentes, con rollback/limpieza.

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "67fda042-1b4d-4a75-b331-c0cc90fde5ba",
+    "name": "Pirineos",
+    "slug": "pirineos",
+    "type": "mountain_system",
+    "parentId": null,
+    "geometry": null
+  },
+  {
+    "id": "c20fb491-3962-5220-9186-0b727bd6cf1d",
+    "name": "Pirineo aragonés",
+    "slug": "pirineo-aragones",
+    "type": "sector",
+    "parentId": "67fda042-1b4d-4a75-b331-c0cc90fde5ba",
+    "geometry": null
+  },
+  {
+    "id": "f6a23616-0683-510e-9b35-b6a5e86ca5fa",
+    "name": "Valle de Benasque",
+    "slug": "valle-de-benasque",
+    "type": "valley",
+    "parentId": "c20fb491-3962-5220-9186-0b727bd6cf1d",
+    "geometry": null
+  },
+  {
+    "id": "50028e94-1579-5c75-97d2-f5898b75bcf8",
+    "name": "Ordesa / Monte Perdido",
+    "slug": "ordesa-monte-perdido",
+    "type": "massif",
+    "parentId": "c20fb491-3962-5220-9186-0b727bd6cf1d",
+    "geometry": null
+  },
+  {
+    "id": "2375095d-4c3f-534e-a0dc-968cae4dd205",
+    "name": "Valle de Tena",
+    "slug": "valle-de-tena",
+    "type": "valley",
+    "parentId": "c20fb491-3962-5220-9186-0b727bd6cf1d",
+    "geometry": null
+  },
+  {
+    "id": "ca666c4e-c09f-5c8f-a022-0e99095f083f",
+    "name": "Hecho / Ansó",
+    "slug": "hecho-anso",
+    "type": "sector",
+    "parentId": "c20fb491-3962-5220-9186-0b727bd6cf1d",
+    "geometry": null
+  }
+]

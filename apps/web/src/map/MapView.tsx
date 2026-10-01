@@ -1,10 +1,11 @@
 import {useMemo, useRef, useState} from 'react';
-import type {PlaceWithUserState} from '@relieve/shared';
+import type {PlaceFilters, PlaceWithUserState} from '@relieve/shared';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {placesToGeoJson, visiblePlaceTypes} from './placesGeoJson';
 import {usePlaces} from './usePlaces';
 import {usePlacesMap} from './usePlacesMap';
 import {PlacePersonalForm} from './PlacePersonalForm';
+import {MapFilters} from './MapFilters';
 import * as styles from './MapView.css';
 
 const emptyPlaces: PlaceWithUserState[] = [];
@@ -14,10 +15,12 @@ const elevationFormat = new Intl.NumberFormat('es-ES');
 export function MapView() {
     const container = useRef<HTMLDivElement>(null);
     const [selectedId, setSelectedId] = useState<string | null>(null);
-    const {state, retry, personalSave, saveUserPlace} = usePlaces();
+    const [filters, setFilters] = useState<PlaceFilters>({region: 'pirineo-aragones'});
+    const {state, retry, personalSave, saveUserPlace} = usePlaces(filters);
     const places = state.status === 'success' ? state.places : emptyPlaces;
     const geoJson = useMemo(() => placesToGeoJson(places), [places]);
-    const {status, terrainUnavailable} = usePlacesMap(container, geoJson, selectedId, setSelectedId);
+    const frameRegion = state.status === 'success' ? new URLSearchParams(state.query).get('region') ?? '' : null;
+    const {status, terrainUnavailable} = usePlacesMap(container, geoJson, selectedId, setSelectedId, frameRegion);
     const selectedPlace = places.find((place) => place.id === selectedId);
 
     return (
@@ -37,10 +40,17 @@ export function MapView() {
                     <button className={styles.button} type="button" onClick={retry}>Reintentar</button>
                 </>}
                 {state.status === 'success' && <p>{geoJson.features.length === 0
-                    ? 'No hay lugares disponibles para mostrar.'
-                    : `${geoJson.features.length} lugares · selecciona un punto`}</p>}
+                    ? 'No hay lugares que cumplan estos filtros.'
+                    : `${geoJson.features.length} ${geoJson.features.length === 1 ? 'lugar' : 'lugares'} · selecciona un punto`}</p>}
                 {terrainUnavailable && <p>Relieve 3D no disponible. Puedes seguir explorando el mapa.</p>}
+                {personalSave?.status === 'saved' && personalSave.placeId === selectedId
+                    && state.status === 'success' && !selectedPlace &&
+                    <p>Registro guardado. El lugar ya no cumple los filtros actuales.</p>}
             </div>
+            <MapFilters filters={filters} disabled={personalSave?.status === 'saving'} onChange={(next) => {
+                setSelectedId(null);
+                setFilters(next);
+            }}/>
             <div className={styles.legend} aria-label="Leyenda del mapa">
                 {visiblePlaceTypes.map((type) => <span className={styles.legendItem} key={type}>
                     <span className={styles.swatch[type]} aria-hidden="true"/>{placeTypeLabels[type]}

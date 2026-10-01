@@ -11,8 +11,10 @@ export const placesLayer: CircleLayerSpecification = {
     paint: {
         'circle-color': ['match', ['get', 'type'],
             'peak', placeColors.peak, 'lake', placeColors.lake, 'hut', placeColors.hut, mapColors.text],
-        'circle-radius': ['case', ['boolean', ['feature-state', 'selected'], false], 10,
-            ['==', ['get', 'status'], 'visited'], 8, 7],
+        'circle-radius': ['interpolate', ['linear'], ['zoom'],
+            7, ['case', ['boolean', ['feature-state', 'selected'], false], 6, ['==', ['get', 'status'], 'visited'], 4, 3],
+            11, ['case', ['boolean', ['feature-state', 'selected'], false], 9, ['==', ['get', 'status'], 'visited'], 7, 6],
+            15, ['case', ['boolean', ['feature-state', 'selected'], false], 11, ['==', ['get', 'status'], 'visited'], 9, 8]],
         'circle-opacity': ['case', ['==', ['get', 'status'], 'pending'], 0.15, 1],
         'circle-stroke-width': ['case', ['boolean', ['feature-state', 'selected'], false], 3,
             ['==', ['get', 'status'], 'visited'], 3, ['==', ['get', 'status'], 'pending'], 2, 1],

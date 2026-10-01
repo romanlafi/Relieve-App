@@ -2,11 +2,22 @@ import {Hono} from 'hono';
 import {createDatabase, developmentUserId, getPlaceForUser, listPlacesForUser} from '@relieve/database';
 import type {ApiEnvironment} from '../environment.js';
 import {placeIdSchema} from '../validation/userPlaces.js';
+import {placeFiltersSchema} from '../validation/places.js';
 
 export const placesRoutes = new Hono<ApiEnvironment>();
 
 placesRoutes.get('/', async (context) => {
-    const places = await listPlacesForUser(createDatabase(context.env.DATABASE_URL), developmentUserId);
+    const parsed = placeFiltersSchema.safeParse(context.req.query());
+    if (!parsed.success) {
+        return context.json({
+            error: {
+                code: 'INVALID_PLACE_FILTERS',
+                message: 'Invalid place filters',
+                issues: parsed.error.issues
+            }
+        }, 400);
+    }
+    const places = await listPlacesForUser(createDatabase(context.env.DATABASE_URL), developmentUserId, parsed.data);
     return context.json(places);
 });
 

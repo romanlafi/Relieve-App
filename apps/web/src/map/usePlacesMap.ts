@@ -23,33 +23,44 @@ function framePlaces(map: Map, data: PlacesGeoJson) {
         if (longitude !== undefined && latitude !== undefined) bounds.extend([longitude, latitude]);
     }
     const height = map.getContainer().clientHeight;
+    const width = map.getContainer().clientWidth;
     map.fitBounds(bounds, {
-        padding: {top: Math.min(160, height * 0.2), bottom: Math.min(220, height * 0.3), left: 40, right: 40},
+        padding: {
+            top: Math.min(160, height * 0.2),
+            bottom: Math.min(220, height * 0.3),
+            left: width > 640 ? 320 : 40,
+            right: 40
+        },
         maxZoom: mapConfig.zoom,
         duration: 0,
     });
 }
 
 export function usePlacesMap(container: React.RefObject<HTMLDivElement | null>, data: PlacesGeoJson,
-                             selectedId: string | null, onSelect: (id: string) => void) {
+                             selectedId: string | null, onSelect: (id: string) => void, frameRegion: string | null) {
     const mapRef = useRef<Map | null>(null);
     const dataRef = useRef(data);
     const selectedRef = useRef<string | null>(null);
     const framedPlaces = useRef(false);
+    const regionRef = useRef(frameRegion);
+    const framedRegion = useRef<string | null>(null);
     const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
     const [terrainUnavailable, setTerrainUnavailable] = useState(false);
 
     useEffect(() => {
         dataRef.current = data;
+        regionRef.current = frameRegion;
         const source = mapRef.current?.getSource<GeoJSONSource>(placesSourceId);
         if (source) {
             void source.setData(data);
-            if (mapRef.current && data.features.length > 0 && !framedPlaces.current) {
+            if (mapRef.current && data.features.length > 0 && frameRegion !== null
+                && (!framedPlaces.current || framedRegion.current !== frameRegion)) {
                 framePlaces(mapRef.current, data);
                 framedPlaces.current = true;
+                framedRegion.current = frameRegion;
             }
         }
-    }, [data]);
+    }, [data, frameRegion]);
 
     useEffect(() => {
         const map = mapRef.current;
@@ -93,6 +104,7 @@ export function usePlacesMap(container: React.RefObject<HTMLDivElement | null>, 
             if (dataRef.current.features.length > 0 && !framedPlaces.current) {
                 framePlaces(map, dataRef.current);
                 framedPlaces.current = true;
+                framedRegion.current = regionRef.current;
             }
             if (selectedRef.current) map.setFeatureState({
                 source: placesSourceId,

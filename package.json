@@ -21,7 +21,10 @@
     "db:check": "npm run db:check --workspace=@relieve/database",
     "build": "npm run build --workspace=@relieve/shared && npm run build --workspace=@relieve/database && npm run build --workspace=@relieve/api && npm run build --workspace=@relieve/web",
     "lint": "eslint . --max-warnings=0",
-    "typecheck": "npm run typecheck --workspaces"
+    "typecheck": "npm run typecheck --workspaces",
+    "data:check": "npm run data:check --workspace=@relieve/database",
+    "test": "npm run build --workspace=@relieve/database && npm run test --workspaces --if-present",
+    "test:integration": "npm run build --workspace=@relieve/database && npm run test:integration --workspace=@relieve/database"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

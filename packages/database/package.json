@@ -15,7 +15,10 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
-    "db:check": "tsx scripts/check.ts"
+    "db:check": "tsx scripts/check.ts",
+    "data:check": "tsx scripts/checkDataset.ts",
+    "test": "tsx --test scripts/dataset.test.ts ../../apps/api/test/places.test.ts",
+    "test:integration": "tsx --test scripts/integration.test.ts"
   },
   "dependencies": {
     "@relieve/shared": "*",

@@ -1,36 +1,54 @@
-# Dataset inicial
+# Dataset del Pirineo aragonés
 
-`places.geojson` contiene seis puntos WGS84 en orden **[longitud, latitud]**.
-Las fuentes se consultaron el 1 de octubre de 2026; cada registro conserva
-su enlace.
+`places.geojson`: 74 lugares WGS84, en orden **[longitud, latitud]**.
+`regions.json`: seis regiones con UUID, tipo y parentId; todas tienen geometry null.
+`sources/osm-selection.json`: evidencia factual congelada de los elementos OSM
+seleccionados, incluyendo las cotas reportadas que no se importan automáticamente.
+`sources/selection.overpass`: consulta de revisión de esos identificadores, solo
+para preparación de datos; nunca se ejecuta desde la aplicación o el seed.
 
-| Lugar              | Latitud           | Longitud             | Elevación (m) | Fuente                                                                              |
-|--------------------|-------------------|----------------------|---------------|-------------------------------------------------------------------------------------|
-| Aneto              | 42.630991666667   | 0.65668611111111     | 3404          | [Wikipedia](https://es.wikipedia.org/wiki/Pico_Aneto)                               |
-| Posets             | 42.654481         | 0.4352               | null          | [Wikipedia](https://es.wikipedia.org/wiki/Pico_Posets)                              |
-| Monte Perdido      | 42.673888888889   | 0.033333333333333    | null          | [Wikipedia](https://es.wikipedia.org/wiki/Monte_Perdido)                            |
-| Ibón de Plan       | 42.54611111       | 0.325                | 1910          | [Wikipedia](https://es.wikipedia.org/wiki/Ib%C3%B3n_de_Plan)                        |
-| Refugio de Góriz   | 42.66330555555555 | 0.015055555555555557 | null          | [Federación Aragonesa de Montañismo](https://www.alberguesyrefugios.com/goriz/)     |
-| Refugio Ángel Orús | 42.62741666666667 | 0.4573888888888889   | 2150          | [Federación Aragonesa de Montañismo](https://www.alberguesyrefugios.com/angelorus/) |
+| Región de exploración                    | Picos | Ibones | Refugios | Total |
+|------------------------------------------|------:|-------:|---------:|------:|
+| Valle de Benasque                        |     9 |     10 |        4 |    23 |
+| Ordesa / Monte Perdido                   |     9 |      4 |        4 |    17 |
+| Valle de Tena                            |     8 |      8 |        3 |    19 |
+| Hecho / Ansó                             |     8 |      2 |        4 |    14 |
+| Pirineo aragonés, sin subregión asignada |     0 |      1 |        0 |     1 |
+| Total                                    |    34 |     25 |       15 |    74 |
 
-Las coordenadas de los picos y del Ibón de Plan proceden de los valores
-decimales de sus fichas, sin redondearlas a los segundos del texto mostrado.
-Las de los refugios se convierten aritméticamente desde las coordenadas GEO
-de la FAM: Góriz 42°39′47.9″N 0°00′54.2″E; Ángel Orús
-42°37′38.7″N 0°27′26.6″E. Un punto de lago representa su localización,
-no su contorno ni un acceso.
+El lugar directamente asociado al sector es el Ibón de Plan: pertenece al valle
+de Gistaín/Chistau, no a Benasque ni a Ordesa. Se conserva el registro previo sin
+forzar una clasificación falsa ni añadir otra zona de navegación en esta fase.
 
-Se omiten las altitudes de Posets (3368/3369/3375 según fuente), Monte
-Perdido (3348/3355) y Góriz (2200/2215) por discrepancias entre fuentes.
-`null` expresa falta de una cota verificada con suficiente seguridad.
-Los Ibones de Bachimaña se omiten: el nombre agrupa varios lagos y esta
-fase no ha verificado una coordenada inequívoca para cada uno. No se usan
-coordenadas del refugio como sustituto de las de los lagos.
+## Validación y seed
 
-No se inventan polígonos de regiones ni visitas personales. El seed crea
-solo la región Pirineos y el usuario de desarrollo.
+```text
+npm run data:check
+npm run db:migrate
+npm run db:seed
+npm test
+npm run test:integration
+```
 
-Las fichas de Wikipedia ofrecen atribución bajo CC BY-SA 4.0; se enlaza cada
-fuente y se conservan únicamente hechos geográficos. No se copian imágenes
-ni textos descriptivos. Las coordenadas publicadas por la FAM se atribuyen
-a sus fichas oficiales.
+El importador valida UUIDs, slugs únicos, nombres normalizados, tipos, coordenadas
+finitas/en rango, referencias regionales, padres existentes y ausencia de ciclos.
+Una envolvente de revisión [-0.95, 42.45, 0.8, 42.94] detecta errores evidentes; **no es una frontera regional** ni
+sustituye la procedencia o revisión del lugar.
+
+Los UUID están persistidos en los archivos. Los seis lugares y Pirineos conservan
+los UUID de la base existente; los nuevos se generaron una sola vez mediante UUIDv5 (namespace DNS y clave
+`relieve.app/place/<tipo-osm>/<id>` o `relieve.app/region/<slug>`).
+El seed nunca genera UUIDs ni utiliza el nombre como identidad. Cambiar el nombre,
+slug, geometría o fuente no justifica regenerar el UUID del registro.
+
+El seed inserta padres antes que hijos y hace upsert por **id**, dentro de una
+transacción. Una colisión de slug con otro UUID aborta y exige reconciliación
+explícita: no renumera lugares ni pierde relaciones personales silenciosamente.
+Esto también se aplica a otra instalación antigua cuyos UUID fueran distintos.
+
+No borra registros ausentes, ni lee/modifica `user_places`, ni inventa visitas.
+Solo crea el usuario de desarrollo si falta. Se puede repetir conservando IDs,
+favoritos, estados, notas y fechas. Los triggers pueden actualizar `updated_at`
+de lugares/regiones aunque los valores importados no hayan cambiado.
+
+Fuentes, atribución, discrepancias y limitaciones: [SOURCES.md](./SOURCES.md).

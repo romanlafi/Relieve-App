@@ -1,0 +1,857 @@
+{
+  "queriedAt": "2026-10-01",
+  "osmSnapshot": "2026-05-31T22:37:44Z",
+  "endpoint": "https://overpass.kumi.systems/api/interpreter",
+  "elements": [
+    {
+      "osmId": "node/623866300",
+      "name": "Tuca de la Maladeta",
+      "nameEs": "Pico de la Maladeta",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "3312",
+      "coordinates": [
+        0.6402759,
+        42.6464323
+      ]
+    },
+    {
+      "osmId": "node/8280351615",
+      "name": "Perdiguère / Perdiguero",
+      "nameEs": "Pico Perdiguero",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "3222",
+      "coordinates": [
+        0.5188647,
+        42.6920006
+      ]
+    },
+    {
+      "osmId": "node/255545541",
+      "name": "Pico Maldito",
+      "nameEs": "Pico Maldito",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "3354",
+      "coordinates": [
+        0.641336,
+        42.639574
+      ]
+    },
+    {
+      "osmId": "node/255545807",
+      "name": "Tuca de Tempestats / Tuca Gran de Llosás",
+      "nameEs": "Pico de Tempestades",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "3289",
+      "coordinates": [
+        0.6627674,
+        42.6261131
+      ]
+    },
+    {
+      "osmId": "node/255545818",
+      "name": "Tuca d'el Cabo de Barrancs",
+      "nameEs": "Margalida",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "3251",
+      "coordinates": [
+        0.6659243,
+        42.6244528
+      ]
+    },
+    {
+      "osmId": "node/1060153622",
+      "name": "Pico Salvaguardia",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "2736",
+      "coordinates": [
+        0.6309305,
+        42.6949418
+      ]
+    },
+    {
+      "osmId": "node/6764370106",
+      "name": "Tuca del Forau de Ixeia",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "2649",
+      "coordinates": [
+        0.4998202,
+        42.626074
+      ]
+    },
+    {
+      "osmId": "way/49179030",
+      "name": "Ibón de Cregüeña",
+      "natural": "water",
+      "tourism": null,
+      "water": "lake",
+      "reportedElevation": "2639",
+      "coordinates": [
+        0.6222128,
+        42.639142
+      ]
+    },
+    {
+      "osmId": "way/173202553",
+      "name": "Ibón Grande de Batisielles",
+      "natural": "water",
+      "tourism": null,
+      "water": "lake",
+      "reportedElevation": "2215",
+      "coordinates": [
+        0.4974652,
+        42.6513133
+      ]
+    },
+    {
+      "osmId": "way/121570345",
+      "name": "Ibón de la Escarpinosa",
+      "natural": "water",
+      "tourism": null,
+      "water": "lake",
+      "reportedElevation": "2028",
+      "coordinates": [
+        0.5046831,
+        42.6461301
+      ]
+    },
+    {
+      "osmId": "way/96705557",
+      "name": "Ibón Blanco de Literola",
+      "nameEs": "Ibón Blanco de Literola",
+      "natural": "water",
+      "tourism": null,
+      "water": "lake",
+      "reportedElevation": null,
+      "coordinates": [
+        0.5326006,
+        42.6921076
+      ]
+    },
+    {
+      "osmId": "way/49364182",
+      "name": "Ibón de Llosás",
+      "natural": "water",
+      "tourism": null,
+      "water": "lake",
+      "reportedElevation": "2470",
+      "coordinates": [
+        0.6536274,
+        42.6164517
+      ]
+    },
+    {
+      "osmId": "way/49364181",
+      "name": "Ibón Bajo de Vallibierna",
+      "natural": "water",
+      "tourism": null,
+      "water": "lake",
+      "reportedElevation": "2440",
+      "coordinates": [
+        0.6570812,
+        42.6048933
+      ]
+    },
+    {
+      "osmId": "way/49364183",
+      "name": "Ibón Alto de Vallibierna",
+      "natural": "water",
+      "tourism": null,
+      "water": "lake",
+      "reportedElevation": "2478",
+      "coordinates": [
+        0.6650588,
+        42.606171
+      ]
+    },
+    {
+      "osmId": "way/173202556",
+      "name": "Ibón Llardaneta",
+      "natural": "water",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": null,
+      "coordinates": [
+        0.4352261,
+        42.636791
+      ]
+    },
+    {
+      "osmId": "relation/16439499",
+      "name": "Ibón de Perramó",
+      "natural": "water",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "2257",
+      "coordinates": [
+        0.4997974,
+        42.6391626
+      ]
+    },
+    {
+      "osmId": "way/173198216",
+      "name": "Ibón de Barrancs",
+      "natural": "water",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": null,
+      "coordinates": [
+        0.6730121,
+        42.6454428
+      ]
+    },
+    {
+      "osmId": "way/220270171",
+      "name": "Refugio de la Renclusa",
+      "nameEs": "Refugio de la Renclusa",
+      "natural": null,
+      "tourism": "alpine_hut",
+      "water": null,
+      "reportedElevation": "2138",
+      "coordinates": [
+        0.6508045,
+        42.669315
+      ]
+    },
+    {
+      "osmId": "way/231866443",
+      "name": "Refugio de Estós",
+      "nameEs": "Refugio de Estós",
+      "natural": null,
+      "tourism": "alpine_hut",
+      "water": null,
+      "reportedElevation": "1890",
+      "coordinates": [
+        0.4852144,
+        42.6755489
+      ]
+    },
+    {
+      "osmId": "way/374407667",
+      "name": "Refugio de Coronas",
+      "nameEs": "Refugio de Coronas",
+      "natural": null,
+      "tourism": "wilderness_hut",
+      "water": null,
+      "reportedElevation": "1965",
+      "coordinates": [
+        0.6211039,
+        42.6103008
+      ]
+    },
+    {
+      "osmId": "node/1092109785",
+      "name": "Mallo de Marmorés / Cilindro de Marboré",
+      "nameEs": "Cilindro de Marboré",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "3325",
+      "coordinates": [
+        0.0238657,
+        42.6847945
+      ]
+    },
+    {
+      "osmId": "node/1092110096",
+      "name": "Le Casque du Marboré",
+      "nameEs": "El Casco",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "3011",
+      "coordinates": [
+        -0.0267577,
+        42.6877707
+      ]
+    },
+    {
+      "osmId": "node/2192182868",
+      "name": "Punda Negra / Tallón / Taillon",
+      "nameEs": "Tallón",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "3144",
+      "coordinates": [
+        -0.0512874,
+        42.6936421
+      ]
+    },
+    {
+      "osmId": "node/2192182895",
+      "name": "Pico Plan de Marmorés / Marboré",
+      "nameEs": "Pico Marboré",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "3251",
+      "coordinates": [
+        0.0116476,
+        42.6928281
+      ]
+    },
+    {
+      "osmId": "node/2192183388",
+      "name": "Tour du Marboré",
+      "nameEs": "La Torre de Marboré",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "3012",
+      "coordinates": [
+        -0.0170776,
+        42.685787
+      ]
+    },
+    {
+      "osmId": "node/1250031353",
+      "name": "Pico d'Añisclo",
+      "nameEs": "Pico de Añisclo o Soum de Ramond",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "3257",
+      "coordinates": [
+        0.0431364,
+        42.6695882
+      ]
+    },
+    {
+      "osmId": "node/1250039108",
+      "name": "Tobacor",
+      "nameEs": "Tobacor",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "2779",
+      "coordinates": [
+        -0.0135111,
+        42.6556506
+      ]
+    },
+    {
+      "osmId": "node/1250018699",
+      "name": "Susana Mondarruego",
+      "nameEs": "Pico Mondarruego",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "2845",
+      "coordinates": [
+        -0.0806527,
+        42.6768295
+      ]
+    },
+    {
+      "osmId": "way/40710432",
+      "name": "Lago de Marboré",
+      "nameEs": "Lago de Marboré",
+      "natural": "water",
+      "tourism": null,
+      "water": "lake",
+      "reportedElevation": "2590",
+      "coordinates": [
+        0.0402559,
+        42.6955639
+      ]
+    },
+    {
+      "osmId": "way/140319959",
+      "name": "Lago Helado de Monte Perdido / Ibón Chelau de Treserols",
+      "nameEs": "Lago Helado de Monte Perdido",
+      "natural": "water",
+      "tourism": null,
+      "water": "lake",
+      "reportedElevation": "2900",
+      "coordinates": [
+        0.0264305,
+        42.6810031
+      ]
+    },
+    {
+      "osmId": "way/140315152",
+      "name": "Ibón de Bernatuara",
+      "nameEs": "Ibón de Bernatuara",
+      "natural": "water",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": null,
+      "coordinates": [
+        -0.0996506,
+        42.7207099
+      ]
+    },
+    {
+      "osmId": "way/210041053",
+      "name": "Ibón de Lapazosa",
+      "natural": "water",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": null,
+      "coordinates": [
+        -0.069526,
+        42.7113819
+      ]
+    },
+    {
+      "osmId": "way/140315121",
+      "name": "Refugio de Bujaruelo",
+      "natural": null,
+      "tourism": "alpine_hut",
+      "water": null,
+      "reportedElevation": "1338",
+      "coordinates": [
+        -0.1069993,
+        42.6944988
+      ]
+    },
+    {
+      "osmId": "way/757649291",
+      "name": "Refugio de Tucarroya",
+      "nameEs": "Refugio de Tucarroya",
+      "natural": null,
+      "tourism": "wilderness_hut",
+      "water": null,
+      "reportedElevation": "2666",
+      "coordinates": [
+        0.0401935,
+        42.6976714
+      ]
+    },
+    {
+      "osmId": "way/289289283",
+      "name": "Refugio de Pineta",
+      "nameEs": "Refugio de Pineta",
+      "natural": null,
+      "tourism": "alpine_hut",
+      "water": null,
+      "reportedElevation": "1240",
+      "coordinates": [
+        0.1036502,
+        42.6662051
+      ]
+    },
+    {
+      "osmId": "node/590706409",
+      "name": "Garmo Negro",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "3064",
+      "coordinates": [
+        -0.2641782,
+        42.7716445
+      ]
+    },
+    {
+      "osmId": "node/652132454",
+      "name": "Pico Argualas",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "3044",
+      "coordinates": [
+        -0.2668997,
+        42.7664853
+      ]
+    },
+    {
+      "osmId": "node/652132494",
+      "name": "Infierno Central",
+      "nameEs": "Infierno Central",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "3080",
+      "coordinates": [
+        -0.2605587,
+        42.7814949
+      ]
+    },
+    {
+      "osmId": "node/652132493",
+      "name": "Infierno Occidental",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "3075",
+      "coordinates": [
+        -0.2632365,
+        42.7831253
+      ]
+    },
+    {
+      "osmId": "node/2917938909",
+      "name": "Infierno Oriental",
+      "nameEs": "Infierno Oriental",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "3076",
+      "coordinates": [
+        -0.2590393,
+        42.781345
+      ]
+    },
+    {
+      "osmId": "node/590706393",
+      "name": "Pico de Anayet",
+      "nameEs": "Pico de Anayet",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "2574",
+      "coordinates": [
+        -0.4543916,
+        42.7816162
+      ]
+    },
+    {
+      "osmId": "node/444752584",
+      "name": "Peña Foratata",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "2321",
+      "coordinates": [
+        -0.3456474,
+        42.7881647
+      ]
+    },
+    {
+      "osmId": "node/1250020602",
+      "name": "Pico Algas",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "3036",
+      "coordinates": [
+        -0.2706457,
+        42.7683164
+      ]
+    },
+    {
+      "osmId": "way/27264449",
+      "name": "Ibón de Sabocos",
+      "natural": "water",
+      "tourism": null,
+      "water": "lake",
+      "reportedElevation": null,
+      "coordinates": [
+        -0.2575459,
+        42.6924916
+      ]
+    },
+    {
+      "osmId": "way/42251877",
+      "name": "Ibón de Brazato",
+      "natural": "water",
+      "tourism": null,
+      "water": "lake",
+      "reportedElevation": null,
+      "coordinates": [
+        -0.2090625,
+        42.7496979
+      ]
+    },
+    {
+      "osmId": "way/46348908",
+      "name": "Ibón Bajo de Brazato",
+      "natural": "water",
+      "tourism": null,
+      "water": "lake",
+      "reportedElevation": null,
+      "coordinates": [
+        -0.2134975,
+        42.7503075
+      ]
+    },
+    {
+      "osmId": "way/45638929",
+      "name": "Ibón de Piedrafita",
+      "natural": "water",
+      "tourism": null,
+      "water": "lake",
+      "reportedElevation": "1604",
+      "coordinates": [
+        -0.3553673,
+        42.695151
+      ]
+    },
+    {
+      "osmId": "way/46267522",
+      "name": "Ibon de Anayet (Ibon grande)",
+      "natural": "water",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": null,
+      "coordinates": [
+        -0.4439537,
+        42.7787658
+      ]
+    },
+    {
+      "osmId": "way/46267523",
+      "name": "Ibon de Anayet (Pequeño)",
+      "natural": "water",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": null,
+      "coordinates": [
+        -0.4424565,
+        42.7812781
+      ]
+    },
+    {
+      "osmId": "way/46348602",
+      "name": "Ibon de Tebarray",
+      "natural": "water",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": null,
+      "coordinates": [
+        -0.2672659,
+        42.7900836
+      ]
+    },
+    {
+      "osmId": "way/103307404",
+      "name": "Ibón de Espelunciecha",
+      "natural": "water",
+      "tourism": null,
+      "water": "lake",
+      "reportedElevation": null,
+      "coordinates": [
+        -0.4299349,
+        42.7883532
+      ]
+    },
+    {
+      "osmId": "way/122235593",
+      "name": "Refugio de Respomuso",
+      "nameEs": "Refugio de Respomuso",
+      "natural": null,
+      "tourism": "alpine_hut",
+      "water": null,
+      "reportedElevation": "2220",
+      "coordinates": [
+        -0.287656,
+        42.8169827
+      ]
+    },
+    {
+      "osmId": "way/288281193",
+      "name": "Refugio Casa de Piedra",
+      "nameEs": "Refugio Casa de Piedra",
+      "natural": null,
+      "tourism": "alpine_hut",
+      "water": null,
+      "reportedElevation": "1636",
+      "coordinates": [
+        -0.2335261,
+        42.7626602
+      ]
+    },
+    {
+      "osmId": "way/174653581",
+      "name": "Refugio de los Ibones de Bachimaña",
+      "nameEs": "Refugio de los Ibones de Bachimaña",
+      "natural": null,
+      "tourism": "alpine_hut",
+      "water": null,
+      "reportedElevation": "2200",
+      "coordinates": [
+        -0.2275886,
+        42.7799708
+      ]
+    },
+    {
+      "osmId": "node/592426256",
+      "name": "Punta Bisaurín",
+      "nameEs": "Bisaurín",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "2670",
+      "coordinates": [
+        -0.640004,
+        42.788488
+      ]
+    },
+    {
+      "osmId": "node/1250015949",
+      "name": "Punta Agüerri",
+      "nameEs": "Pico Agüerri",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "2434",
+      "coordinates": [
+        -0.6705327,
+        42.797991
+      ]
+    },
+    {
+      "osmId": "node/1250017991",
+      "name": "Acherito",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "2374",
+      "coordinates": [
+        -0.7372228,
+        42.8914482
+      ]
+    },
+    {
+      "osmId": "node/1250021522",
+      "name": "Chipeta Alto",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "2175",
+      "coordinates": [
+        -0.7279798,
+        42.8544131
+      ]
+    },
+    {
+      "osmId": "node/11063995093",
+      "name": "Peña Forca",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "2390",
+      "coordinates": [
+        -0.755446,
+        42.8245008
+      ]
+    },
+    {
+      "osmId": "node/4210410315",
+      "name": "Castiello d’Acher",
+      "nameEs": "Castillo de Acher",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "2384",
+      "coordinates": [
+        -0.6680591,
+        42.8228361
+      ]
+    },
+    {
+      "osmId": "node/1896334132",
+      "name": "Pic d'Ansabère / Petrechema",
+      "nameEs": "Pico de Petrechema",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "2371",
+      "coordinates": [
+        -0.7326009,
+        42.9029735
+      ]
+    },
+    {
+      "osmId": "node/1250034582",
+      "name": "Zerro de Lenito",
+      "nameEs": "Cerro de Lenito",
+      "natural": "peak",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": "2339",
+      "coordinates": [
+        -0.7461195,
+        42.8211958
+      ]
+    },
+    {
+      "osmId": "way/172537362",
+      "name": "Ibón de Acherito",
+      "natural": "water",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": null,
+      "coordinates": [
+        -0.7071468,
+        42.8797863
+      ]
+    },
+    {
+      "osmId": "way/42251268",
+      "name": "Ibon de Estanés",
+      "natural": "water",
+      "tourism": null,
+      "water": null,
+      "reportedElevation": null,
+      "coordinates": [
+        -0.590783,
+        42.7997055
+      ]
+    },
+    {
+      "osmId": "way/320664347",
+      "name": "Refugio de Linza",
+      "natural": null,
+      "tourism": "alpine_hut",
+      "water": null,
+      "reportedElevation": "1330",
+      "coordinates": [
+        -0.7994945,
+        42.8982557
+      ]
+    },
+    {
+      "osmId": "way/320664346",
+      "name": "Refugio de Gabardito",
+      "natural": null,
+      "tourism": "alpine_hut",
+      "water": null,
+      "reportedElevation": "1400",
+      "coordinates": [
+        -0.711694,
+        42.7874188
+      ]
+    },
+    {
+      "osmId": "way/987809546",
+      "name": "Refugio de Petrechema",
+      "natural": null,
+      "tourism": "wilderness_hut",
+      "water": null,
+      "reportedElevation": null,
+      "coordinates": [
+        -0.7763119,
+        42.8973578
+      ]
+    },
+    {
+      "osmId": "way/987809551",
+      "name": "Refugio Guarrinza",
+      "natural": null,
+      "tourism": "wilderness_hut",
+      "water": null,
+      "reportedElevation": null,
+      "coordinates": [
+        -0.6882294,
+        42.8536858
+      ]
+    }
+  ]
+}
+

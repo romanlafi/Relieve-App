@@ -1,19 +1,28 @@
 import {useEffect, useRef, useState} from 'react';
-import type {PlaceWithUserState, UpdateUserPlace, UserPlaceState} from '@relieve/shared';
+import type {PlaceFilters, PlaceWithUserState, UpdateUserPlace, UserPlaceState} from '@relieve/shared';
 import {placesSchema, userPlaceSchema} from './placeSchemas';
+import {matchesPersonalFilters, placeFiltersQuery} from './placeFilters';
 
 type PlacesState =
     | { status: 'loading' }
     | { status: 'error'; message: string }
-    | { status: 'success'; places: PlaceWithUserState[] };
+    | { status: 'success'; places: PlaceWithUserState[]; query: string };
 
 export type PersonalSaveState = { placeId: string; status: 'saving' | 'saved' | 'error' } | null;
 
-export function usePlaces() {
+export function usePlaces(filters: PlaceFilters) {
     const [state, setState] = useState<PlacesState>({status: 'loading'});
     const [requestVersion, setRequestVersion] = useState(0);
     const [personalSave, setPersonalSave] = useState<PersonalSaveState>(null);
     const mutationController = useRef<AbortController | null>(null);
+    const loadController = useRef<AbortController | null>(null);
+    const filtersRef = useRef(filters);
+    const query = placeFiltersQuery(filters);
+    const lastQuery = useRef(query);
+
+    useEffect(() => {
+        filtersRef.current = filters;
+    }, [filters]);
 
     useEffect(() => () => {
         mutationController.current?.abort();
@@ -21,11 +30,12 @@ export function usePlaces() {
 
     useEffect(() => {
         const controller = new AbortController();
+        loadController.current = controller;
         let active = true;
 
         async function load() {
             try {
-                const response = await fetch('/api/places', {
+                const response = await fetch(`/api/places?${query}`, {
                     signal: controller.signal,
                     headers: {Accept: 'application/json'},
                 });
@@ -36,7 +46,7 @@ export function usePlaces() {
                     if (active) setState({status: 'error', message: 'La API ha devuelto datos de lugares no válidos.'});
                     return;
                 }
-                if (active) setState({status: 'success', places: parsed.data});
+                if (active) setState({status: 'success', places: parsed.data, query});
             } catch {
                 if (active && !controller.signal.aborted) {
                     setState({
@@ -47,12 +57,18 @@ export function usePlaces() {
             }
         }
 
+        if (lastQuery.current !== query) {
+            lastQuery.current = query;
+            queueMicrotask(() => {
+                if (active) setState({status: 'loading'});
+            });
+        }
         void load();
         return () => {
             active = false;
             controller.abort();
         };
-    }, [requestVersion]);
+    }, [requestVersion, query]);
 
     function retry() {
         setState({status: 'loading'});
@@ -84,10 +100,13 @@ export function usePlaces() {
                 };
             }
             if (controller.signal.aborted) return undefined;
+            loadController.current?.abort();
             setState((current) => current.status !== 'success' ? current : {
-                ...current, places: current.places.map((place) => place.id === placeId ? {...place, userState} : place),
+                ...current, places: current.places.map((place) => place.id === placeId ? {...place, userState} : place)
+                    .filter((place) => matchesPersonalFilters(place, filtersRef.current)),
             });
             setPersonalSave({placeId, status: 'saved'});
+            setRequestVersion((version) => version + 1);
             return userState;
         } catch {
             if (!controller.signal.aborted) setPersonalSave({placeId, status: 'error'});

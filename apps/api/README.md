@@ -68,3 +68,38 @@ petición cambia simultáneamente a pendiente, prevalece la limpieza de fecha.
 
 Runtime conserva `DATABASE_URL` pooled. Herramientas, migraciones y seed
 mantienen `DATABASE_URL_DIRECT`; ninguna credencial se envía al frontend.
+
+## Filtros de lugares y jerarquía
+
+`GET /places` admite filtros combinables validados por Zod:
+
+```text
+/places?type=peak
+/places?region=valle-de-benasque
+/places?status=visited
+/places?status=unregistered
+/places?favorite=true
+/places?type=peak&region=valle-de-benasque&status=pending
+/places?region=pirineo-aragones&north=42.9&south=42.5&east=0.7&west=-0.9
+```
+
+`type`: peak/lake/hut/pass/viewpoint; `status`: pending/visited/unregistered.
+`favorite` acepta exclusivamente `true` o `false`, no coerción de strings a truthy.
+`favorite=false` selecciona relaciones registradas no favoritas, no filas ausentes;
+para ausencia se usa `status=unregistered` (userState null, sin crear pendientes).
+
+La región se identifica por slug. Una CTE recursiva obtiene la región y sus
+descendientes a través de parent_id; usa UNION para no repetir IDs y terminar
+incluso si hubiera un ciclo accidental en la base. No requiere polígonos.
+Una región bien formada pero inexistente devuelve un array vacío. Los DTOs
+incluyen regionId para relacionarlos con `/regions`, sin un join adicional.
+
+El viewport exige los cuatro límites finitos/en rango, north > south y east >
+west. Viewports cruzando el antimeridiano no se admiten en esta fase regional.
+Se aplica `location && ST_MakeEnvelope(...,4326)`, compatible con GiST. Todos
+los filtros se aplican en PostgreSQL sobre el LEFT JOIN filtrado por usuario,
+en una única consulta de datos parametrizada, sin N+1.
+
+`GET /regions` devuelve estructura plana ordenada por nombre con id, name,
+slug, type y parentId; el frontend reconstruye el árbol para las opciones,
+sin IDs/regiones hardcodeados.
