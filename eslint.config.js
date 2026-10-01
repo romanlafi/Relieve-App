@@ -8,11 +8,11 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 export default defineConfig([
     globalIgnores(['**/dist/**', '**/.wrangler/**', '.idea/**']),
     {
-        files: ['**/*.{js,ts,tsx}'],
+        files: ['**/*.{js,mjs,ts,tsx}'],
         extends: [js.configs.recommended, tseslint.configs.recommended],
     },
     {
-        files: ['eslint.config.js', 'apps/web/vite.config.ts'],
+        files: ['eslint.config.js', 'apps/web/vite.config.ts', 'scripts/**/*.mjs', 'packages/database/scripts/**/*.ts', 'packages/database/drizzle.config.ts'],
         languageOptions: {globals: globals.node},
     },
     {

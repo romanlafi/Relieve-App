@@ -14,7 +14,11 @@
   "scripts": {
     "dev": "concurrently --kill-others --names web,api \"npm run dev:web\" \"npm run dev:api\"",
     "dev:web": "npm run dev --workspace=@relieve/web",
-    "dev:api": "npm run dev --workspace=@relieve/api",
+    "dev:api": "node scripts/dev-api.mjs",
+    "db:generate": "npm run db:generate --workspace=@relieve/database",
+    "db:migrate": "npm run db:migrate --workspace=@relieve/database",
+    "db:seed": "npm run db:seed --workspace=@relieve/database",
+    "db:check": "npm run db:check --workspace=@relieve/database",
     "build": "npm run build --workspace=@relieve/shared && npm run build --workspace=@relieve/database && npm run build --workspace=@relieve/api && npm run build --workspace=@relieve/web",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "npm run typecheck --workspaces"

@@ -1,0 +1,35 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"name": "Aneto", "slug": "aneto", "type": "peak", "elevation": 3404, "source": "https://es.wikipedia.org/wiki/Pico_Aneto"},
+      "geometry": {"type": "Point", "coordinates": [0.65668611111111, 42.630991666667]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "Posets", "slug": "posets", "type": "peak", "elevation": null, "source": "https://es.wikipedia.org/wiki/Pico_Posets"},
+      "geometry": {"type": "Point", "coordinates": [0.4352, 42.654481]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "Monte Perdido", "slug": "monte-perdido", "type": "peak", "elevation": null, "source": "https://es.wikipedia.org/wiki/Monte_Perdido"},
+      "geometry": {"type": "Point", "coordinates": [0.033333333333333, 42.673888888889]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "Ibón de Plan", "slug": "ibon-de-plan", "type": "lake", "elevation": 1910, "source": "https://es.wikipedia.org/wiki/Ib%C3%B3n_de_Plan"},
+      "geometry": {"type": "Point", "coordinates": [0.325, 42.54611111]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "Refugio de Góriz", "slug": "refugio-de-goriz", "type": "hut", "elevation": null, "source": "https://www.alberguesyrefugios.com/goriz/"},
+      "geometry": {"type": "Point", "coordinates": [0.015055555555555557, 42.66330555555555]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "Refugio Ángel Orús", "slug": "refugio-angel-orus", "type": "hut", "elevation": 2150, "source": "https://www.alberguesyrefugios.com/angelorus/"},
+      "geometry": {"type": "Point", "coordinates": [0.4573888888888889, 42.62741666666667]}
+    }
+  ]
+}

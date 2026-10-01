@@ -1,2 +1,3 @@
-// El cliente y los esquemas de Drizzle se incorporarán en una fase posterior.
-export {};
+export {createDatabase} from './client.js';
+export type {Database} from './client.js';
+export {listPlaces, getPlace, placesInViewport, placesNearby} from './places.js';
