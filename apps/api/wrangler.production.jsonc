@@ -4,7 +4,10 @@
   "main": "src/worker.ts",
   "compatibility_date": "2026-09-30",
   "workers_dev": false,
-  "preview_urls": false,
+  "preview_urls": true,
+  // Runtime secrets for branch previews are configured in the Previews Base config.
+  // Assets and compatibility settings stay at the top level for both deployments.
+  "previews": {},
   "assets": {
     "directory": "../web/dist",
     "not_found_handling": "single-page-application",

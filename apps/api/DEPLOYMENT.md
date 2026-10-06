@@ -17,8 +17,9 @@ Worker primero para `/api/*`. La configuración local no requiere compilar la we
    (sin barra final) y `ACCESS_AUDIENCE` con el Application Audience (AUD) de esa
    aplicación. Son configuración del Worker, no variables `VITE_*`.
 4. Configurar `DATABASE_URL` como secreto del Worker. No subir la conexión directa.
-   No configurar `LOCAL_DEVELOPMENT` en producción. `workers_dev` y las preview
-   URLs están deshabilitados para evitar accesos alternativos al dominio protegido.
+   No configurar `LOCAL_DEVELOPMENT` en producción ni en previews. `workers_dev`
+   permanece deshabilitado; las URLs de preview están habilitadas y deben
+   protegerse también mediante Access, según el apartado de previews.
 5. Aplicar las migraciones con `npm run db:migrate` y compilar con `npm run build`.
    El build de API es un dry-run y **no publica**.
 
@@ -33,6 +34,93 @@ npx wrangler deploy --config wrangler.production.jsonc
 
 Los comandos `secret put` piden el valor de forma interactiva. No incluir
 credenciales en scripts, argumentos de terminal ni archivos versionados.
+
+## Previews por rama
+
+Wrangler 4.145 del proyecto soporta Worker Previews (`wrangler preview`).
+`wrangler.production.jsonc` habilita `preview_urls` y declara `previews: {}`.
+Los assets y la fecha de compatibilidad se comparten; las credenciales se
+configuran por separado en **Previews Base config** de la cuenta. La
+configuración local `wrangler.jsonc` sigue destinada exclusivamente a `dev`.
+
+Preparar en Cloudflare antes de publicar la primera preview:
+
+1. Habilitar Worker Previews y proteger sus URLs con Cloudflare Access para el
+   Worker `relieve-api` (o todas las previews de la cuenta). La protección del
+   dominio de producción no cubre por sí sola las URLs `workers.dev`.
+2. Configurar en Previews Base config `DATABASE_URL`, `ACCESS_TEAM_DOMAIN` y
+   `ACCESS_AUDIENCE`. El AUD debe ser el de la aplicación Access que protege
+   las previews. Puede diferir del AUD de producción.
+3. Usar una base/branch Neon de pruebas para `DATABASE_URL`. Aplicar allí las
+   migraciones y el seed mediante las herramientas existentes, con las
+   conexiones pooled/directa de esa base en el entorno del proceso.
+   Cloudflare no crea ni aísla automáticamente una base PostGIS externa.
+4. No definir `LOCAL_DEVELOPMENT` en las previews. La API conserva la validación
+   JWT existente y rechaza peticiones sin identidad verificada.
+
+Los secretos base pueden configurarse desde `apps/api`:
+
+```sh
+npx wrangler preview base-config secret put DATABASE_URL --config wrangler.production.jsonc
+npx wrangler preview base-config secret put ACCESS_TEAM_DOMAIN --config wrangler.production.jsonc
+npx wrangler preview base-config secret put ACCESS_AUDIENCE --config wrangler.production.jsonc
+```
+
+Se introducen interactivamente y se aplican al crear nuevas previews. Para
+cambiar el secreto de una preview ya existente:
+
+```sh
+npx wrangler preview secret put DATABASE_URL --name dev --config wrangler.production.jsonc
+```
+
+Desde la raíz del repositorio:
+
+```sh
+npm run build
+npm run deploy:preview
+# Nombre explícito opcional; por defecto se usa la rama Git actual.
+npm run deploy:preview -- --name dev
+```
+
+El comando publica web y API de la rama y devuelve su URL. No mueve tráfico
+de producción. Para publicar producción después del build:
+
+```sh
+npm run deploy:production
+```
+
+### Workers Builds conectado a Git
+
+En Settings > Build configurar:
+
+| Ajuste | Valor |
+| --- | --- |
+| Root directory | Raíz del repositorio (`/`) |
+| Build command | `npm run build` |
+| Deploy command | `npm run deploy:production` |
+| Preview command | `npm run deploy:preview` |
+| Production branch | La rama estable elegida, por ejemplo `main` |
+| Enable Preview Builds | Activado para las ramas secundarias, incluida `dev` |
+
+La instalación debe usar Node 24, npm 11 y el lockfile (`npm ci`). El build
+compila todos los workspaces y no necesita credenciales Neon: no ejecuta
+migraciones, seed ni pruebas de integración. Esas tareas se realizan
+explícitamente sobre la base correspondiente antes de probar la preview.
+Los secretos de runtime se configuran en Worker/Previews Base config, no como
+variables públicas del build ni variables `VITE_*`.
+
+Workers anteriormente conectados a Builds pueden requerir **Set up Worker
+Previews** en el dashboard. La documentación indica que ese cambio de modelo
+no se puede revertir. Los scripts de este repositorio usan el modelo actual
+por rama; no emplean `versions upload`, que reutiliza recursos de producción.
+
+Tras publicar, comprobar login de Access en la URL de preview, aislamiento
+entre usuarios, importación GPX y persistencia en la base de pruebas.
+
+Referencias: [Worker Previews](https://developers.cloudflare.com/workers/previews/),
+[configuración y secretos](https://developers.cloudflare.com/workers/previews/configuration/),
+[Workers Builds y ramas](https://developers.cloudflare.com/workers/ci-cd/builds/build-branches/)
+y [Access para Workers](https://developers.cloudflare.com/workers/configuration/cloudflare-access/).
 
 ## Identidad y comportamiento
 

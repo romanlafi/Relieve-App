@@ -15,6 +15,8 @@
     "dev": "concurrently --kill-others --names web,api \"npm run dev:web\" \"npm run dev:api\"",
     "dev:web": "npm run dev --workspace=@relieve/web",
     "dev:api": "node scripts/dev-api.mjs",
+    "deploy:preview": "npm run deploy:preview --workspace=@relieve/api --",
+    "deploy:production": "npm run deploy:production --workspace=@relieve/api --",
     "db:generate": "npm run db:generate --workspace=@relieve/database",
     "db:migrate": "npm run db:migrate --workspace=@relieve/database",
     "db:seed": "npm run db:seed --workspace=@relieve/database",
