@@ -162,12 +162,14 @@ pendientes. El estado de fases se registra al principio de `PROJECT_GUIDE.md`.
 Después de `npm run build`, `npm run deploy:preview` crea o actualiza la preview
 de la rama actual; `npm run deploy:preview -- --name dev` permite elegir el nombre.
 `npm run deploy:production` publica producción. Ambos usan
-`apps/api/wrangler.production.jsonc`, que incluye web y API en el mismo origen.
+`wrangler.jsonc` de la raíz, que incluye web y API en el mismo origen y declara
+el nombre `relieve-app`, igual que el Worker conectado en Cloudflare.
 El build sigue siendo un dry-run y no publica por sí solo.
 
 Para Workers Builds: directorio raíz del repositorio, build `npm run build`,
 deploy de producción `npm run deploy:production` y comando de preview
 `npm run deploy:preview`. Habilitar Preview Builds en las ramas secundarias.
+El comando predeterminado `npx wrangler preview` también funciona desde la raíz.
 Configurar Access y los secretos de previews, incluyendo una conexión Neon de
 pruebas con las migraciones aplicadas, según [DEPLOYMENT.md](apps/api/DEPLOYMENT.md).
 

@@ -2,13 +2,13 @@
 
 La web compilada y la API se sirven desde un mismo Worker. El navegador usa
 `/api/*`; `worker.ts` retira ese prefijo antes de pasar la petición a Hono.
-`wrangler.production.jsonc` sirve los assets de `apps/web/dist` y ejecuta el
+`wrangler.jsonc` de la raíz sirve los assets de `apps/web/dist` y ejecuta el
 Worker primero para `/api/*`. La configuración local no requiere compilar la web.
 
 ## Configuración de la cuenta
 
 1. Elegir un dominio propio gestionado en Cloudflare y asociarlo al Worker
-   `relieve-api` mediante un Custom Domain. Alternativamente añadir `routes`
+   `relieve-app` mediante un Custom Domain. Alternativamente añadir `routes`
    con `custom_domain: true` al archivo de producción con el dominio real.
 2. Crear una aplicación Self-hosted de Cloudflare Access que proteja **todo el
    dominio**, incluida la web y `/api/*`, con una política que permita únicamente
@@ -26,10 +26,10 @@ Worker primero para `/api/*`. La configuración local no requiere compilar la we
 Desde `apps/api`, después de configurar cuenta y dominio:
 
 ```sh
-npx wrangler secret put DATABASE_URL --config wrangler.production.jsonc
-npx wrangler secret put ACCESS_TEAM_DOMAIN --config wrangler.production.jsonc
-npx wrangler secret put ACCESS_AUDIENCE --config wrangler.production.jsonc
-npx wrangler deploy --config wrangler.production.jsonc
+npx wrangler secret put DATABASE_URL --config ../../wrangler.jsonc
+npx wrangler secret put ACCESS_TEAM_DOMAIN --config ../../wrangler.jsonc
+npx wrangler secret put ACCESS_AUDIENCE --config ../../wrangler.jsonc
+npx wrangler deploy --config ../../wrangler.jsonc
 ```
 
 Los comandos `secret put` piden el valor de forma interactiva. No incluir
@@ -38,15 +38,15 @@ credenciales en scripts, argumentos de terminal ni archivos versionados.
 ## Previews por rama
 
 Wrangler 4.145 del proyecto soporta Worker Previews (`wrangler preview`).
-`wrangler.production.jsonc` habilita `preview_urls` y declara `previews: {}`.
+`wrangler.jsonc` de la raíz habilita `preview_urls` y declara `previews: {}`.
 Los assets y la fecha de compatibilidad se comparten; las credenciales se
 configuran por separado en **Previews Base config** de la cuenta. La
-configuración local `wrangler.jsonc` sigue destinada exclusivamente a `dev`.
+configuración local `apps/api/wrangler.jsonc` sigue destinada exclusivamente a `dev`.
 
 Preparar en Cloudflare antes de publicar la primera preview:
 
 1. Habilitar Worker Previews y proteger sus URLs con Cloudflare Access para el
-   Worker `relieve-api` (o todas las previews de la cuenta). La protección del
+   Worker `relieve-app` (o todas las previews de la cuenta). La protección del
    dominio de producción no cubre por sí sola las URLs `workers.dev`.
 2. Configurar en Previews Base config `DATABASE_URL`, `ACCESS_TEAM_DOMAIN` y
    `ACCESS_AUDIENCE`. El AUD debe ser el de la aplicación Access que protege
@@ -61,16 +61,16 @@ Preparar en Cloudflare antes de publicar la primera preview:
 Los secretos base pueden configurarse desde `apps/api`:
 
 ```sh
-npx wrangler preview base-config secret put DATABASE_URL --config wrangler.production.jsonc
-npx wrangler preview base-config secret put ACCESS_TEAM_DOMAIN --config wrangler.production.jsonc
-npx wrangler preview base-config secret put ACCESS_AUDIENCE --config wrangler.production.jsonc
+npx wrangler preview base-config secret put DATABASE_URL --config ../../wrangler.jsonc
+npx wrangler preview base-config secret put ACCESS_TEAM_DOMAIN --config ../../wrangler.jsonc
+npx wrangler preview base-config secret put ACCESS_AUDIENCE --config ../../wrangler.jsonc
 ```
 
 Se introducen interactivamente y se aplican al crear nuevas previews. Para
 cambiar el secreto de una preview ya existente:
 
 ```sh
-npx wrangler preview secret put DATABASE_URL --name dev --config wrangler.production.jsonc
+npx wrangler preview secret put DATABASE_URL --name dev --config ../../wrangler.jsonc
 ```
 
 Desde la raíz del repositorio:
@@ -98,7 +98,7 @@ En Settings > Build configurar:
 | Root directory | Raíz del repositorio (`/`) |
 | Build command | `npm run build` |
 | Deploy command | `npm run deploy:production` |
-| Preview command | `npm run deploy:preview` |
+| Preview command | `npx wrangler preview` (o `npm run deploy:preview`) |
 | Production branch | La rama estable elegida, por ejemplo `main` |
 | Enable Preview Builds | Activado para las ramas secundarias, incluida `dev` |
 

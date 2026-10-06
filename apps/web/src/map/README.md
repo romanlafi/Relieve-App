@@ -96,7 +96,7 @@ El navegador usa `/api/places` del mismo origen. El proxy de Vite y preview
 lo conserva hacia el Worker; `worker.ts` retira `/api` antes de resolver Hono. `API_PROXY_TARGET` configura
 el destino local y nunca es una variable pública `VITE_*`.
 
-`wrangler.production.jsonc` incluye los assets compilados de la web y enruta
+`wrangler.jsonc` de la raíz incluye los assets compilados de la web y enruta
 `/api/*` al Worker antes de servir assets. Las sesiones se validan con Cloudflare
 Access. Consultar `apps/api/DEPLOYMENT.md` para preparar dominio y cuenta.
 

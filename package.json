@@ -25,7 +25,8 @@
     "lint": "eslint . --max-warnings=0",
     "typecheck": "npm run typecheck --workspaces",
     "data:check": "npm run data:check --workspace=@relieve/database",
-    "test": "npm run build --workspace=@relieve/database && npm run test --workspaces --if-present",
+    "test": "npm run test:config && npm run build --workspace=@relieve/database && npm run test --workspaces --if-present",
+    "test:config": "node --test scripts/wrangler.test.mjs",
     "test:integration": "npm run build --workspace=@relieve/database && npm run test:integration --workspace=@relieve/database"
   },
   "devDependencies": {

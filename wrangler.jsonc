@@ -1,7 +1,7 @@
 {
-  "$schema": "../../node_modules/wrangler/config-schema.json",
-  "name": "relieve-api",
-  "main": "src/worker.ts",
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "relieve-app",
+  "main": "apps/api/src/worker.ts",
   "compatibility_date": "2026-09-30",
   "workers_dev": false,
   "preview_urls": true,
@@ -9,10 +9,8 @@
   // Assets and compatibility settings stay at the top level for both deployments.
   "previews": {},
   "assets": {
-    "directory": "../web/dist",
+    "directory": "apps/web/dist",
     "not_found_handling": "single-page-application",
-    "run_worker_first": [
-      "/api/*"
-    ]
+    "run_worker_first": ["/api/*"]
   }
 }

@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
-  "name": "relieve-api",
+  "name": "relieve-app",
   "main": "src/worker.ts",
   "workers_dev": false,
   "preview_urls": false,
