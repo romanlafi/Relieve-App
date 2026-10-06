@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import type {PlaceFilters, PlaceWithUserState, UpdateUserPlace, UserPlaceState} from '@relieve/shared';
 import {placesSchema, userPlaceSchema} from './placeSchemas';
 import {matchesPersonalFilters, placeFiltersQuery} from './placeFilters';
@@ -71,6 +71,12 @@ export function usePlaces(filters: PlaceFilters) {
         };
     }, [requestVersion, query]);
 
+    const visitsChanged = useCallback(() => {
+        loadController.current?.abort();
+        setMutationVersion((version) => version + 1);
+        setRequestVersion((version) => version + 1);
+    }, []);
+
     function retry() {
         setState({status: 'loading'});
         setRequestVersion((version) => version + 1);
@@ -118,5 +124,5 @@ export function usePlaces(filters: PlaceFilters) {
         }
     }
 
-    return {state, retry, personalSave, saveUserPlace, mutationVersion};
+    return {state, retry, personalSave, saveUserPlace, mutationVersion, visitsChanged};
 }

@@ -35,7 +35,7 @@ export function MapFilters({filters, disabled, onChange, regionState}: Props) {
             mapa{activeCount > 0 ? ` · ${activeCount} ${activeCount === 1 ? 'activo' : 'activos'}` : ''}</summary>
         <div className={styles.fields}>
             <label className={styles.label}>Tipo
-                <select className={styles.select} disabled={disabled} value={filters.type ?? ''}
+                <select id="map-filter-type" className={styles.select} disabled={disabled} value={filters.type ?? ''}
                         onChange={(event) => onChange({
                             ...filters,
                             type: event.target.value as PlaceType || undefined
@@ -47,7 +47,7 @@ export function MapFilters({filters, disabled, onChange, regionState}: Props) {
                 </select>
             </label>
             <label className={styles.label}>Estado
-                <select className={styles.select} disabled={disabled} value={personal} onChange={(event) => {
+                <select id="map-filter-state" className={styles.select} disabled={disabled} value={personal} onChange={(event) => {
                     const value = event.target.value as PersonalFilter;
                     onChange({
                         ...filters, status: value === 'all' || value === 'favorite' ? undefined : value,
@@ -62,7 +62,7 @@ export function MapFilters({filters, disabled, onChange, regionState}: Props) {
                 </select>
             </label>
             <label className={styles.label}>Región
-                <select className={styles.select} disabled={disabled || status !== 'ready'} value={filters.region ?? ''}
+                <select id="map-filter-region" className={styles.select} disabled={disabled || status !== 'ready'} value={filters.region ?? ''}
                         onChange={(event) => onChange({...filters, region: event.target.value || undefined})}>
                     <option value="">Todas las regiones</option>
                     {options.map(({region, depth}) => <option key={region.id} value={region.slug}>

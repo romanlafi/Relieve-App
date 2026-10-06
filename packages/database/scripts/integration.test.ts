@@ -1,3 +1,7 @@
+import {readFile} from 'node:fs/promises';
+import {parseGpx} from '../../../apps/api/src/gpx/parseGpx.js';
+import {importRoute, listRoutes, getRoute, deleteRoute, nearbyRoutePlaces} from '../src/routes.js';
+import {confirmVisitedPlaces} from '../src/userPlaces.js';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {test} from 'node:test';
@@ -59,6 +63,30 @@ test('signed Access sessions resolve separate users throughout personal API read
             {headers: {'Cf-Access-Jwt-Assertion': secondToken}}, environment);
         assert.equal(isolated.status, 200);
         assert.equal((await isolated.json() as PlaceWithUserState).userState, null);
+        const gpx = await readFile(new URL('../../../apps/api/test/fixtures/aneto.gpx', import.meta.url), 'utf8');
+        const body = new FormData(); body.append('file', new File([gpx], 'aneto.gpx'));
+        const upload = await app.request('https://example.com/routes', {method: 'POST', headers, body}, environment);
+        assert.equal(upload.status, 201);
+        const route = await upload.json() as {id: string};
+        const foreign = {'Cf-Access-Jwt-Assertion': secondToken};
+        assert.equal((await app.request(`https://example.com/routes/${route.id}`, {headers: foreign}, environment)).status, 404);
+        assert.equal((await app.request(`https://example.com/routes/${route.id}/nearby-places`, {headers: foreign}, environment)).status, 404);
+        assert.equal((await app.request(`https://example.com/routes/${route.id}`, {method: 'DELETE', headers: foreign}, environment)).status, 404);
+        assert.deepEqual(await (await app.request('https://example.com/routes', {headers: foreign}, environment)).json(), []);
+        const detected = await app.request(`https://example.com/routes/${route.id}/nearby-places`, {headers}, environment);
+        assert.equal(detected.status, 200);
+        const nearby = await detected.json() as {place: {id: string}; distanceFromRoute: number}[];
+        assert.ok(nearby.length > 0);
+        const confirm = (ids: string[], session = headers) => app.request(`https://example.com/routes/${route.id}/confirm-places`, {
+            method: 'POST', headers: {...session, 'Content-Type': 'application/json'},
+            body: JSON.stringify({placeIds: ids, useActivityDate: true}),
+        }, environment);
+        assert.equal((await confirm([nearby[0]!.place.id], foreign)).status, 404);
+        assert.equal((await confirm([randomUUID()])).status, 400);
+        assert.equal((await confirm([nearby[0]!.place.id])).status, 200);
+        assert.equal((await app.request(`https://example.com/routes/${route.id}`, {method: 'DELETE', headers}, environment)).status, 204);
+        assert.equal((await app.request(`https://example.com/routes/${route.id}`, {headers}, environment)).status, 404);
+
     } finally {
         globalThis.fetch = originalFetch;
         await pool.query('DELETE FROM users WHERE access_subject = ANY($1::text[])', [[`${issuer}|${subject}`, `${issuer}|${subject}-other`]]);
@@ -214,6 +242,54 @@ test('repeated seed preserves IDs, all personal rows and places absent from the 
             throw rollback;
         }), (error: unknown) => error === rollback);
     } finally {
+        await pool.end();
+    }
+});
+
+
+test('PostGIS GPX metrics, segment gaps, proximity and atomic confirmations preserve personal history', async () => {
+    const database = createDatabase(databaseUrl('DATABASE_URL'));
+    const pool = new pg.Pool({connectionString: databaseUrl('DATABASE_URL_DIRECT'), max: 1});
+    const user = await resolveAccessUser(database, `gpx-${randomUUID()}`, 'Temporary GPX user');
+    const other = await resolveAccessUser(database, `gpx-${randomUUID()}`, 'Temporary isolated GPX user');
+    try {
+        const fixture = (name: string) => readFile(new URL(`../../../apps/api/test/fixtures/${name}.gpx`, import.meta.url), 'utf8');
+        const route = await importRoute(database, user, parseGpx(await fixture('aneto'), 'aneto.gpx'));
+        assert.equal(route.durationSeconds, 1800);
+        assert.equal(route.elevationGainMeters, 14);
+        assert.equal(route.elevationLossMeters, 10);
+        assert.ok(route.distanceMeters > 40 && route.distanceMeters < 100);
+        assert.deepEqual((await getRoute(database, user, route.id))?.geometry, route.geometry);
+        assert.equal(await getRoute(database, other, route.id), undefined);
+        assert.equal(await deleteRoute(database, other, route.id), false);
+        assert.deepEqual(await listRoutes(database, other), []);
+        const nearby = await nearbyRoutePlaces(database, user, route.id);
+        const aneto = nearby.find((p) => p.place.slug === 'aneto');
+        assert.ok(aneto && aneto.distanceFromRoute < 0.01);
+        assert.equal(aneto.userState, null); // Import never marks places automatically.
+        assert.ok(nearby.every((p) => p.distanceFromRoute <= 100));
+        const segments = await importRoute(database, user, parseGpx(await fixture('segments'), 'segments.gpx'));
+        assert.ok(Math.abs(segments.distanceMeters - 222.638981586) < 0.01);
+        assert.equal(segments.elevationGainMeters, null);
+        assert.equal((await getRoute(database, user, segments.id))?.geometry.coordinates.length, 2);
+        // A point between disconnected segments must not be detected via a fabricated bridge.
+        const gapId = randomUUID();
+        await pool.query("INSERT INTO places (id,name,slug,type,location) VALUES ($1,'Temporary GPX gap',$2,'peak',ST_SetSRID(ST_MakePoint(0.5,0),4326))", [gapId, 'gpx-gap-' + gapId]);
+        try { assert.equal((await nearbyRoutePlaces(database, user, segments.id)).some((p) => p.place.id === gapId), false); }
+        finally { await pool.query('DELETE FROM places WHERE id=$1', [gapId]); }
+        await confirmVisitedPlaces(database, user, [aneto.place.id], route.activityDate);
+        assert.equal((await nearbyRoutePlaces(database, user, route.id)).find((p) => p.place.id === aneto.place.id)?.userState?.visitedAt, '2026-08-12');
+        await upsertUserPlace(database, user, aneto.place.id, {status: 'visited', visitedAt: '2025-07-01', favorite: true, notes: 'Keep'});
+        await confirmVisitedPlaces(database, user, [aneto.place.id], '2026-08-12');
+        const personal = (await nearbyRoutePlaces(database, user, route.id)).find((p) => p.place.id === aneto.place.id)?.userState;
+        assert.deepEqual(personal, {status: 'visited', visitedAt: '2025-07-01', favorite: true, notes: 'Keep'});
+        assert.equal((await getPersonalStats(database, user)).visited, 1);
+        assert.equal(await deleteRoute(database, user, route.id), true);
+        assert.equal(await deleteRoute(database, user, route.id), false);
+        assert.equal((await getPersonalStats(database, user)).visited, 1);
+        assert.equal(await getRoute(database, user, route.id), undefined);
+    } finally {
+        await pool.query('DELETE FROM users WHERE id=ANY($1::uuid[])', [[user, other]]);
         await pool.end();
     }
 });

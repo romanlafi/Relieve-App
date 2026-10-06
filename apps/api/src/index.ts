@@ -5,6 +5,7 @@ import {placesRoutes} from './handlers/places.js';
 import {userPlacesRoutes} from './handlers/userPlaces.js';
 import {regionsRoutes} from './handlers/regions.js';
 import {statsRoutes} from './handlers/stats.js';
+import {routesHandlers} from './handlers/routes.js';
 import {authenticate} from './auth.js';
 
 const app = new Hono<ApiEnvironment>();
@@ -34,10 +35,12 @@ app.use('*', async (context, next) => {
     }
     await next();
 });
+app.use('/routes/*', authenticate);
 app.use('/places/*', authenticate);
 app.use('/user/places/*', authenticate);
 app.use('/stats/*', authenticate);
 
+app.route('/routes', routesHandlers);
 app.route('/places', placesRoutes);
 app.route('/user/places', userPlacesRoutes);
 app.route('/regions', regionsRoutes);

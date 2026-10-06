@@ -7,7 +7,7 @@ export const placeColors = {
 };
 
 export const mapColors = {
-    background: '#161816', text: '#ecece8', terrain: '#8a806c', terrainShadow: '#20231f', terrainAccent: '#413f37',
+    route: '#e5bd6b', background: '#161816', text: '#ecece8', terrain: '#8a806c', terrainShadow: '#20231f', terrainAccent: '#413f37',
 };
 
 export const vars = createGlobalTheme(':root', {
@@ -18,6 +18,7 @@ export const vars = createGlobalTheme(':root', {
         textMuted: '#a7aaa3',
         border: '#383c35',
         terrain: mapColors.terrain,
+        route: mapColors.route,
         ...placeColors,
     },
     space: {sm: '8px', md: '16px', lg: '24px'},

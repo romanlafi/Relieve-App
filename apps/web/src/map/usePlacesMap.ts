@@ -1,3 +1,5 @@
+import type {RouteDetail} from '@relieve/shared';
+import {routesLayer, routesSourceId} from './layers/routesLayer';
 import {useEffect, useRef, useState} from 'react';
 import type {ErrorEvent, GeoJSONSource, MapLayerMouseEvent} from 'maplibre-gl';
 import {LngLatBounds, Map, NavigationControl, setWorkerUrl} from 'maplibre-gl';
@@ -37,7 +39,8 @@ function framePlaces(map: Map, data: PlacesGeoJson) {
 }
 
 export function usePlacesMap(container: React.RefObject<HTMLDivElement | null>, data: PlacesGeoJson,
-                             selectedId: string | null, onSelect: (id: string) => void, frameRegion: string | null) {
+                             selectedId: string | null, onSelect: (id: string) => void, frameRegion: string | null, route: RouteDetail | null) {
+    const framedRouteId = useRef<string | null>(null);
     const mapRef = useRef<Map | null>(null);
     const dataRef = useRef(data);
     const selectedRef = useRef<string | null>(null);
@@ -61,6 +64,25 @@ export function usePlacesMap(container: React.RefObject<HTMLDivElement | null>, 
             }
         }
     }, [data, frameRegion]);
+
+    useEffect(() => {
+        const map = mapRef.current;
+        const source = map?.getSource<GeoJSONSource>(routesSourceId);
+        if (!map || !source) return;
+        void source.setData(route ? {type: 'Feature', properties: {}, geometry: route.geometry}
+            : {type: 'FeatureCollection', features: []});
+        if (!route) { framedRouteId.current = null; return; }
+        if (framedRouteId.current === route.id) return;
+        framedRouteId.current = route.id;
+        const bounds = new LngLatBounds();
+        for (const segment of route.geometry.coordinates) for (const point of segment) {
+            if (point[0] !== undefined && point[1] !== undefined) bounds.extend([point[0], point[1]]);
+        }
+        if (!bounds.isEmpty()) map.fitBounds(bounds, {
+            padding: {top: 60, bottom: 70, left: map.getContainer().clientWidth > 640 ? 330 : 40, right: 40},
+            maxZoom: 14, duration: 0,
+        });
+    }, [route, status]);
 
     useEffect(() => {
         const map = mapRef.current;
@@ -100,6 +122,8 @@ export function usePlacesMap(container: React.RefObject<HTMLDivElement | null>, 
             map.addLayer(hillshadeLayer, firstLabel?.id);
             map.setTerrain({source: terrainSourceId, exaggeration: 1});
             map.addSource(placesSourceId, {type: 'geojson', data: dataRef.current, promoteId: 'id'});
+            map.addSource(routesSourceId, {type: 'geojson', data: {type: 'FeatureCollection', features: []}});
+            map.addLayer(routesLayer);
             map.addLayer(placesLayer);
             if (dataRef.current.features.length > 0 && !framedPlaces.current) {
                 framePlaces(map, dataRef.current);

@@ -47,3 +47,18 @@ export async function deleteUserPlace(database: Database, userId: string, placeI
     await database.delete(userPlaces).where(and(eq(userPlaces.userId, userId), eq(userPlaces.placeId, placeId)));
     return true;
 }
+
+// One atomic upsert. Existing visits retain their dates, favorites and notes, including concurrent saves.
+export async function confirmVisitedPlaces(database: Database, userId: string, placeIds: string[], visitedAt: string | null) {
+    const rows = await database.insert(userPlaces).values(placeIds.map((placeId) => ({
+        userId, placeId, status: 'visited' as const,
+        visitedAt: visitedAt ? new Date(`${visitedAt}T00:00:00.000Z`) : null,
+    }))).onConflictDoUpdate({
+        target: [userPlaces.userId, userPlaces.placeId],
+        set: {
+            status: 'visited',
+            visitedAt: sql`CASE WHEN ${userPlaces.status} = 'visited' THEN ${userPlaces.visitedAt} ELSE excluded.visited_at END`,
+        },
+    }).returning();
+    return rows.map(toUserPlace);
+}

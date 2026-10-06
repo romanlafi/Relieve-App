@@ -156,3 +156,7 @@ La configuración local sigue funcionando sin build previo. Consultar
 políticas y variables. No se han creado recursos ni publicado la aplicación.
 GPX, estadísticas por región/macizo/año y edición de lugares globales siguen
 pendientes. El estado de fases se registra al principio de `PROJECT_GUIDE.md`.
+
+## Rutas GPX
+
+Importación privada de tracks, visualización en terrain y confirmación manual de lugares cercanos. Modelo, endpoints, límites, pruebas y decisiones: [Rutas GPX](docs/GPX_ROUTES.md).

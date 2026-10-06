@@ -6,3 +6,6 @@ export {developmentUserId} from './developmentUser.js';
 export {listRegions} from './regions.js';
 export {getPersonalStats} from './stats.js';
 export {resolveAccessUser} from './users.js';
+
+export {importRoute, listRoutes, getRoute, getRouteSummary, deleteRoute, nearbyRoutePlaces, DEFAULT_ROUTE_PROXIMITY_METERS} from './routes.js';
+export {confirmVisitedPlaces} from './userPlaces.js';

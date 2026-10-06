@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Relieve test" xmlns="http://www.topografix.com/GPX/1/1">
+  <trk><name>Aneto · prueba</name><trkseg>
+    <trkpt lat="42.6308" lon="0.6565"><ele>3390</ele><time>2026-08-12T08:00:00Z</time></trkpt>
+    <trkpt lat="42.630991666667" lon="0.65668611111111"><ele>3404</ele><time>2026-08-12T08:10:00Z</time></trkpt>
+    <trkpt lat="42.6311" lon="0.6569"><ele>3403</ele><time>2026-08-12T08:20:00Z</time></trkpt>
+    <trkpt lat="42.6312" lon="0.6570"><ele>3394</ele><time>2026-08-12T08:30:00Z</time></trkpt>
+  </trkseg></trk>
+</gpx>

@@ -44,6 +44,20 @@ async function main() {
             "SELECT count(*) FROM information_schema.triggers WHERE trigger_name IN ('places_updated_at', 'regions_updated_at', 'users_updated_at', 'user_places_updated_at')",
         );
         assert.equal(triggers.rows[0]?.count, '4');
+        const routeIndexes = await pool.query<{indexname: string}>(
+            "SELECT indexname FROM pg_indexes WHERE tablename = 'routes'",
+        );
+        assert.ok(routeIndexes.rows.some((row) => row.indexname === 'routes_geometry_gist_idx'));
+        assert.ok(routeIndexes.rows.some((row) => row.indexname === 'routes_user_id_idx'));
+        const routeConstraint = await pool.query<{definition: string}>(
+            "SELECT pg_get_constraintdef(oid) AS definition FROM pg_constraint WHERE conname='routes_geometry_valid'",
+        );
+        assert.match(routeConstraint.rows[0]!.definition, /4326/);
+        assert.match(routeConstraint.rows[0]!.definition, /MULTILINESTRING/);
+        const routeTrigger = await pool.query<{count: string}>(
+            "SELECT count(*) FROM information_schema.triggers WHERE trigger_name='routes_updated_at'",
+        );
+        assert.equal(routeTrigger.rows[0]?.count, '1');
         const developmentUser = await pool.query<{ name: string }>(
             'SELECT name FROM users WHERE id = $1', ['00000000-0000-4000-8000-000000000001'],
         );

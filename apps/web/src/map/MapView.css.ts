@@ -15,9 +15,10 @@ export const view = style({position: 'relative', width: '100%', height: '100%', 
 export const toolbar = style({
     position: 'absolute', zIndex: 1, top: vars.space.md, left: vars.space.md,
     width: 'min(290px, calc(100% - 80px))', display: 'grid', gap: vars.space.sm,
-    maxHeight: 'calc(100% - 120px)', overflowY: 'auto', overscrollBehavior: 'contain',
-    '@media': {'(max-width: 640px)': {maxHeight: 'calc(100% - 96px)'}},
+    maxHeight: 'calc(100% - 160px)', overflowY: 'auto', overscrollBehavior: 'contain',
+    '@media': {'(max-width: 640px)': {maxHeight: 'calc(100% - 160px)'}},
     selectors: {
+        '&[hidden]': {display: 'none'},
         [`${view}[data-selected="true"] &`]: {
             '@media': {'(max-width: 640px)': {display: 'none'}},
         }
@@ -37,7 +38,10 @@ export const metadata = style({
     fontSize: '0.75rem', color: vars.color.textMuted, margin: `${vars.space.md} 0`
 });
 globalStyle(`${metadata} dd`, {margin: 0, textAlign: 'right', overflowWrap: 'anywhere'});
-export const map = style({position: 'absolute', inset: 0, background: vars.color.background});
+export const map = style({
+    position: 'absolute', inset: 0, background: vars.color.background,
+    selectors: {'&.maplibregl-map': {position: 'absolute'}},
+});
 export const brand = style([floatingPanel, {
     position: 'relative',
     padding: `${vars.space.sm} ${vars.space.md}`,
@@ -122,3 +126,9 @@ globalStyle(`${view} .maplibregl-ctrl-group button + button`, {borderTopColor: v
 globalStyle(`${view} .maplibregl-ctrl-icon`, {filter: 'invert(1)'});
 globalStyle(`${view} .maplibregl-ctrl-attrib`, {background: vars.color.surface, color: vars.color.textMuted});
 globalStyle(`${view} .maplibregl-ctrl-attrib a`, {color: vars.color.textMuted});
+
+export const routeSwatch = style({width: '16px', height: '4px', background: vars.color.route});
+
+export const showControls = style([button, {
+    position: 'absolute', top: vars.space.sm, left: vars.space.md, zIndex: 3,
+}]);

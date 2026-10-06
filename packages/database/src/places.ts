@@ -4,7 +4,7 @@ import type {Database} from './client.js';
 import {places, regions, userPlaces} from './schema/index.js';
 import {toUserPlaceState} from './dto/userPlace.js';
 
-const placeDto = {
+export const placeDto = {
     id: places.id,
     name: places.name,
     slug: places.slug,

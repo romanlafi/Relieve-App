@@ -6,6 +6,9 @@ import {
     customType,
     index,
     integer,
+    doublePrecision,
+    date,
+    jsonb,
     pgEnum,
     pgTable,
     text,
@@ -90,4 +93,29 @@ export const userPlaces = pgTable('user_places', {
     index('user_places_place_id_idx').on(table.placeId),
     index('user_places_user_status_idx').on(table.userId, table.status),
     check('user_places_visit_status', sql`${table.status} = 'visited' OR ${table.visitedAt} IS NULL`),
+]);
+
+// Generic typmod accepts both XYZ tracks and XY tracks without fabricated elevations.
+const routeGeometry = customType<{data: string}>({dataType: () => 'geometry'});
+export const routes = pgTable('routes', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id').notNull().references(() => users.id, {onDelete: 'cascade'}),
+    name: text('name').notNull(),
+    activityDate: date('activity_date'),
+    geometry: routeGeometry('geometry').notNull(),
+    elevationSamples: jsonb('elevation_samples').$type<(number | null)[][]>(),
+    distanceM: doublePrecision('distance_m').notNull(),
+    elevationGainM: doublePrecision('elevation_gain_m'),
+    elevationLossM: doublePrecision('elevation_loss_m'),
+    minElevationM: doublePrecision('min_elevation_m'),
+    maxElevationM: doublePrecision('max_elevation_m'),
+    startedAt: timestamp('started_at', {withTimezone: true}),
+    endedAt: timestamp('ended_at', {withTimezone: true}),
+    ...timestamps(),
+}, (table) => [
+    index('routes_user_id_idx').on(table.userId),
+    index('routes_geometry_gist_idx').using('gist', table.geometry),
+    check('routes_name_valid', sql`length(trim(${table.name})) BETWEEN 1 AND 200`),
+    check('routes_geometry_valid', sql`ST_SRID(${table.geometry}) = 4326 AND GeometryType(${table.geometry}) = 'MULTILINESTRING' AND ST_NDims(${table.geometry}) IN (2,3) AND NOT ST_IsEmpty(${table.geometry}) AND ST_IsValid(${table.geometry})`),
+    check('routes_distance_valid', sql`${table.distanceM} >= 0 AND ${table.distanceM} < 'Infinity'::float8`),
 ]);

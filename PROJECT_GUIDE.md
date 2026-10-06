@@ -1,6 +1,6 @@
 # Proyecto: Mountain App / mapa personal de montaña
 
-## Estado de desarrollo — 1 de octubre de 2026
+## Estado de desarrollo — 6 de octubre de 2026
 
 Este apartado registra el estado real; las fases siguientes siguen siendo el roadmap de referencia.
 
@@ -16,7 +16,7 @@ Este apartado registra el estado real; las fases siguientes siguen siendo el roa
   separación de usuarios por identidad verificada.
 - Pendiente externo para publicar: dominio, aplicación/política de Access, audience y secreto de base de datos en
   Cloudflare. No se ha desplegado.
-- GPX continúa fuera del MVP.
+- Primera versión GPX implementada: rutas privadas PostGIS, segmentos fieles, métricas, mapa 3D y confirmación manual de lugares a 100 m. Decisiones y límites en `docs/GPX_ROUTES.md`.
 
 Para ejecutar y publicar, consultar `README.md` y `apps/api/DEPLOYMENT.md`.
 
@@ -857,7 +857,7 @@ La aplicación no debe depender directamente de dichas fuentes para funcionar.
 
 # 23. GPX
 
-GPX forma parte del roadmap, pero no del primer sprint.
+Primera versión implementada tras el MVP; consultar `docs/GPX_ROUTES.md`. El modelo siguiente se conserva como referencia del roadmap inicial.
 
 Modelo futuro:
 

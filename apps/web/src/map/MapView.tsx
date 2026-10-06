@@ -1,3 +1,6 @@
+import {RoutesPanel} from '../routes/RoutesPanel';
+import {useRoutes} from '../routes/useRoutes';
+import {tabs} from '../routes/RoutesPanel.css';
 import {useEffect, useMemo, useRef, useState} from 'react';
 import type {PlaceFilters, PlaceWithUserState} from '@relieve/shared';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -15,12 +18,15 @@ const placeTypeLabels = {peak: 'Pico', lake: 'Ibón', hut: 'Refugio', pass: 'Col
 const elevationFormat = new Intl.NumberFormat('es-ES');
 
 export function MapView() {
+    const [controlsHidden, setControlsHidden] = useState(false);
+    const [section, setSection] = useState<'places' | 'routes'>('places');
     const container = useRef<HTMLDivElement>(null);
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [search, setSearch] = useState('');
     const regionState = useRegions();
     const [filters, setFilters] = useState<PlaceFilters>({region: 'pirineo-aragones'});
-    const {state, retry, personalSave, saveUserPlace, mutationVersion} = usePlaces(filters);
+    const {state, retry, personalSave, saveUserPlace, mutationVersion, visitsChanged} = usePlaces(filters);
+    const routes = useRoutes(visitsChanged);
     const places = state.status === 'success' ? state.places : emptyPlaces;
     const geoJson = useMemo(() => placesToGeoJson(places), [places]);
     const frameRegion = state.status === 'success' ? new URLSearchParams(state.query).get('region') ?? '' : null;
@@ -28,7 +34,7 @@ export function MapView() {
         status,
         terrainUnavailable,
         focusPlace
-    } = usePlacesMap(container, geoJson, selectedId, setSelectedId, frameRegion);
+    } = usePlacesMap(container, geoJson, selectedId, setSelectedId, frameRegion, routes.detail);
     const selectedPlace = places.find((place) => place.id === selectedId);
     const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es').trim();
     const searchResults = places.filter((place) => visiblePlaceTypes.some((type) => type === place.type)
@@ -54,7 +60,8 @@ export function MapView() {
                      }
                  }}>
             <div ref={container} className={styles.map} aria-label="Mapa de lugares de montaña"/>
-            <div className={styles.toolbar}>
+            {controlsHidden && <button className={styles.showControls} type="button" onClick={() => setControlsHidden(false)}>Mostrar controles</button>}
+            <div className={styles.toolbar} hidden={controlsHidden}>
             <header className={styles.brand}>
                 <h1 className={styles.title}>Relieve</h1>
                 <p className={styles.subtitle}>Pirineos · explora el terreno</p>
@@ -76,6 +83,13 @@ export function MapView() {
                     && state.status === 'success' && !selectedPlace &&
                     <p>Registro guardado. El lugar ya no cumple los filtros actuales.</p>}
             </div>
+                {section === 'routes' && <button className={styles.button} type="button" onClick={() => setControlsHidden(true)}>Ver mapa · ocultar controles</button>}
+                <div className={tabs} aria-label="Secciones">
+                    <button className={styles.button} type="button" aria-pressed={section === 'places'} onClick={() => setSection('places')}>Lugares</button>
+                    <button className={styles.button} type="button" aria-pressed={section === 'routes'} onClick={() => { setSection('routes'); setSelectedId(null); }}>Rutas</button>
+                </div>
+                {section === 'routes' && <RoutesPanel key={routes.selectedId ?? 'import'} state={routes}/>}
+                {section === 'places' && <>
                 <div className={styles.placePicker}>
                     <label htmlFor="place-search">Buscar un lugar</label>
                     <input id="place-search" className={styles.select} type="search" placeholder="Aneto, ibón, refugio…"
@@ -106,9 +120,11 @@ export function MapView() {
                                 setSearch('');
                 setFilters(next);
             }}/>
+                </>}
                 <StatsSummary version={mutationVersion}/>
             </div>
             <div className={styles.legend} aria-label="Leyenda del mapa">
+                {routes.detail && <span className={styles.legendItem}><span className={styles.routeSwatch} aria-hidden="true"/>Ruta GPX</span>}
                 {visiblePlaceTypes.map((type) => <span className={styles.legendItem} key={type}>
                     <span className={styles.swatch[type]} aria-hidden="true"/>{placeTypeLabels[type]}
                 </span>)}
