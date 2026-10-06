@@ -60,7 +60,8 @@ las nuevas variables. Si el puerto está ocupado, se puede usar
 `npm run dev:api -- --port 8788`.
 
 La web llama a `/api/places`; Vite redirige `/api/*` a los endpoints del Worker
-sin ese prefijo. El destino por defecto es `http://127.0.0.1:8787`. Si se usa
+manteniendo ese prefijo. El Worker lo retira antes de resolver la ruta. El destino por defecto es
+`http://127.0.0.1:8787`. Si se usa
 otro puerto, configurar `API_PROXY_TARGET=http://127.0.0.1:8788` en
 `apps/web/.env.local` o en el entorno del proceso y reiniciar Vite. Esa variable
 solo se utiliza en el servidor de desarrollo/preview y no se expone al navegador.
@@ -99,7 +100,7 @@ del Worker; la conexión a la base de datos se verifica con `db:check` y `/place
 localmente en `.env` en la raíz o en el entorno del proceso. Las herramientas
 de base de datos cargan ese archivo sin imprimir sus valores.
 
-`npm run dev:api` pasa únicamente `DATABASE_URL` al Worker mediante un archivo
+`npm run dev:api` pasa `DATABASE_URL` y `LOCAL_DEVELOPMENT=true` al Worker mediante un archivo
 temporal de secretos y lo elimina al terminar. La conexión directa no se pasa
 al Worker. En producción, configurar `DATABASE_URL` como secreto de Cloudflare.
 Las variables `VITE_*` son públicas: nunca deben contener secretos. Los archivos
@@ -130,15 +131,28 @@ una única consulta, sin N+1. El panel permite guardar estado, favorito, fecha y
 notas sin recargar la página. Los detalles del contrato están en
 [apps/api/README.md](./apps/api/README.md).
 
-Se usa exclusivamente el usuario de desarrollo existente. **No hay autenticación
-ni aislamiento entre visitantes HTTP**: todos consultan y modifican ese mismo
-usuario. No exponer esta API personal públicamente antes de implementar
-autenticación y resolución del usuario por petición. No se aceptan IDs de
-usuario enviados por el cliente; las respuestas personales no se cachean.
+En desarrollo local se usa el usuario fijo existente. En producción la API valida
+sesiones Cloudflare Access con `jose` y resuelve usuarios separados por identidad
+verificada. El modo local exige hostname localhost/loopback y no está presente
+en la configuración de producción. No se aceptan IDs de usuario del cliente;
+las respuestas personales no se cachean. La migración `0002` añade una identidad
+externa única y nullable a `users`, conservando los registros existentes.
 
 El seed no inventa visitas y no sobrescribe registros personales al repetirse.
-No se necesitan migraciones nuevas: se reutilizan los constraints, índices y
-trigger de `user_places` ya existentes.
+El registro personal reutiliza los constraints, índices y trigger de
+`user_places`; la migración de identidad afecta únicamente a `users`.
 
-GPX, edición de lugares globales, estadísticas y autenticación real quedan
-pendientes para las siguientes fases.
+El mapa incluye búsqueda por nombre entre los resultados filtrados, ficha con
+región/coordenadas y progreso del catálogo completo vía `GET /stats`. Guardar o
+eliminar un registro refresca las agregaciones SQL sin recargar el mapa. El
+resumen incluye visitados por tipo, pendientes, favoritos, tresmiles de cota
+conocida y pico más alto visitado. Los controles fluyen en una barra desplazable
+y la ficha se sitúa abajo en móvil.
+
+La configuración de producción reúne web y `/api/*` en un Worker con assets
+estáticos; `npm run build` compila primero la web y valida el Worker con dry-run.
+La configuración local sigue funcionando sin build previo. Consultar
+[publicación y Cloudflare Access](./apps/api/DEPLOYMENT.md) para dominio,
+políticas y variables. No se han creado recursos ni publicado la aplicación.
+GPX, estadísticas por región/macizo/año y edición de lugares globales siguen
+pendientes. El estado de fases se registra al principio de `PROJECT_GUIDE.md`.

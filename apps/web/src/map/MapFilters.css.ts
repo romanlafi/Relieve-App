@@ -2,8 +2,7 @@ import {style} from '@vanilla-extract/css';
 import {vars} from '../styles/theme.css';
 
 export const panel = style({
-    position: 'absolute', zIndex: 1, top: '140px', left: vars.space.md,
-    width: 'min(280px, calc(100% - 80px))', padding: vars.space.sm,
+    padding: vars.space.sm,
     color: vars.color.text, background: vars.color.surface,
     border: `1px solid ${vars.color.border}`, borderRadius: vars.radius.sm, fontSize: '0.8rem',
 });

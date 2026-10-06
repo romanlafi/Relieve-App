@@ -159,5 +159,17 @@ export function usePlacesMap(container: React.RefObject<HTMLDivElement | null>, 
         };
     }, [container, onSelect]);
 
-    return {status, terrainUnavailable};
+    function focusPlace(longitude: number, latitude: number) {
+        const map = mapRef.current;
+        if (!map) return;
+        const mobile = map.getContainer().clientWidth <= 640;
+        map.flyTo({
+            center: [longitude, latitude], zoom: Math.max(map.getZoom(), 12),
+            padding: mobile ? {top: 0, bottom: map.getContainer().clientHeight * 0.4, left: 0, right: 0}
+                : {left: 320, right: 360, top: 0, bottom: 0},
+            duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 700
+        });
+    }
+
+    return {status, terrainUnavailable, focusPlace};
 }

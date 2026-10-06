@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import type {PlaceWithUserState, PlaceStatus, UpdateUserPlace, UserPlaceState} from '@relieve/shared';
+import type {PlaceStatus, PlaceWithUserState, UpdateUserPlace, UserPlaceState} from '@relieve/shared';
 import type {PersonalSaveState} from './usePlaces';
 import * as styles from './PlacePersonalForm.css';
 
@@ -42,7 +42,7 @@ export function PlacePersonalForm({place, saveState, onSave}: Props) {
         <p className={styles.message}>Estado guardado: {place.userState?.status === 'visited' ? 'Visitado'
             : place.userState?.status === 'pending' ? 'Pendiente' : 'Sin registrar'}{place.userState?.favorite ? ' · Favorito' : ''}</p>
         <fieldset className={styles.fields} disabled={busy}>
-            <legend className={styles.message}>Mi registro personal · usuario de desarrollo</legend>
+            <legend className={styles.message}>Mi registro personal</legend>
             <label className={styles.field}>Estado personal
                 <select className={styles.control} value={status} onChange={(event) => {
                     const next = event.target.value as PlaceStatus | '';

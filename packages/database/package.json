@@ -17,12 +17,12 @@
     "db:seed": "tsx scripts/seed.ts",
     "db:check": "tsx scripts/check.ts",
     "data:check": "tsx scripts/checkDataset.ts",
-    "test": "tsx --test scripts/dataset.test.ts ../../apps/api/test/places.test.ts",
+    "test": "tsx --test scripts/dataset.test.ts ../../apps/api/test/*.test.ts",
     "test:integration": "tsx --test scripts/integration.test.ts"
   },
   "dependencies": {
-    "@relieve/shared": "*",
     "@neondatabase/serverless": "^1.1.0",
+    "@relieve/shared": "*",
     "drizzle-orm": "^0.45.3",
     "pg": "^8.23.1",
     "zod": "^4.6.5"
@@ -31,6 +31,7 @@
     "@types/node": "^24.19.0",
     "@types/pg": "^8.23.1",
     "drizzle-kit": "^0.31.11",
+    "jose": "^6.2.12",
     "tsx": "^4.23.15"
   }
 }

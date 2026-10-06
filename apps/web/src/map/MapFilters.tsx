@@ -1,5 +1,5 @@
 import type {PlaceFilters, PlaceType} from '@relieve/shared';
-import {useRegions} from './useRegions';
+import type {useRegions} from './useRegions';
 import type {PersonalFilter} from './placeFilters';
 import * as styles from './MapFilters.css';
 
@@ -7,10 +7,11 @@ interface Props {
     filters: PlaceFilters;
     disabled: boolean;
     onChange: (filters: PlaceFilters) => void;
+    regionState: ReturnType<typeof useRegions>;
 }
 
-export function MapFilters({filters, disabled, onChange}: Props) {
-    const {regions, status, retry} = useRegions();
+export function MapFilters({filters, disabled, onChange, regionState}: Props) {
+    const {regions, status, retry} = regionState;
     const personal: PersonalFilter = filters.favorite === true ? 'favorite' : filters.status ?? 'all';
     const activeCount = Object.values(filters).filter((value) => value !== undefined).length;
     const children = new Map<string | null, typeof regions>();

@@ -1,12 +1,5 @@
 import {Hono} from 'hono';
-import {
-    createDatabase,
-    developmentUserId,
-    listUserPlaces,
-    getUserPlace,
-    upsertUserPlace,
-    deleteUserPlace
-} from '@relieve/database';
+import {createDatabase, deleteUserPlace, getUserPlace, listUserPlaces, upsertUserPlace} from '@relieve/database';
 import type {ApiEnvironment} from '../environment.js';
 import {placeIdSchema, updateUserPlaceSchema} from '../validation/userPlaces.js';
 
@@ -20,11 +13,12 @@ userPlacesRoutes.use('/:placeId', async (context, next) => {
 });
 
 userPlacesRoutes.get('/', async (context) => {
-    return context.json(await listUserPlaces(createDatabase(context.env.DATABASE_URL), developmentUserId));
+    return context.json(await listUserPlaces(createDatabase(context.env.DATABASE_URL), context.get('userId')));
 });
 
 userPlacesRoutes.get('/:placeId', async (context) => {
-    const state = await getUserPlace(createDatabase(context.env.DATABASE_URL), developmentUserId, context.req.param('placeId'));
+    const state = await getUserPlace(createDatabase(context.env.DATABASE_URL), context.get('userId'),
+        context.req.param('placeId'));
     if (state === undefined) {
         return context.json({error: {code: 'PLACE_NOT_FOUND', message: 'Place not found'}}, 404);
     }
@@ -48,7 +42,7 @@ userPlacesRoutes.put('/:placeId', async (context) => {
             }
         }, 400);
     }
-    const result = await upsertUserPlace(createDatabase(context.env.DATABASE_URL), developmentUserId,
+    const result = await upsertUserPlace(createDatabase(context.env.DATABASE_URL), context.get('userId'),
         context.req.param('placeId'), parsed.data);
     if (result.kind === 'not-found') {
         return context.json({error: {code: 'PLACE_NOT_FOUND', message: 'Place not found'}}, 404);
@@ -65,7 +59,8 @@ userPlacesRoutes.put('/:placeId', async (context) => {
 });
 
 userPlacesRoutes.delete('/:placeId', async (context) => {
-    const exists = await deleteUserPlace(createDatabase(context.env.DATABASE_URL), developmentUserId, context.req.param('placeId'));
+    const exists = await deleteUserPlace(createDatabase(context.env.DATABASE_URL), context.get('userId'),
+        context.req.param('placeId'));
     if (!exists) {
         return context.json({error: {code: 'PLACE_NOT_FOUND', message: 'Place not found'}}, 404);
     }

@@ -93,13 +93,12 @@ de código ni librería de componentes adicional.
 ## API y despliegue
 
 El navegador usa `/api/places` del mismo origen. El proxy de Vite y preview
-lo transforma en `GET /places` hacia el Worker. `API_PROXY_TARGET` configura
+lo conserva hacia el Worker; `worker.ts` retira `/api` antes de resolver Hono. `API_PROXY_TARGET` configura
 el destino local y nunca es una variable pública `VITE_*`.
 
-Antes de desplegar hay que enrutar `/api/*` al Worker quitando `/api`, mediante
-un reverse proxy o la configuración de hosting correspondiente. El proxy de
-Vite no existe en la web estática de producción. Esta decisión evita añadir
-CORS abierto o URLs locales dentro del bundle.
+`wrangler.production.jsonc` incluye los assets compilados de la web y enruta
+`/api/*` al Worker antes de servir assets. Las sesiones se validan con Cloudflare
+Access. Consultar `apps/api/DEPLOYMENT.md` para preparar dominio y cuenta.
 
 Revisar los proveedores públicos y sus condiciones de servicio/atribución al
 preparar producción. La pantalla necesita conectividad para las teselas y el
@@ -168,3 +167,26 @@ que conservan/retiran el POI, terrain, misma instancia/canvas, escritorio y móv
 panel desplazable y consola sin errores. Los tests de integración verifican
 queries combinadas, descendientes, userState null y seed repetido, incluida
 preservación de relaciones y registros ausentes, con rollback/limpieza.
+
+## Progreso, búsqueda y responsive
+
+`StatsSummary.tsx` obtiene y valida `/api/stats`, aborta lecturas obsoletas y
+permite reintentar. `usePlaces` incrementa `mutationVersion` solo tras una
+escritura confirmada; ese contador refresca el progreso también al eliminar.
+Las agregaciones abarcan el catálogo completo, independientemente de filtros
+o búsqueda, y excluyen alturas desconocidas de las estadísticas de elevación.
+
+La búsqueda ignora mayúsculas y tildes, afecta al selector de resultados y no
+retira POIs del mapa. Su alcance está explicado junto al input: resultados de
+los filtros actuales. Elegir un resultado enfoca la cámara, respetando reduced
+motion; cerrar o guardar no reconstruye el mapa. Región y coordenadas se
+muestran en la ficha, reutilizando una única carga de regiones compartida con
+los filtros.
+
+Los paneles izquierdos fluyen en una barra desplazable. En móvil la ficha
+es inferior y desplazable; la barra de exploración y la leyenda se ocultan al abrir
+la ficha para conservar espacio de terreno. Cerrar restaura la barra y devuelve
+el foco al selector; Escape también cierra. Se comprobó escritorio y viewport
+390×844 con emulación táctil, búsqueda, guardar/eliminar y actualización del
+progreso, sin desbordamiento horizontal ni errores de consola. Los registros
+de prueba se eliminaron.

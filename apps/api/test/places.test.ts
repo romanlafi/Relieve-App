@@ -20,7 +20,10 @@ test('rejects invalid API filters before connecting to PostgreSQL', async () => 
     for (const query of ['type=unknown', 'favorite=1', 'favorite=False', 'status=all', 'region=Invalid%20Region',
         'north=42.9', 'north=42&south=43&west=0&east=1', 'north=43&south=42&west=1&east=0',
         'north=91&south=42&west=0&east=1', 'north=&south=42&west=0&east=1', 'unknown=value']) {
-        const response = await app.request(`/places?${query}`);
+        const response = await app.request(`http://localhost/places?${query}`, {}, {
+            DATABASE_URL: '',
+            LOCAL_DEVELOPMENT: 'true'
+        });
         assert.equal(response.status, 400, query);
         const body = await response.json() as { error: { code: string } };
         assert.equal(body.error.code, 'INVALID_PLACE_FILTERS');
@@ -29,5 +32,8 @@ test('rejects invalid API filters before connecting to PostgreSQL', async () => 
 
 test('health and invalid IDs retain their existing contracts', async () => {
     assert.deepEqual(await (await app.request('/health')).json(), {status: 'ok'});
-    assert.equal((await app.request('/places/invalid-id')).status, 400);
+    assert.equal((await app.request('http://localhost/places/invalid-id', {}, {
+        DATABASE_URL: '',
+        LOCAL_DEVELOPMENT: 'true'
+    })).status, 400);
 });

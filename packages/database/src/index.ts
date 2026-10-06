@@ -4,3 +4,5 @@ export {listPlaces, getPlace, listPlacesForUser, getPlaceForUser, placesInViewpo
 export {listUserPlaces, getUserPlace, upsertUserPlace, deleteUserPlace} from './userPlaces.js';
 export {developmentUserId} from './developmentUser.js';
 export {listRegions} from './regions.js';
+export {getPersonalStats} from './stats.js';
+export {resolveAccessUser} from './users.js';

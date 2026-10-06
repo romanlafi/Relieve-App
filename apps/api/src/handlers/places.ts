@@ -1,5 +1,5 @@
 import {Hono} from 'hono';
-import {createDatabase, developmentUserId, getPlaceForUser, listPlacesForUser} from '@relieve/database';
+import {createDatabase, getPlaceForUser, listPlacesForUser} from '@relieve/database';
 import type {ApiEnvironment} from '../environment.js';
 import {placeIdSchema} from '../validation/userPlaces.js';
 import {placeFiltersSchema} from '../validation/places.js';
@@ -17,7 +17,8 @@ placesRoutes.get('/', async (context) => {
             }
         }, 400);
     }
-    const places = await listPlacesForUser(createDatabase(context.env.DATABASE_URL), developmentUserId, parsed.data);
+    const places = await listPlacesForUser(createDatabase(context.env.DATABASE_URL), context.get('userId'),
+        parsed.data);
     return context.json(places);
 });
 
@@ -26,7 +27,8 @@ placesRoutes.get('/:id', async (context) => {
     if (!parsed.success) {
         return context.json({error: {code: 'INVALID_PLACE_ID', message: 'Place ID must be a UUID'}}, 400);
     }
-    const place = await getPlaceForUser(createDatabase(context.env.DATABASE_URL), developmentUserId, parsed.data);
+    const place = await getPlaceForUser(createDatabase(context.env.DATABASE_URL), context.get('userId'),
+        parsed.data);
     if (!place) {
         return context.json({error: {code: 'PLACE_NOT_FOUND', message: 'Place not found'}}, 404);
     }

@@ -8,7 +8,6 @@ export default defineConfig(({mode}) => {
         '/api': {
             target: process.env.API_PROXY_TARGET ?? environment.API_PROXY_TARGET ?? 'http://127.0.0.1:8787',
             changeOrigin: true,
-            rewrite: (path: string) => path.replace(/^\/api/, ''),
         },
     };
     return {

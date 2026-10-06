@@ -1,5 +1,25 @@
 # Proyecto: Mountain App / mapa personal de montaña
 
+## Estado de desarrollo — 1 de octubre de 2026
+
+Este apartado registra el estado real; las fases siguientes siguen siendo el roadmap de referencia.
+
+- Fases 0–4 implementadas: monorepo, Neon/PostGIS, dataset de 74 lugares, API, mapa 3D y registro personal persistente.
+- Segunda milestone completada: seleccionar un lugar, guardar una visita y actualizar mapa y estadísticas sin recargar.
+- Fase 5: tokens y paneles coherentes, búsqueda por nombre entre resultados filtrados, ficha con región y coordenadas.
+- Fase 6: filtros por tipo, estado, favoritos y región con descendientes. Altitud y macizos siguen pendientes.
+- Fase 7: resumen SQL del catálogo completo: visitados por tipo, pendientes, favoritos, tresmiles con altitud conocida y
+  pico más alto visitado. Desgloses por región/macizo/año pendientes.
+- Fase 8: barra de controles desplazable y ficha inferior en móvil, con comprobación en navegador. Queda pulido
+  adicional con uso real.
+- Producción preparada: web estática y `/api/*` en un mismo Worker, validación de sesiones Cloudflare Access y
+  separación de usuarios por identidad verificada.
+- Pendiente externo para publicar: dominio, aplicación/política de Access, audience y secreto de base de datos en
+  Cloudflare. No se ha desplegado.
+- GPX continúa fuera del MVP.
+
+Para ejecutar y publicar, consultar `README.md` y `apps/api/DEPLOYMENT.md`.
+
 ## 1. Objetivo general
 
 Construir una aplicación web para explorar visualmente los Pirineos y llevar un registro personal de lugares de montaña

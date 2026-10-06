@@ -71,6 +71,7 @@ export const places = pgTable('places', {
 
 export const users = pgTable('users', {
     id: uuid('id').primaryKey().defaultRandom(),
+    accessSubject: text('access_subject').unique(),
     name: text('name').notNull(),
     ...timestamps(),
 }, (table) => [check('users_name_not_blank', sql`length(trim(${table.name})) > 0`)]);

@@ -4,6 +4,8 @@ import type {ApiEnvironment} from './environment.js';
 import {placesRoutes} from './handlers/places.js';
 import {userPlacesRoutes} from './handlers/userPlaces.js';
 import {regionsRoutes} from './handlers/regions.js';
+import {statsRoutes} from './handlers/stats.js';
+import {authenticate} from './auth.js';
 
 const app = new Hono<ApiEnvironment>();
 
@@ -13,18 +15,33 @@ app.onError((_error, context) => {
 
 app.notFound((context) => context.json({error: {code: 'NOT_FOUND', message: 'Route not found'}}, 404));
 
-app.use('/places/*', async (context, next) => {
+app.use('*', async (context, next) => {
     context.header('Cache-Control', 'private, no-store');
+    if (!['GET', 'HEAD', 'OPTIONS'].includes(context.req.method)) {
+        const origin = context.req.header('Origin');
+        const url = new URL(context.req.url);
+        let originUrl: URL | undefined;
+        try {
+            originUrl = origin ? new URL(origin) : undefined;
+        } catch { /* Invalid origins are rejected below. */
+        }
+        const localProxy = context.env?.LOCAL_DEVELOPMENT === 'true'
+            && ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)
+            && originUrl?.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(originUrl.hostname);
+        if (origin && origin !== url.origin && !localProxy) {
+            return context.json({error: {code: 'INVALID_ORIGIN', message: 'Cross-origin writes are not allowed'}}, 403);
+        }
+    }
     await next();
 });
-app.use('/user/places/*', async (context, next) => {
-    context.header('Cache-Control', 'private, no-store');
-    await next();
-});
+app.use('/places/*', authenticate);
+app.use('/user/places/*', authenticate);
+app.use('/stats/*', authenticate);
 
 app.route('/places', placesRoutes);
 app.route('/user/places', userPlacesRoutes);
 app.route('/regions', regionsRoutes);
+app.route('/stats', statsRoutes);
 
 app.get('/health', (c) => {
     const response: HealthResponse = {status: 'ok'};

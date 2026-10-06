@@ -14,6 +14,7 @@ export function usePlaces(filters: PlaceFilters) {
     const [state, setState] = useState<PlacesState>({status: 'loading'});
     const [requestVersion, setRequestVersion] = useState(0);
     const [personalSave, setPersonalSave] = useState<PersonalSaveState>(null);
+    const [mutationVersion, setMutationVersion] = useState(0);
     const mutationController = useRef<AbortController | null>(null);
     const loadController = useRef<AbortController | null>(null);
     const filtersRef = useRef(filters);
@@ -106,6 +107,7 @@ export function usePlaces(filters: PlaceFilters) {
                     .filter((place) => matchesPersonalFilters(place, filtersRef.current)),
             });
             setPersonalSave({placeId, status: 'saved'});
+            setMutationVersion((version) => version + 1);
             setRequestVersion((version) => version + 1);
             return userState;
         } catch {
@@ -116,5 +118,5 @@ export function usePlaces(filters: PlaceFilters) {
         }
     }
 
-    return {state, retry, personalSave, saveUserPlace};
+    return {state, retry, personalSave, saveUserPlace, mutationVersion};
 }

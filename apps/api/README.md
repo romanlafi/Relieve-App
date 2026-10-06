@@ -2,18 +2,26 @@
 
 ## Endpoints
 
-Todos usan el usuario definido en `packages/database/src/developmentUser.ts`,
-el mismo que crea el seed. Esta resolución fija es temporal y no autentica a
-quien llama: debe sustituirse antes de publicar la API personal.
+En local se usa el usuario definido en `packages/database/src/developmentUser.ts`.
+En producción se valida una sesión Cloudflare Access y se resuelve su usuario
+por identidad estable; cada usuario conserva relaciones personales separadas.
+Consultar [DEPLOYMENT.md](./DEPLOYMENT.md) para configurar cuenta y dominio.
 
-| Método | Ruta                    | Respuesta                                                   |
-|--------|-------------------------|-------------------------------------------------------------|
-| GET    | `/places`               | Array de lugares con `userState` nullable                   |
-| GET    | `/places/:id`           | Lugar con `userState` nullable                              |
-| GET    | `/user/places`          | Array de relaciones personales                              |
-| GET    | `/user/places/:placeId` | Relación personal, o `null` si el lugar existe sin registro |
-| PUT    | `/user/places/:placeId` | Upsert; devuelve la relación guardada                       |
-| DELETE | `/user/places/:placeId` | 204; elimina exclusivamente la relación personal            |
+| Método | Ruta                    | Respuesta                                                      |
+|--------|-------------------------|----------------------------------------------------------------|
+| GET    | `/places`               | Array de lugares con `userState` nullable                      |
+| GET    | `/places/:id`           | Lugar con `userState` nullable                                 |
+| GET    | `/user/places`          | Array de relaciones personales                                 |
+| GET    | `/user/places/:placeId` | Relación personal, o `null` si el lugar existe sin registro    |
+| PUT    | `/user/places/:placeId` | Upsert; devuelve la relación guardada                          |
+| DELETE | `/user/places/:placeId` | 204; elimina exclusivamente la relación personal               |
+| GET    | `/stats`                | Progreso agregado del catálogo completo para el usuario actual |
+
+`/stats` devuelve total, visited, pending, favorites, byType, threeThousands y
+highestPeak. Los contadores se agregan en SQL sobre un LEFT JOIN limitado al
+usuario autenticado; el pico más alto excluye alturas desconocidas y tiene
+desempate estable. Los tresmiles cuentan únicamente picos de altitud conocida
+mayor o igual a 3000 m. Los filtros del mapa no modifican este resumen.
 
 La relación expuesta contiene `placeId`, `status`, `favorite`, `visitedAt` y
 `notes`. Dentro de `userState` se omite `placeId`, ya disponible en el lugar.

@@ -1,4 +1,5 @@
 export type {HealthResponse} from './types/health.js';
+export type {PersonalStats} from './types/stats.js';
 export type {PlaceFilters} from './types/place.js';
 export type {Region, RegionType} from './types/region.js';
 export type {
