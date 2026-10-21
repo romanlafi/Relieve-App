@@ -1,11 +1,27 @@
 import {Hono} from 'hono';
-import {createDatabase, deleteUserPlace, getUserPlace, listUserPlaces, upsertUserPlace} from '@relieve/database';
+import {
+    addUserPlaceVisit,
+    createDatabase,
+    deleteUserPlace,
+    deleteUserPlaceVisit,
+    getUserPlace,
+    listUserPlaceVisits,
+    listUserPlaces,
+    upsertUserPlace,
+} from '@relieve/database';
 import type {ApiEnvironment} from '../environment.js';
-import {placeIdSchema, updateUserPlaceSchema} from '../validation/userPlaces.js';
+import {addPlaceVisitSchema, placeIdSchema, updateUserPlaceSchema} from '../validation/userPlaces.js';
 
 export const userPlacesRoutes = new Hono<ApiEnvironment>();
 
 userPlacesRoutes.use('/:placeId', async (context, next) => {
+    if (!placeIdSchema.safeParse(context.req.param('placeId')).success) {
+        return context.json({error: {code: 'INVALID_PLACE_ID', message: 'Place ID must be a UUID'}}, 400);
+    }
+    await next();
+});
+
+userPlacesRoutes.use('/:placeId/*', async (context, next) => {
     if (!placeIdSchema.safeParse(context.req.param('placeId')).success) {
         return context.json({error: {code: 'INVALID_PLACE_ID', message: 'Place ID must be a UUID'}}, 400);
     }
@@ -23,6 +39,39 @@ userPlacesRoutes.get('/:placeId', async (context) => {
         return context.json({error: {code: 'PLACE_NOT_FOUND', message: 'Place not found'}}, 404);
     }
     return context.json(state);
+});
+
+userPlacesRoutes.get('/:placeId/visits', async (context) => {
+    const visits = await listUserPlaceVisits(createDatabase(context.env.DATABASE_URL), context.get('userId'),
+        context.req.param('placeId'));
+    if (!visits) return context.json({error: {code: 'PLACE_NOT_FOUND', message: 'Place not found'}}, 404);
+    return context.json(visits);
+});
+
+userPlacesRoutes.post('/:placeId/visits', async (context) => {
+    let body: unknown;
+    try { body = await context.req.json(); }
+    catch { return context.json({error: {code: 'INVALID_JSON', message: 'Request body must be valid JSON'}}, 400); }
+    const parsed = addPlaceVisitSchema.safeParse(body);
+    if (!parsed.success) {
+        return context.json({error: {code: 'INVALID_PLACE_VISIT', message: 'A visit date is required',
+            issues: parsed.error.issues}}, 400);
+    }
+    const visit = await addUserPlaceVisit(createDatabase(context.env.DATABASE_URL), context.get('userId'),
+        context.req.param('placeId'), parsed.data.visitedAt);
+    if (!visit) return context.json({error: {code: 'PLACE_NOT_FOUND', message: 'Place not found'}}, 404);
+    return context.json(visit);
+});
+
+userPlacesRoutes.delete('/:placeId/visits/:visitId', async (context) => {
+    const parsedVisitId = placeIdSchema.safeParse(context.req.param('visitId'));
+    if (!parsedVisitId.success) {
+        return context.json({error: {code: 'INVALID_VISIT_ID', message: 'Visit ID must be a UUID'}}, 400);
+    }
+    const deleted = await deleteUserPlaceVisit(createDatabase(context.env.DATABASE_URL), context.get('userId'),
+        context.req.param('placeId'), parsedVisitId.data);
+    if (!deleted) return context.json({error: {code: 'VISIT_NOT_FOUND', message: 'Visit not found'}}, 404);
+    return context.body(null, 204);
 });
 
 userPlacesRoutes.put('/:placeId', async (context) => {

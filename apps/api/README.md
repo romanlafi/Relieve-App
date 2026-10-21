@@ -14,11 +14,18 @@ Consultar [DEPLOYMENT.md](./DEPLOYMENT.md) para configurar cuenta y dominio.
 | GET    | `/user/places`          | Array de relaciones personales                                 |
 | GET    | `/user/places/:placeId` | Relación personal, o `null` si el lugar existe sin registro    |
 | PUT    | `/user/places/:placeId` | Upsert; devuelve la relación guardada                          |
-| DELETE | `/user/places/:placeId` | 204; elimina exclusivamente la relación personal               |
+| DELETE | `/user/places/:placeId` | 204; elimina la relación personal y su historial                |
+| GET    | `/user/places/:placeId/visits` | Historial de fechas de visita del lugar                    |
+| POST   | `/user/places/:placeId/visits` | Añade una fecha y deja el estado actual como visitado      |
+| DELETE | `/user/places/:placeId/visits/:visitId` | Elimina una fecha de visita                   |
 | GET    | `/stats`                | Progreso agregado del catálogo completo para el usuario actual |
 
-`/stats` devuelve total, visited, pending, favorites, byType, threeThousands y
-highestPeak. Los contadores se agregan en SQL sobre un LEFT JOIN limitado al
+`/stats` devuelve total, visited, pending, favorites, byType, byRegion, byYear,
+threeThousands y highestPeak. `byRegion` agrega cada región junto a sus
+descendientes; los totales de regiones anidadas pueden solaparse. `byYear`
+cuenta fechas registradas, incluidas varias visitas al mismo lugar y año.
+Las fechas anteriores guardadas en `user_places` se migran al historial nuevo.
+Los contadores se agregan en SQL sobre un LEFT JOIN limitado al
 usuario autenticado; el pico más alto excluye alturas desconocidas y tiene
 desempate estable. Los tresmiles cuentan únicamente picos de altitud conocida
 mayor o igual a 3000 m. Los filtros del mapa no modifican este resumen.
@@ -48,16 +55,18 @@ DELETE es idempotente para un lugar existente, aunque no tuviera registro.
   los defaults son `pending`, `favorite: false`, fecha y notas nulas.
   Por tanto, un PUT de solo favorito sobre un lugar sin registro crea un pendiente.
 - Pasar de `visited` a `pending` **borra siempre `visitedAt`**, incluso cuando
-  se omite el campo. Conserva favorito y notas. Volver a visitado no recupera
-  la fecha anterior. Un visitado sin fecha es válido.
+  se omite el campo. Conserva favorito, notas e historial. Volver a visitado
+  no restaura la fecha principal. Un visitado sin fecha es válido.
 - Una fecha no nula requiere estado efectivo `visited`: se rechaza si se
   envía junto a `pending`, o sin estado sobre un pendiente/sin registro.
-  En un visitado existente se puede actualizar solo la fecha.
+  En un visitado existente se puede guardar una fecha sin cambiar notas o favorito;
+  las fechas nuevas también se agregan al historial, sin duplicar el mismo día.
 
 Se conserva el tipo `timestamptz` del esquema existente: las fechas nuevas se
 almacenan a medianoche UTC y los DTO usan la fecha UTC, sin conversiones de
-zona local. No se necesita una migración. Si se admiten horas de visita en
-el futuro, habrá que revisar este contrato de fecha sin hora.
+zona local. El historial usa una fecha SQL y no admite horas. Pasar a pendiente
+limpia la fecha principal, pero conserva visitas anteriores; quitar el registro
+personal elimina también su historial.
 
 ## Separación y concurrencia
 
@@ -89,12 +98,17 @@ mantienen `DATABASE_URL_DIRECT`; ninguna credencial se envía al frontend.
 /places?favorite=true
 /places?type=peak&region=valle-de-benasque&status=pending
 /places?region=pirineo-aragones&north=42.9&south=42.5&east=0.7&west=-0.9
+/places?massif=ordesa-monte-perdido&elevationMin=2500&elevationMax=3500
 ```
 
 `type`: peak/lake/hut/pass/viewpoint; `status`: pending/visited/unregistered.
 `favorite` acepta exclusivamente `true` o `false`, no coerción de strings a truthy.
 `favorite=false` selecciona relaciones registradas no favoritas, no filas ausentes;
 para ausencia se usa `status=unregistered` (userState null, sin crear pendientes).
+`massif` admite el slug de una región de tipo macizo. `elevationMin` y
+`elevationMax` admiten cotas enteras entre -500 y 9000 m; si se envían ambas,
+la mínima no puede superar la máxima. Las cotas nulas no coinciden con filtros
+de altitud. Región y macizo pueden combinarse y se intersectan.
 
 La región se identifica por slug. Una CTE recursiva obtiene la región y sus
 descendientes a través de parent_id; usa UNION para no repetir IDs y terminar

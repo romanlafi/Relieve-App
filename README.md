@@ -154,8 +154,11 @@ estáticos; `npm run build` compila primero la web y valida el Worker con dry-ru
 La configuración local sigue funcionando sin build previo. Consultar
 [publicación y Cloudflare Access](./apps/api/DEPLOYMENT.md) para dominio,
 políticas y variables. No se han creado recursos ni publicado la aplicación.
-Estadísticas por región/macizo/año y edición de lugares globales siguen
-pendientes. El estado de fases se registra al principio de `PROJECT_GUIDE.md`.
+El panel de progreso incluye estadísticas por región/macizo y año. El historial
+personal conserva varias fechas por lugar y las estadísticas anuales cuentan
+cada visita registrada, incluso si repites un lugar. La edición de lugares
+globales sigue pendiente.
+El estado de fases se registra al principio de `PROJECT_GUIDE.md`.
 
 ## Previews de Cloudflare Workers
 

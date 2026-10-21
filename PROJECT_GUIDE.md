@@ -7,9 +7,9 @@ Este apartado registra el estado real; las fases siguientes siguen siendo el roa
 - Fases 0–4 implementadas: monorepo, Neon/PostGIS, dataset de 74 lugares, API, mapa 3D y registro personal persistente.
 - Segunda milestone completada: seleccionar un lugar, guardar una visita y actualizar mapa y estadísticas sin recargar.
 - Fase 5: tokens y paneles coherentes, búsqueda por nombre entre resultados filtrados, ficha con región y coordenadas.
-- Fase 6: filtros por tipo, estado, favoritos y región con descendientes. Altitud y macizos siguen pendientes.
+- Fase 6: filtros por tipo, estado, favoritos, región, macizo y rango de altitud con descendientes.
 - Fase 7: resumen SQL del catálogo completo: visitados por tipo, pendientes, favoritos, tresmiles con altitud conocida y
-  pico más alto visitado. Desgloses por región/macizo/año pendientes.
+  pico más alto visitado, con desgloses por región/macizo/año.
 - Fase 8: barra de controles desplazable y ficha inferior en móvil, con comprobación en navegador. Queda pulido
   adicional con uso real.
 - Producción preparada: web estática y `/api/*` en un mismo Worker, validación de sesiones Cloudflare Access y
@@ -17,6 +17,9 @@ Este apartado registra el estado real; las fases siguientes siguen siendo el roa
 - Pendiente externo para publicar: dominio, aplicación/política de Access, audience y secreto de base de datos en
   Cloudflare. No se ha desplegado.
 - Primera versión GPX implementada: rutas privadas PostGIS, segmentos fieles, métricas, mapa 3D y confirmación manual de lugares a 100 m. Decisiones y límites en `docs/GPX_ROUTES.md`.
+- Historial de visitas implementado con registros fechados por usuario y lugar.
+  Las estadísticas anuales cuentan visitas repetidas y la migración conserva
+  las fechas existentes.
 
 Para ejecutar y publicar, consultar `README.md` y `apps/api/DEPLOYMENT.md`.
 
@@ -530,6 +533,10 @@ created_at
 updated_at
 ```
 
+Las visitas fechadas repetidas se conservan en `user_place_visits`, vinculadas
+a la relación personal. El estado actual y sus notas/favoritos siguen en
+`user_places`; cambiar a pendiente no borra el historial.
+
 Preferencia:
 
 ```text
@@ -983,6 +990,9 @@ Ejemplo:
 GET /user/places
 PUT /user/places/:placeId
 DELETE /user/places/:placeId
+GET /user/places/:placeId/visits
+POST /user/places/:placeId/visits
+DELETE /user/places/:placeId/visits/:visitId
 ```
 
 Ejemplo:

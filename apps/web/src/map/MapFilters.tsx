@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import type {PlaceFilters, PlaceType} from '@relieve/shared';
 import type {useRegions} from './useRegions';
 import type {PersonalFilter} from './placeFilters';
@@ -11,6 +12,8 @@ interface Props {
 }
 
 export function MapFilters({filters, disabled, onChange, regionState}: Props) {
+    const [minimumInput, setMinimumInput] = useState(String(filters.elevationMin ?? ''));
+    const [maximumInput, setMaximumInput] = useState(String(filters.elevationMax ?? ''));
     const {regions, status, retry} = regionState;
     const personal: PersonalFilter = filters.favorite === true ? 'favorite' : filters.status ?? 'all';
     const activeCount = Object.values(filters).filter((value) => value !== undefined).length;
@@ -29,6 +32,12 @@ export function MapFilters({filters, disabled, onChange, regionState}: Props) {
     }
 
     visit(null, 0);
+    const massifs = regions.filter((region) => region.type === 'massif');
+    const minimum = minimumInput === '' ? undefined : Number(minimumInput);
+    const maximum = maximumInput === '' ? undefined : Number(maximumInput);
+    const validElevationRange = [minimum, maximum].every((value) => value === undefined
+        || (Number.isInteger(value) && value >= -500 && value <= 9000))
+        && (minimum === undefined || maximum === undefined || minimum <= maximum);
 
     return <details className={styles.panel}>
         <summary className={styles.summary}>Filtros del
@@ -70,6 +79,47 @@ export function MapFilters({filters, disabled, onChange, regionState}: Props) {
                     </option>)}
                 </select>
             </label>
+            <label className={styles.label}>Macizo
+                <select id="map-filter-massif" className={styles.select} disabled={disabled || status !== 'ready'}
+                        value={filters.massif ?? ''}
+                        onChange={(event) => onChange({...filters, massif: event.target.value || undefined})}>
+                    <option value="">Todos los macizos</option>
+                    {massifs.map((region) => <option key={region.id} value={region.slug}>{region.name}</option>)}
+                </select>
+            </label>
+            <details>
+                <summary>Altitud</summary>
+                <form className={styles.fields} onSubmit={(event) => {
+                    event.preventDefault();
+                    if (validElevationRange) onChange({...filters, elevationMin: minimum, elevationMax: maximum});
+                }}>
+                    <label className={styles.label}>Mínima (m)
+                        <input className={styles.numberInput} type="number" min={-500} max={9000} step={1}
+                               value={minimumInput} disabled={disabled}
+                               onChange={(event) => setMinimumInput(event.target.value)}/>
+                    </label>
+                    <label className={styles.label}>Máxima (m)
+                        <input className={styles.numberInput} type="number" min={-500} max={9000} step={1}
+                               value={maximumInput} disabled={disabled}
+                               onChange={(event) => setMaximumInput(event.target.value)}/>
+                    </label>
+                    {!validElevationRange && <p className={styles.message} role="alert">
+                        Revisa el rango: usa cotas entre -500 y 9000 m y la mínima no puede superar la máxima.
+                    </p>}
+                    <p className={styles.message}>Los lugares sin altitud conocida no aparecen al filtrar.</p>
+                    <button className={styles.button} type="submit" disabled={disabled || !validElevationRange}>
+                        Aplicar altitud
+                    </button>
+                    <button className={styles.button} type="button"
+                            disabled={disabled || (filters.elevationMin === undefined && filters.elevationMax === undefined
+                                && !minimumInput && !maximumInput)}
+                            onClick={() => {
+                                setMinimumInput('');
+                                setMaximumInput('');
+                                onChange({...filters, elevationMin: undefined, elevationMax: undefined});
+                            }}>Quitar altitud</button>
+                </form>
+            </details>
             {status === 'loading' && <p className={styles.message} role="status">Cargando regiones…</p>}
             {status === 'error' && <p className={styles.message} role="alert">No se han podido cargar las regiones.
                 <button type="button" className={styles.select} onClick={retry}>Reintentar regiones</button>

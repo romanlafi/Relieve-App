@@ -7,6 +7,7 @@ import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import type {PlacesGeoJson} from './placesGeoJson';
 import {
     configureBasemapImages,
+    configurePlaceIcons,
     hillshadeLayer,
     hillshadeLayerId,
     hillshadeSourceId,
@@ -14,7 +15,15 @@ import {
     terrainSource,
     terrainSourceId,
 } from './mapConfig';
-import {placesLayer, placesLayerId, placesSourceId} from './layers/placesLayer';
+import {
+    placesFavoritesLayer,
+    placesFavoritesLayerId,
+    placesIconsLayer,
+    placesIconsLayerId,
+    placesLayer,
+    placesLayerId,
+    placesSourceId,
+} from './layers/placesLayer';
 
 setWorkerUrl(workerUrl);
 
@@ -125,6 +134,9 @@ export function usePlacesMap(container: React.RefObject<HTMLDivElement | null>, 
             map.addSource(routesSourceId, {type: 'geojson', data: {type: 'FeatureCollection', features: []}});
             map.addLayer(routesLayer);
             map.addLayer(placesLayer);
+            configurePlaceIcons(map);
+            map.addLayer(placesIconsLayer);
+            map.addLayer(placesFavoritesLayer);
             if (dataRef.current.features.length > 0 && !framedPlaces.current) {
                 framePlaces(map, dataRef.current);
                 framedPlaces.current = true;
@@ -163,9 +175,11 @@ export function usePlacesMap(container: React.RefObject<HTMLDivElement | null>, 
 
         map.on('load', onLoad);
         map.on('error', onError);
-        map.on('click', placesLayerId, onClick);
-        map.on('mouseenter', placesLayerId, onEnter);
-        map.on('mouseleave', placesLayerId, onLeave);
+        for (const layerId of [placesLayerId, placesIconsLayerId, placesFavoritesLayerId]) {
+            map.on('click', layerId, onClick);
+            map.on('mouseenter', layerId, onEnter);
+            map.on('mouseleave', layerId, onLeave);
+        }
         const resizeObserver = new ResizeObserver(() => map.resize());
         resizeObserver.observe(container.current);
 
@@ -174,9 +188,11 @@ export function usePlacesMap(container: React.RefObject<HTMLDivElement | null>, 
             resizeObserver.disconnect();
             map.off('load', onLoad);
             map.off('error', onError);
-            map.off('click', placesLayerId, onClick);
-            map.off('mouseenter', placesLayerId, onEnter);
-            map.off('mouseleave', placesLayerId, onLeave);
+            for (const layerId of [placesLayerId, placesIconsLayerId, placesFavoritesLayerId]) {
+                map.off('click', layerId, onClick);
+                map.off('mouseenter', layerId, onEnter);
+                map.off('mouseleave', layerId, onLeave);
+            }
             map.remove();
             mapRef.current = null;
             framedPlaces.current = false;

@@ -22,3 +22,8 @@ export const button = style({
     ':disabled': {opacity: 0.6, cursor: 'wait'},
 });
 export const message = style({margin: 0, color: vars.color.textMuted, fontSize: '0.75rem'});
+export const visitHistory = style({display: 'grid', gap: vars.space.sm, marginTop: vars.space.md});
+export const visitHeading = style({margin: 0, fontSize: '0.9rem'});
+export const visitList = style({display: 'grid', gap: vars.space.sm, listStyle: 'none', padding: 0, margin: 0});
+export const visitItem = style({display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: vars.space.sm});
+export const visitDateField = style({flex: 1, minWidth: 0});

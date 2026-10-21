@@ -95,6 +95,16 @@ export const userPlaces = pgTable('user_places', {
     check('user_places_visit_status', sql`${table.status} = 'visited' OR ${table.visitedAt} IS NULL`),
 ]);
 
+export const userPlaceVisits = pgTable('user_place_visits', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userPlaceId: uuid('user_place_id').notNull().references(() => userPlaces.id, {onDelete: 'cascade'}),
+    visitedAt: date('visited_at').notNull(),
+    createdAt: timestamp('created_at', {withTimezone: true}).notNull().defaultNow(),
+}, (table) => [
+    uniqueIndex('user_place_visits_user_place_date_idx').on(table.userPlaceId, table.visitedAt),
+    index('user_place_visits_visited_at_idx').on(table.visitedAt),
+]);
+
 // Generic typmod accepts both XYZ tracks and XY tracks without fabricated elevations.
 const routeGeometry = customType<{data: string}>({dataType: () => 'geometry'});
 export const routes = pgTable('routes', {

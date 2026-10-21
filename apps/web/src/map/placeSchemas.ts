@@ -1,5 +1,5 @@
 import {z} from 'zod';
-import type {PlaceWithUserState, UserPlace} from '@relieve/shared';
+import type {PlaceVisit, PlaceWithUserState, UserPlace} from '@relieve/shared';
 
 export const userPlaceStateSchema = z.object({
     status: z.enum(['pending', 'visited']),
@@ -9,6 +9,12 @@ export const userPlaceStateSchema = z.object({
 });
 
 export const userPlaceSchema: z.ZodType<UserPlace> = userPlaceStateSchema.extend({placeId: z.uuid()});
+
+export const placeVisitSchema: z.ZodType<PlaceVisit> = z.object({
+    id: z.uuid(), placeId: z.uuid(), visitedAt: z.iso.date(),
+});
+
+export const placeVisitsSchema: z.ZodType<PlaceVisit[]> = z.array(placeVisitSchema);
 
 export const placesSchema: z.ZodType<PlaceWithUserState[]> = z.array(z.object({
     id: z.uuid(),

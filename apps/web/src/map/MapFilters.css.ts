@@ -13,4 +13,13 @@ export const select = style({
     width: '100%', font: 'inherit', color: vars.color.text, background: vars.color.background,
     border: `1px solid ${vars.color.border}`, borderRadius: vars.radius.sm, padding: vars.space.sm,
 });
+export const numberInput = style({
+    width: '100%', font: 'inherit', color: vars.color.text, background: vars.color.background,
+    border: `1px solid ${vars.color.border}`, borderRadius: vars.radius.sm, padding: vars.space.sm,
+});
+export const button = style({
+    width: '100%', font: 'inherit', color: vars.color.text, background: vars.color.background,
+    border: `1px solid ${vars.color.border}`, borderRadius: vars.radius.sm, padding: vars.space.sm,
+    cursor: 'pointer', ':disabled': {cursor: 'not-allowed', opacity: 0.55},
+});
 export const message = style({margin: 0, color: vars.color.textMuted});

@@ -8,6 +8,7 @@ import {placesToGeoJson, visiblePlaceTypes} from './placesGeoJson';
 import {usePlaces} from './usePlaces';
 import {usePlacesMap} from './usePlacesMap';
 import {PlacePersonalForm} from './PlacePersonalForm';
+import {PlaceVisitHistory} from './PlaceVisitHistory';
 import {MapFilters} from './MapFilters';
 import {useRegions} from './useRegions';
 import {StatsSummary} from './StatsSummary';
@@ -130,6 +131,7 @@ export function MapView() {
                 </span>)}
                 <span className={styles.legendItem}><span className={styles.pendingSwatch} aria-hidden="true"/>Pendiente: hueco</span>
                 <span className={styles.legendItem}><span className={styles.visitedSwatch} aria-hidden="true"/>Visitado: borde claro</span>
+                <span className={styles.legendItem}><span className={styles.favoriteSwatch} aria-hidden="true">★</span>Favorito</span>
             </div>
             {selectedPlace && <aside className={styles.details} aria-label="Lugar seleccionado"
                                      data-place-id={selectedPlace.id}>
@@ -147,8 +149,10 @@ export function MapView() {
                     <dt>Coordenadas</dt>
                     <dd>{selectedPlace.latitude.toFixed(5)}, {selectedPlace.longitude.toFixed(5)}</dd>
                 </dl>
-                <PlacePersonalForm key={selectedPlace.id} place={selectedPlace} saveState={personalSave}
+                <PlacePersonalForm key={`${selectedPlace.id}-${selectedPlace.userState?.status ?? ''}`}
+                                   place={selectedPlace} saveState={personalSave}
                                    onSave={saveUserPlace}/>
+                <PlaceVisitHistory key={selectedPlace.id} placeId={selectedPlace.id} onChanged={visitsChanged}/>
             </aside>}
         </section>
     );

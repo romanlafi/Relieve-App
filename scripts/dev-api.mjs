@@ -6,6 +6,18 @@ import {loadEnvFile} from 'node:process';
 import {fileURLToPath} from 'node:url';
 
 const root = new URL('../', import.meta.url);
+const npmCli = process.env.npm_execpath;
+if (!npmCli) throw new Error('npm_execpath is required to build the database package');
+for (const workspace of ['@relieve/shared', '@relieve/database']) {
+    const build = spawn(process.execPath, [npmCli, 'run', 'build', `--workspace=${workspace}`], {
+        cwd: fileURLToPath(root), stdio: 'inherit',
+    });
+    const buildExitCode = await new Promise((resolve, reject) => {
+        build.once('error', reject);
+        build.once('exit', (code) => resolve(code ?? 0));
+    });
+    if (buildExitCode !== 0) process.exit(buildExitCode);
+}
 try {
     loadEnvFile(fileURLToPath(new URL('.env', root)));
 } catch (error) {

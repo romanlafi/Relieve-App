@@ -1,4 +1,4 @@
-import {and, eq, isNull, sql} from 'drizzle-orm';
+import {and, eq, gte, isNull, lte, sql} from 'drizzle-orm';
 import type {Place, PlaceFilters, PlaceWithUserState} from '@relieve/shared';
 import type {Database} from './client.js';
 import {places, regions, userPlaces} from './schema/index.js';
@@ -34,13 +34,17 @@ export async function listPlacesForUser(database: Database, userId: string, filt
     if (filters.status === 'unregistered') conditions.push(isNull(userPlaces.id));
     else if (filters.status) conditions.push(eq(userPlaces.status, filters.status));
     if (filters.favorite !== undefined) conditions.push(eq(userPlaces.favorite, filters.favorite));
-    if (filters.region) conditions.push(sql`${places.regionId} IN (
+    const regionContainsPlace = (slug: string) => sql`${places.regionId} IN (
         WITH RECURSIVE descendants AS (
-            SELECT id FROM ${regions} WHERE slug = ${filters.region}
+            SELECT id FROM ${regions} WHERE slug = ${slug}
             UNION
             SELECT child.id FROM ${regions} child JOIN descendants parent ON child.parent_id = parent.id
         ) SELECT id FROM descendants
-    )`);
+    )`;
+    if (filters.region) conditions.push(regionContainsPlace(filters.region));
+    if (filters.massif) conditions.push(regionContainsPlace(filters.massif));
+    if (filters.elevationMin !== undefined) conditions.push(gte(places.elevation, filters.elevationMin));
+    if (filters.elevationMax !== undefined) conditions.push(lte(places.elevation, filters.elevationMax));
     if (filters.west !== undefined && filters.south !== undefined && filters.east !== undefined && filters.north !== undefined) {
         conditions.push(sql`${places.location} && ST_MakeEnvelope(${filters.west}, ${filters.south}, ${filters.east}, ${filters.north}, 4326)`);
     }

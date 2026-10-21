@@ -9,12 +9,12 @@
 - `placesGeoJson.ts`: conversión de DTOs a `FeatureCollection<Point>` con orden
   `[longitude, latitude]`. Solo se representan peak, lake y hut; el UUID se
   conserva como `feature.id` y en las propiedades.
-- `layers/placesLayer.ts`: una source GeoJSON y una capa circle con colores de
-  los tokens para diferenciar los tipos. Sin Marker DOM por lugar.
+- `layers/placesLayer.ts`: una source GeoJSON con círculos de estado y una capa
+  de iconos superpuesta para distinguir picos, lagos y refugios. Sin Marker DOM.
 - `usePlacesMap.ts`: instancia MapLibre, eventos, ResizeObserver, actualización
   con `setData`, selección mediante feature-state y limpieza al desmontar.
-- `mapConfig.ts`: cámara inicial, proveedores, terrain, hillshade y adaptación
-  mínima de los sprites del mapa base.
+- `mapConfig.ts`: cámara inicial, proveedores, terrain, hillshade y sprites
+  canvas para los iconos propios y el mapa base.
 - `placeSchemas.ts`: validación de DTOs de lectura y respuestas de guardado.
 - `PlacePersonalForm.tsx` y `.css.ts`: controles HTML accesibles para el registro
   personal, sin dependencias de formularios.
@@ -34,16 +34,19 @@ El GeoJSON añade `status` (`unregistered`, `pending`, `visited`) y `favorite`;
 las notas y fechas no se copian a la source cartográfica. `setData()` actualiza
 la source existente, conservando UUIDs, selección, cámara e instancia WebGL.
 
-Se mantiene el color de tipo. Pendiente: círculo casi hueco con borde del tipo.
+Se mantiene el color de tipo y se añade un pictograma claro de montaña, agua o
+refugio. Pendiente: círculo casi hueco con borde del tipo y pictograma atenuado.
 Visitado: relleno del tipo y borde claro grueso. Sin registro: relleno del tipo
 y borde oscuro fino. La selección aumenta el tamaño y resalta el borde. Son
 expresiones de MapLibre, sin Markers DOM ni una segunda paleta de estados.
-El favorito se indica y edita en el panel; su iconografía en el mapa queda
-pendiente para evitar sobrecargar esta primera capa.
+El favorito se indica y edita en el panel y aparece como una estrella dorada
+junto al icono del lugar, también reflejada en la leyenda.
 
 Pasar a pendiente elimina la fecha de visita, pero conserva notas y favorito.
-El panel permite dejar la fecha vacía para un visitado. Quitar registro borra
-también favorito, fecha y notas de la relación, nunca el lugar global.
+El historial fechado permite registrar y eliminar varias visitas al mismo
+lugar. Cambiar el estado actual a pendiente conserva esas visitas; quitar el
+registro personal borra también su historial, favorito y notas, nunca el lugar
+global.
 
 ## React y MapLibre
 
@@ -140,6 +143,9 @@ El alcance inicial se configura con el slug público `pirineo-aragones`, no un
 UUID. La lista, nombres, tipos y relaciones de regiones siempre llegan de la API.
 
 Cambiar filtros aborta la lectura anterior y elimina la selección anterior.
+Los filtros combinan tipo, estado personal, región, macizo y rango de altitud.
+La altitud se aplica al confirmar y excluye lugares sin cota conocida; macizo
+se combina con región como una intersección de ambas áreas.
 La respuesta valida el contrato e instala el nuevo GeoJSON con setData (), sin
 recrear instancia, listeners o canvas. Cambiar región encuadra una vez sus datos;
 cambiar tipo/estado o guardar no vuelve a mover la cámara. El encuadre desktop

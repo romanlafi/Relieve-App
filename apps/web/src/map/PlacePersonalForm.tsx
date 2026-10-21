@@ -12,25 +12,21 @@ interface Props {
 export function PlacePersonalForm({place, saveState, onSave}: Props) {
     const [status, setStatus] = useState<PlaceStatus | ''>(place.userState?.status ?? '');
     const [favorite, setFavorite] = useState(place.userState?.favorite ?? false);
-    const [visitedAt, setVisitedAt] = useState(place.userState?.visitedAt ?? '');
     const [notes, setNotes] = useState(place.userState?.notes ?? '');
     const busy = saveState?.status === 'saving';
     const currentSave = saveState?.placeId === place.id ? saveState.status : null;
     const hasChanges = status !== (place.userState?.status ?? '')
         || favorite !== (place.userState?.favorite ?? false)
-        || visitedAt !== (place.userState?.visitedAt ?? '')
         || notes !== (place.userState?.notes ?? '');
 
     async function save(remove = false) {
         if (busy || (!remove && (!status || !hasChanges))) return;
         const saved = await onSave(place.id, remove ? null : {
             status: status || 'pending', favorite, notes: notes || null,
-            visitedAt: status === 'visited' ? visitedAt || null : null,
         });
         if (saved !== undefined) {
             setStatus(saved?.status ?? '');
             setFavorite(saved?.favorite ?? false);
-            setVisitedAt(saved?.visitedAt ?? '');
             setNotes(saved?.notes ?? '');
         }
     }
@@ -47,7 +43,6 @@ export function PlacePersonalForm({place, saveState, onSave}: Props) {
                 <select className={styles.control} value={status} onChange={(event) => {
                     const next = event.target.value as PlaceStatus | '';
                     setStatus(next);
-                    if (next !== 'visited') setVisitedAt('');
                 }}>
                     <option value="" disabled>Sin registrar</option>
                     <option value="pending">Pendiente</option>
@@ -58,15 +53,11 @@ export function PlacePersonalForm({place, saveState, onSave}: Props) {
                 <input type="checkbox" checked={favorite} disabled={!status}
                        onChange={(event) => setFavorite(event.target.checked)}/> Favorito
             </label>
-            <label className={styles.field}>Fecha de visita
-                <input className={styles.control} type="date" value={visitedAt} disabled={status !== 'visited'}
-                       onChange={(event) => setVisitedAt(event.target.value)}/>
-            </label>
             <label className={styles.field}>Notas
                 <textarea className={styles.notes} value={notes} maxLength={5000} disabled={!status}
                           onChange={(event) => setNotes(event.target.value)}/>
             </label>
-            <p className={styles.message}>Al pasar a pendiente se elimina la fecha, no el favorito ni las notas.</p>
+            <p className={styles.message}>El historial de visitas se conserva aunque cambies el estado actual.</p>
             <div className={styles.actions}>
                 <button className={styles.button} type="submit" disabled={!status || !hasChanges}>Guardar</button>
                 <button className={styles.button} type="button" disabled={!place.userState}

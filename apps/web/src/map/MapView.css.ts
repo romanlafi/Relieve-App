@@ -31,7 +31,7 @@ export const section = style({
 });
 export const summary = style({cursor: 'pointer', fontWeight: 600});
 export const muted = style({margin: 0, color: vars.color.textMuted, fontSize: '0.75rem'});
-export const progressRow = style({display: 'grid', gridTemplateColumns: '1fr auto', gap: vars.space.sm});
+export const progressRow = style({display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto', gap: vars.space.sm});
 export const progress = style({width: '100%', height: '6px', gridColumn: '1 / -1', accentColor: vars.color.hut});
 export const metadata = style({
     display: 'grid', gridTemplateColumns: 'auto 1fr', gap: vars.space.sm,
@@ -70,6 +70,7 @@ export const visitedSwatch = style([swatchBase, {
     background: vars.color.textMuted,
     border: `2px solid ${vars.color.text}`
 }]);
+export const favoriteSwatch = style({color: vars.color.route, fontSize: '14px', lineHeight: 1});
 export const swatch = styleVariants({
     peak: {background: vars.color.peak}, lake: {background: vars.color.lake}, hut: {background: vars.color.hut},
 }, (color) => [swatchBase, color]);

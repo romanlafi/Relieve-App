@@ -11,3 +11,5 @@ export const updateUserPlaceSchema = z.strictObject({
     .refine((input) => !(input.status === 'pending' && input.visitedAt), {
         message: 'A pending place cannot have a visit date', path: ['visitedAt'],
     });
+
+export const addPlaceVisitSchema = z.strictObject({visitedAt: z.iso.date()});

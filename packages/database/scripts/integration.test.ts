@@ -14,7 +14,7 @@ import {createDatabase} from '../src/client.js';
 import {listPlacesForUser} from '../src/places.js';
 import {getPersonalStats} from '../src/stats.js';
 import {resolveAccessUser} from '../src/users.js';
-import {deleteUserPlace, upsertUserPlace} from '../src/userPlaces.js';
+import {addUserPlaceVisit, deleteUserPlace, deleteUserPlaceVisit, listUserPlaceVisits, upsertUserPlace} from '../src/userPlaces.js';
 import {places, userPlaces, users} from '../src/schema/index.js';
 import {databaseUrl} from './environment.js';
 import {loadDataset} from './dataset.js';
@@ -56,6 +56,21 @@ test('signed Access sessions resolve separate users throughout personal API read
             body: JSON.stringify({status: 'visited'}),
         }, environment);
         assert.equal(saved.status, 200);
+        const addedVisit = await app.request(`https://example.com/user/places/${place.id}/visits`, {
+            method: 'POST',
+            headers: {...headers, 'Content-Type': 'application/json'},
+            body: JSON.stringify({visitedAt: '2026-08-12'}),
+        }, environment);
+        assert.equal(addedVisit.status, 200);
+        const visit = await addedVisit.json() as {id: string; placeId: string; visitedAt: string};
+        assert.deepEqual(visit, {id: visit.id, placeId: place.id, visitedAt: '2026-08-12'});
+        const privateHistory = await app.request(`https://example.com/user/places/${place.id}/visits`,
+            {headers: {'Cf-Access-Jwt-Assertion': secondToken}}, environment);
+        assert.deepEqual(await privateHistory.json(), []);
+        const removedVisit = await app.request(`https://example.com/user/places/${place.id}/visits/${visit.id}`, {
+            method: 'DELETE', headers,
+        }, environment);
+        assert.equal(removedVisit.status, 204);
         const stats = await app.request('https://example.com/stats', {headers}, environment);
         assert.equal(stats.status, 200);
         assert.equal((await stats.json() as { visited: number }).visited, 1);
@@ -283,6 +298,20 @@ test('PostGIS GPX metrics, segment gaps, proximity and atomic confirmations pres
         await confirmVisitedPlaces(database, user, [aneto.place.id], '2026-08-12');
         const personal = (await nearbyRoutePlaces(database, user, route.id)).find((p) => p.place.id === aneto.place.id)?.userState;
         assert.deepEqual(personal, {status: 'visited', visitedAt: '2025-07-01', favorite: true, notes: 'Keep'});
+        const visits = await listUserPlaceVisits(database, user, aneto.place.id);
+        assert.ok(visits);
+        assert.deepEqual(visits.map((visit) => visit.visitedAt), ['2026-08-12', '2025-07-01']);
+        const repeated = await addUserPlaceVisit(database, user, aneto.place.id, '2026-08-12');
+        assert.equal(repeated?.id, visits[0]?.id);
+        const afterDuplicate = await listUserPlaceVisits(database, user, aneto.place.id);
+        assert.ok(afterDuplicate);
+        assert.equal(afterDuplicate.length, 2);
+        const years = (await getPersonalStats(database, user)).byYear;
+        assert.deepEqual(years.map(({year, visited}) => ({year, visited})), [{year: 2026, visited: 1}, {year: 2025, visited: 1}]);
+        assert.equal(await deleteUserPlaceVisit(database, user, aneto.place.id, visits[0]!.id), true);
+        const remainingVisits = await listUserPlaceVisits(database, user, aneto.place.id);
+        assert.ok(remainingVisits);
+        assert.equal(remainingVisits[0]?.visitedAt, '2025-07-01');
         assert.equal((await getPersonalStats(database, user)).visited, 1);
         assert.equal(await deleteRoute(database, user, route.id), true);
         assert.equal(await deleteRoute(database, user, route.id), false);

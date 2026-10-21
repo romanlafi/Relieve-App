@@ -3,7 +3,7 @@ export type {PersonalStats} from './types/stats.js';
 export type {PlaceFilters} from './types/place.js';
 export type {Region, RegionType} from './types/region.js';
 export type {
-    Place, PlaceType, PlaceStatus, PlaceWithUserState, UserPlaceState, UserPlace, UpdateUserPlace
+    Place, PlaceType, PlaceStatus, PlaceWithUserState, UserPlaceState, UserPlace, PlaceVisit, UpdateUserPlace
 } from './types/place.js';
 
 export type {RouteGeometry, RouteSummary, RouteDetail, RouteImport, NearbyRoutePlace} from './types/route.js';

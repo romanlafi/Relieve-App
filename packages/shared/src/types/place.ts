@@ -12,6 +12,12 @@ export interface UserPlace extends UserPlaceState {
     placeId: string;
 }
 
+export interface PlaceVisit {
+    id: string;
+    placeId: string;
+    visitedAt: string;
+}
+
 export interface UpdateUserPlace {
     status?: PlaceStatus | undefined;
     favorite?: boolean | undefined;
@@ -37,8 +43,11 @@ export interface PlaceWithUserState extends Place {
 export interface PlaceFilters {
     type?: PlaceType | undefined;
     region?: string | undefined;
+    massif?: string | undefined;
     status?: PlaceStatus | 'unregistered' | undefined;
     favorite?: boolean | undefined;
+    elevationMin?: number | undefined;
+    elevationMax?: number | undefined;
     north?: number | undefined;
     south?: number | undefined;
     east?: number | undefined;
