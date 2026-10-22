@@ -3,7 +3,7 @@ import {test} from 'node:test';
 import {createLocalJWKSet, exportJWK, generateKeyPair, SignJWT} from 'jose';
 import app from '../src/index.js';
 import worker from '../src/worker.js';
-import {verifyAccessIdentity} from '../src/auth.js';
+import {isCatalogEditor, verifyAccessIdentity} from '../src/auth.js';
 
 const issuer = 'https://relieve-test.cloudflareaccess.com';
 const environment = {DATABASE_URL: '', ACCESS_TEAM_DOMAIN: issuer, ACCESS_AUDIENCE: 'test-audience'};
@@ -44,4 +44,10 @@ test('Access identity requires correct signature, audience, issuer, lifetime and
         .setSubject('identity-1').setIssuedAt().setIssuer(issuer).setAudience('test-audience').setExpirationTime('5m')
         .sign((await generateKeyPair('RS256')).privateKey);
     await assert.rejects(verifyAccessIdentity(forged, issuer, 'test-audience', keys));
+});
+
+test('catalog editor allowlist matches complete email addresses without case sensitivity', () => {
+    assert.equal(isCatalogEditor(' Owner@Example.com ', 'other@example.com,owner@example.com'), true);
+    assert.equal(isCatalogEditor('owner@example.com.evil', 'owner@example.com'), false);
+    assert.equal(isCatalogEditor('owner@example.com', undefined), false);
 });

@@ -1,6 +1,6 @@
 # Proyecto: Mountain App / mapa personal de montaña
 
-## Estado de desarrollo — 6 de octubre de 2026
+## Estado de desarrollo — 22 de octubre de 2026
 
 Este apartado registra el estado real; las fases siguientes siguen siendo el roadmap de referencia.
 
@@ -14,12 +14,16 @@ Este apartado registra el estado real; las fases siguientes siguen siendo el roa
   adicional con uso real.
 - Producción preparada: web estática y `/api/*` en un mismo Worker, validación de sesiones Cloudflare Access y
   separación de usuarios por identidad verificada.
-- Pendiente externo para publicar: dominio, aplicación/política de Access, audience y secreto de base de datos en
-  Cloudflare. No se ha desplegado.
+- Preview `dev` desplegada con Cloudflare Access y Neon de desarrollo; producción no publicada. El dominio y la
+  configuración de producción siguen fuera del alcance actual.
 - Primera versión GPX implementada: rutas privadas PostGIS, segmentos fieles, métricas, mapa 3D y confirmación manual de lugares a 100 m. Decisiones y límites en `docs/GPX_ROUTES.md`.
 - Historial de visitas implementado con registros fechados por usuario y lugar.
   Las estadísticas anuales cuentan visitas repetidas y la migración conserva
   las fechas existentes.
+- Edición del catálogo global: formulario en la ficha, validación y permiso por
+  allowlist de administradores; `CATALOG_EDITOR_EMAILS` configurado para previews.
+- Curación inicial del dataset: cuatro descripciones con fuentes institucionales y cotas oficiales revisadas para
+  Posets y Monte Perdido. La auditoría muestra 64 de 74 cotas aún sin confirmar.
 
 Para ejecutar y publicar, consultar `README.md` y `apps/api/DEPLOYMENT.md`.
 

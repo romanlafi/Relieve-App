@@ -153,11 +153,15 @@ La configuración de producción reúne web y `/api/*` en un Worker con assets
 estáticos; `npm run build` compila primero la web y valida el Worker con dry-run.
 La configuración local sigue funcionando sin build previo. Consultar
 [publicación y Cloudflare Access](./apps/api/DEPLOYMENT.md) para dominio,
-políticas y variables. No se han creado recursos ni publicado la aplicación.
+políticas y variables. La preview `dev` está desplegada; producción aún no se ha publicado.
 El panel de progreso incluye estadísticas por región/macizo y año. El historial
 personal conserva varias fechas por lugar y las estadísticas anuales cuentan
-cada visita registrada, incluso si repites un lugar. La edición de lugares
-globales sigue pendiente.
+cada visita registrada, incluso si repites un lugar. La edición del catálogo
+global está restringida a los emails de `CATALOG_EDITOR_EMAILS`; en local se
+habilita con `LOCAL_DEVELOPMENT`. El editor puede actualizar tipo, nombre,
+altitud, región, coordenadas y descripción; el slug se conserva. Para habilitarlo
+en previews, configurar la allowlist en Previews Base config y crear una preview
+nueva para que herede el secreto.
 El estado de fases se registra al principio de `PROJECT_GUIDE.md`.
 
 ## Previews de Cloudflare Workers

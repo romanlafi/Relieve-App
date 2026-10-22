@@ -9,8 +9,10 @@ import {usePlaces} from './usePlaces';
 import {usePlacesMap} from './usePlacesMap';
 import {PlacePersonalForm} from './PlacePersonalForm';
 import {PlaceVisitHistory} from './PlaceVisitHistory';
+import {PlaceCatalogForm} from './PlaceCatalogForm';
 import {MapFilters} from './MapFilters';
 import {useRegions} from './useRegions';
+import {useCatalogAccess} from './useCatalogAccess';
 import {StatsSummary} from './StatsSummary';
 import * as styles from './MapView.css';
 
@@ -25,6 +27,7 @@ export function MapView() {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [search, setSearch] = useState('');
     const regionState = useRegions();
+    const canEditCatalog = useCatalogAccess();
     const [filters, setFilters] = useState<PlaceFilters>({region: 'pirineo-aragones'});
     const {state, retry, personalSave, saveUserPlace, mutationVersion, visitsChanged} = usePlaces(filters);
     const routes = useRoutes(visitsChanged);
@@ -133,7 +136,7 @@ export function MapView() {
                 <span className={styles.legendItem}><span className={styles.visitedSwatch} aria-hidden="true"/>Visitado: borde claro</span>
                 <span className={styles.legendItem}><span className={styles.favoriteSwatch} aria-hidden="true">★</span>Favorito</span>
             </div>
-            {selectedPlace && <aside className={styles.details} aria-label="Lugar seleccionado"
+            {selectedPlace && <aside key={selectedPlace.id} className={styles.details} aria-label="Lugar seleccionado"
                                      data-place-id={selectedPlace.id}>
                 <button className={styles.close} type="button" aria-label="Cerrar lugar seleccionado"
                         onClick={closePlace}>×
@@ -149,6 +152,9 @@ export function MapView() {
                     <dt>Coordenadas</dt>
                     <dd>{selectedPlace.latitude.toFixed(5)}, {selectedPlace.longitude.toFixed(5)}</dd>
                 </dl>
+                {selectedPlace.description && <p className={styles.muted}>{selectedPlace.description}</p>}
+                {canEditCatalog && <PlaceCatalogForm key={selectedPlace.id} place={selectedPlace}
+                                                     regions={regionState.regions} onSaved={visitsChanged}/>}
                 <PlacePersonalForm key={`${selectedPlace.id}-${selectedPlace.userState?.status ?? ''}`}
                                    place={selectedPlace} saveState={personalSave}
                                    onSave={saveUserPlace}/>

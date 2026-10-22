@@ -39,12 +39,15 @@ app.use('/routes/*', authenticate);
 app.use('/places/*', authenticate);
 app.use('/user/places/*', authenticate);
 app.use('/stats/*', authenticate);
+app.use('/me', authenticate);
 
 app.route('/routes', routesHandlers);
 app.route('/places', placesRoutes);
 app.route('/user/places', userPlacesRoutes);
 app.route('/regions', regionsRoutes);
 app.route('/stats', statsRoutes);
+
+app.get('/me', (context) => context.json({canEditCatalog: context.get('canEditCatalog')}));
 
 app.get('/health', (c) => {
     const response: HealthResponse = {status: 'ok'};

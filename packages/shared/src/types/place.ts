@@ -33,6 +33,7 @@ export interface Place {
     elevation: number | null;
     latitude: number;
     longitude: number;
+    description: string | null;
 }
 
 export interface PlaceWithUserState extends Place {

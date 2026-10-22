@@ -1,5 +1,5 @@
 import {and, eq, gte, isNull, lte, sql} from 'drizzle-orm';
-import type {Place, PlaceFilters, PlaceWithUserState} from '@relieve/shared';
+import type {Place, PlaceFilters, PlaceWithUserState, PlaceType} from '@relieve/shared';
 import type {Database} from './client.js';
 import {places, regions, userPlaces} from './schema/index.js';
 import {toUserPlaceState} from './dto/userPlace.js';
@@ -12,7 +12,32 @@ export const placeDto = {
     elevation: places.elevation,
     latitude: sql<number>`ST_Y(${places.location})`.mapWith(Number),
     longitude: sql<number>`ST_X(${places.location})`.mapWith(Number),
+    description: places.description,
 };
+
+export interface CatalogPlaceUpdate {
+    name: string;
+    type: PlaceType;
+    elevation: number | null;
+    latitude: number;
+    longitude: number;
+    regionId: string | null;
+    description: string | null;
+}
+
+export async function updateCatalogPlace(database: Database, id: string,
+                                         input: CatalogPlaceUpdate): Promise<boolean> {
+    const rows = await database.update(places).set({
+        name: input.name,
+        type: input.type,
+        elevation: input.elevation,
+        location: sql`ST_SetSRID(ST_MakePoint(${input.longitude}, ${input.latitude}), 4326)::geometry(Point,4326)`,
+        regionId: input.regionId,
+        description: input.description,
+        updatedAt: new Date(),
+    }).where(eq(places.id, id)).returning({id: places.id});
+    return rows.length > 0;
+}
 
 export function listPlaces(database: Database): Promise<Place[]> {
     return database.select(placeDto).from(places).orderBy(places.name, places.id);

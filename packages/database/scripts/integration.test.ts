@@ -34,22 +34,45 @@ test('signed Access sessions resolve separate users throughout personal API read
     };
     const pool = new pg.Pool({connectionString: databaseUrl('DATABASE_URL_DIRECT'), max: 1});
     try {
-        const token = (identity: string) => new SignJWT({email: 'temporary@example.com'})
+        const token = (identity: string, email = 'temporary@example.com') => new SignJWT({email})
             .setProtectedHeader({alg: 'RS256', kid: 'integration'}).setSubject(identity).setIssuer(issuer)
             .setAudience(audience).setIssuedAt().setExpirationTime('5m').sign(privateKey);
         const environment = {
             DATABASE_URL: databaseUrl('DATABASE_URL'),
             ACCESS_TEAM_DOMAIN: issuer,
-            ACCESS_AUDIENCE: audience
+            ACCESS_AUDIENCE: audience,
+            CATALOG_EDITOR_EMAILS: 'temporary@example.com'
         };
         const firstToken = await token(subject);
-        const secondToken = await token(`${subject}-other`);
+        const secondToken = await token(`${subject}-other`, 'another@example.com');
         const headers = {'Cf-Access-Jwt-Assertion': firstToken};
+        const access = await app.request('https://example.com/me', {headers}, environment);
+        assert.deepEqual(await access.json(), {canEditCatalog: true});
+        const nonEditorAccess = await app.request('https://example.com/me', {
+            headers: {'Cf-Access-Jwt-Assertion': secondToken},
+        }, environment);
+        assert.deepEqual(await nonEditorAccess.json(), {canEditCatalog: false});
         const response = await app.request('https://example.com/places', {headers}, environment);
         assert.equal(response.status, 200);
         const catalog = await response.json() as PlaceWithUserState[];
         const place = catalog[0];
         assert.ok(place);
+        const catalogEdit = await app.request(`https://example.com/places/${place.id}`, {
+            method: 'PUT',
+            headers: {...headers, 'Content-Type': 'application/json'},
+            body: JSON.stringify({name: place.name, type: place.type, elevation: place.elevation,
+                latitude: place.latitude, longitude: place.longitude, regionId: place.regionId,
+                description: place.description}),
+        }, environment);
+        assert.equal(catalogEdit.status, 200);
+        const deniedCatalogEdit = await app.request(`https://example.com/places/${place.id}`, {
+            method: 'PUT',
+            headers: {...{'Cf-Access-Jwt-Assertion': secondToken}, 'Content-Type': 'application/json'},
+            body: JSON.stringify({name: place.name, type: place.type, elevation: place.elevation,
+                latitude: place.latitude, longitude: place.longitude, regionId: place.regionId,
+                description: place.description}),
+        }, environment);
+        assert.equal(deniedCatalogEdit.status, 403);
         const saved = await app.request(`https://example.com/user/places/${place.id}`, {
             method: 'PUT',
             headers: {...headers, 'Content-Type': 'application/json'},
@@ -249,11 +272,21 @@ test('repeated seed preserves IDs, all personal rows and places absent from the 
             });
             const personalBefore = await transaction.select().from(userPlaces).orderBy(userPlaces.id);
             const idsBefore = await transaction.select({id: places.id}).from(places).orderBy(places.id);
+            const curatedPlace = dataset.places.features.find((feature) => feature.properties.description)!;
+            const manuallyDescribedPlace = dataset.places.features.find((feature) => !feature.properties.description)!;
+            await transaction.update(places).set({description: 'Older curated description'})
+                .where(eq(places.id, curatedPlace.id));
+            await transaction.update(places).set({description: 'Manual description'})
+                .where(eq(places.id, manuallyDescribedPlace.id));
             await seedDataset(transaction, dataset);
             await seedDataset(transaction, dataset);
             assert.deepEqual(await transaction.select({id: places.id}).from(places).orderBy(places.id), idsBefore);
             assert.deepEqual(await transaction.select().from(userPlaces).orderBy(userPlaces.id), personalBefore);
             assert.equal((await transaction.select().from(places).where(eq(places.id, absentId))).length, 1);
+            assert.equal((await transaction.select({description: places.description}).from(places)
+                .where(eq(places.id, curatedPlace.id)))[0]?.description, curatedPlace.properties.description);
+            assert.equal((await transaction.select({description: places.description}).from(places)
+                .where(eq(places.id, manuallyDescribedPlace.id)))[0]?.description, 'Manual description');
             throw rollback;
         }), (error: unknown) => error === rollback);
     } finally {

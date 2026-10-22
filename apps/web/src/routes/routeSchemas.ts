@@ -15,6 +15,7 @@ export const routeDetailSchema: z.ZodType<RouteDetail> = z.object({
 });
 export const nearbyPlacesSchema: z.ZodType<NearbyRoutePlace[]> = z.array(z.object({
     place: z.object({id: z.uuid(), name: z.string(), slug: z.string(), type: z.enum(['peak','lake','hut','pass','viewpoint']),
-        elevation: metric.nullable(), longitude: metric.min(-180).max(180), latitude: metric.min(-90).max(90)}),
+        elevation: metric.nullable(), longitude: metric.min(-180).max(180), latitude: metric.min(-90).max(90),
+        description: z.string().nullable()}),
     distanceFromRoute: metric.nonnegative(), userState: userPlaceStateSchema.nullable(),
 }));

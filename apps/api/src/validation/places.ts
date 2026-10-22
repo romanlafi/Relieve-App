@@ -1,5 +1,15 @@
 import {z} from 'zod';
 
+export const updateCatalogPlaceSchema = z.strictObject({
+    name: z.string().trim().min(1).max(200),
+    type: z.enum(['peak', 'lake', 'hut', 'pass', 'viewpoint']),
+    elevation: z.number().int().min(-500).max(9000).nullable(),
+    latitude: z.number().finite().min(-90).max(90),
+    longitude: z.number().finite().min(-180).max(180),
+    regionId: z.uuid().nullable(),
+    description: z.string().trim().max(2000).nullable(),
+});
+
 const coordinate = (minimum: number, maximum: number) => z.string().trim().min(1)
     .transform(Number).pipe(z.number().finite().min(minimum).max(maximum)).optional();
 const elevation = z.string().trim().min(1).transform(Number)

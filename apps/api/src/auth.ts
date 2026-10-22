@@ -5,6 +5,12 @@ import type {ApiEnvironment} from './environment.js';
 
 const keySets = new Map<string, ReturnType<typeof createRemoteJWKSet>>();
 
+export function isCatalogEditor(email: string, configuredEditors: string | undefined): boolean {
+    const normalizedEmail = email.trim().toLocaleLowerCase('en-US');
+    return Boolean(normalizedEmail && configuredEditors?.split(',')
+        .some((editor) => editor.trim().toLocaleLowerCase('en-US') === normalizedEmail));
+}
+
 export async function verifyAccessIdentity(token: string, issuer: string, audience: string,
                                            keys: Parameters<typeof jwtVerify>[1]) {
     const {payload} = await jwtVerify(token, keys, {
@@ -21,6 +27,7 @@ export const authenticate = createMiddleware<ApiEnvironment>(async (context, nex
     const hostname = new URL(context.req.url).hostname;
     if (context.env?.LOCAL_DEVELOPMENT === 'true' && ['localhost', '127.0.0.1', '[::1]'].includes(hostname)) {
         context.set('userId', developmentUserId);
+        context.set('canEditCatalog', true);
         return next();
     }
     const issuer = context.env?.ACCESS_TEAM_DOMAIN;
@@ -43,5 +50,6 @@ export const authenticate = createMiddleware<ApiEnvironment>(async (context, nex
         return context.json({error: {code: 'UNAUTHORIZED', message: 'Invalid or expired session'}}, 401);
     }
     context.set('userId', await resolveAccessUser(createDatabase(context.env.DATABASE_URL), subject, name));
+    context.set('canEditCatalog', isCatalogEditor(name, context.env.CATALOG_EDITOR_EMAILS));
     return next();
 });

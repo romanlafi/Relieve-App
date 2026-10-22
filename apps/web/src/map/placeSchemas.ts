@@ -24,6 +24,7 @@ export const placesSchema: z.ZodType<PlaceWithUserState[]> = z.array(z.object({
     elevation: z.number().finite().nullable(),
     latitude: z.number().min(-90).max(90),
     longitude: z.number().min(-180).max(180),
+    description: z.string().nullable(),
     userState: userPlaceStateSchema.nullable(),
     regionId: z.uuid().nullable(),
 }));

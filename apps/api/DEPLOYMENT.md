@@ -29,6 +29,7 @@ Desde `apps/api`, después de configurar cuenta y dominio:
 npx wrangler secret put DATABASE_URL --config ../../wrangler.jsonc
 npx wrangler secret put ACCESS_TEAM_DOMAIN --config ../../wrangler.jsonc
 npx wrangler secret put ACCESS_AUDIENCE --config ../../wrangler.jsonc
+npx wrangler secret put CATALOG_EDITOR_EMAILS --config ../../wrangler.jsonc
 npx wrangler deploy --config ../../wrangler.jsonc
 ```
 
@@ -57,6 +58,10 @@ Preparar en Cloudflare antes de publicar la primera preview:
    Cloudflare no crea ni aísla automáticamente una base PostGIS externa.
 4. No definir `LOCAL_DEVELOPMENT` en las previews. La API conserva la validación
    JWT existente y rechaza peticiones sin identidad verificada.
+5. Configurar `CATALOG_EDITOR_EMAILS` solo con las identidades autorizadas para
+   editar el catálogo global. Es una lista de emails separados por comas; no
+   conceder el permiso a todos los usuarios de Access. Los cambios de Previews
+   Base solo afectan a previews nuevas.
 
 Los secretos base pueden configurarse desde `apps/api`:
 
@@ -64,6 +69,7 @@ Los secretos base pueden configurarse desde `apps/api`:
 npx wrangler preview base-config secret put DATABASE_URL --config ../../wrangler.jsonc
 npx wrangler preview base-config secret put ACCESS_TEAM_DOMAIN --config ../../wrangler.jsonc
 npx wrangler preview base-config secret put ACCESS_AUDIENCE --config ../../wrangler.jsonc
+npx wrangler preview base-config secret put CATALOG_EDITOR_EMAILS --config ../../wrangler.jsonc
 ```
 
 Se introducen interactivamente y se aplican al crear nuevas previews. Para

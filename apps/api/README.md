@@ -11,6 +11,8 @@ Consultar [DEPLOYMENT.md](./DEPLOYMENT.md) para configurar cuenta y dominio.
 |--------|-------------------------|----------------------------------------------------------------|
 | GET    | `/places`               | Array de lugares con `userState` nullable                      |
 | GET    | `/places/:id`           | Lugar con `userState` nullable                                 |
+| PUT    | `/places/:id`           | Edita datos globales; requiere email en `CATALOG_EDITOR_EMAILS` |
+| GET    | `/me`                   | Indica si el usuario puede editar el catálogo                   |
 | GET    | `/user/places`          | Array de relaciones personales                                 |
 | GET    | `/user/places/:placeId` | Relación personal, o `null` si el lugar existe sin registro    |
 | PUT    | `/user/places/:placeId` | Upsert; devuelve la relación guardada                          |
@@ -34,6 +36,20 @@ La relación expuesta contiene `placeId`, `status`, `favorite`, `visitedAt` y
 `notes`. Dentro de `userState` se omite `placeId`, ya disponible en el lugar.
 Los lugares inexistentes responden 404; los UUID o cuerpos inválidos, 400.
 DELETE es idempotente para un lugar existente, aunque no tuviera registro.
+
+## Edición del catálogo
+
+`PUT /places/:id` requiere autenticación y que el email verificado de Cloudflare
+Access aparezca en `CATALOG_EDITOR_EMAILS`, una lista separada por comas y
+comparada sin distinguir mayúsculas. En desarrollo local, `LOCAL_DEVELOPMENT`
+solo habilita al usuario local en localhost. La API devuelve 403 a los demás;
+ocultar el formulario en la web no sustituye esta comprobación.
+
+El editor puede cambiar nombre, tipo, altitud, región, coordenadas y descripción.
+El slug permanece estable y no se permite crear o borrar registros desde esta
+interfaz. La región debe existir y las coordenadas/altitud se validan antes de
+escribir. Para habilitarlo en Cloudflare, configurar `CATALOG_EDITOR_EMAILS`
+como secreto en el Worker o en Previews Base config.
 
 ## PUT parcial
 

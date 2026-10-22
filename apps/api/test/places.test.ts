@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import app from '../src/index.js';
-import {placeFiltersSchema} from '../src/validation/places.js';
+import {placeFiltersSchema, updateCatalogPlaceSchema} from '../src/validation/places.js';
 
 test('parses combined filters, false booleans and a complete viewport', () => {
     assert.deepEqual(placeFiltersSchema.parse({
@@ -28,6 +28,15 @@ test('rejects invalid API filters before connecting to PostgreSQL', async () => 
         const body = await response.json() as { error: { code: string } };
         assert.equal(body.error.code, 'INVALID_PLACE_FILTERS');
     }
+});
+
+test('validates catalog edits and rejects unknown fields', () => {
+    const valid = {name: 'Aneto', type: 'peak', elevation: 3404, latitude: 42.63, longitude: 0.66,
+        regionId: null, description: null};
+    assert.deepEqual(updateCatalogPlaceSchema.parse(valid), valid);
+    assert.equal(updateCatalogPlaceSchema.safeParse({...valid, elevation: 9001}).success, false);
+    assert.equal(updateCatalogPlaceSchema.safeParse({...valid, latitude: Number.NaN}).success, false);
+    assert.equal(updateCatalogPlaceSchema.safeParse({...valid, extra: true}).success, false);
 });
 
 test('health and invalid IDs retain their existing contracts', async () => {
