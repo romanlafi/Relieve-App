@@ -25,12 +25,13 @@ export async function seedDataset(database: NodePgDatabase, dataset: Dataset) {
             .onConflictDoNothing({target: users.id});
         const regionIds = new Map(dataset.regions.map((region) => [region.slug, region.id]));
         for (const feature of dataset.places.features) {
-            const {name, slug, type, elevation, region} = feature.properties;
+            const {name, slug, type, elevation, region, description} = feature.properties;
             const regionId = regionIds.get(region);
             if (!regionId) throw new Error(`Missing region ${region}`);
             const [longitude, latitude] = feature.geometry.coordinates;
             const values = {
                 name, slug, type, elevation, regionId,
+                ...(description === undefined ? {} : {description}),
                 location: sql`ST_SetSRID(ST_MakePoint(${longitude}, ${latitude}), 4326)`,
             };
             await transaction.insert(places).values({id: feature.id, ...values})

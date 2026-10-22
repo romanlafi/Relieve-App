@@ -7,6 +7,10 @@ seleccionados, incluyendo las cotas reportadas que no se importan automáticamen
 `sources/selection.overpass`: consulta de revisión de esos identificadores, solo
 para preparación de datos; nunca se ejecuta desde la aplicación o el seed.
 
+La auditoría actual registra 4 descripciones editoriales y deja 64 de las 74
+cotas sin confirmar como `null`; `npm run data:check` muestra este resumen por
+tipo para guiar la siguiente revisión sin inventar datos.
+
 | Región de exploración                    | Picos | Ibones | Refugios | Total |
 |------------------------------------------|------:|-------:|---------:|------:|
 | Valle de Benasque                        |     9 |     10 |        4 |    23 |
@@ -32,6 +36,10 @@ npm run test:integration
 
 El importador valida UUIDs, slugs únicos, nombres normalizados, tipos, coordenadas
 finitas/en rango, referencias regionales, padres existentes y ausencia de ciclos.
+Las descripciones editoriales son opcionales, limitadas a 2000 caracteres y
+deben enlazar su evidencia en `additionalSources`. `db:seed` las sincroniza solo
+cuando el dataset contiene el campo; los registros sin descripción no borran una
+descripción editada desde la aplicación.
 Una envolvente de revisión [-0.95, 42.45, 0.8, 42.94] detecta errores evidentes; **no es una frontera regional** ni
 sustituye la procedencia o revisión del lugar.
 

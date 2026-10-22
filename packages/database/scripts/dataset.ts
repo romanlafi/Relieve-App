@@ -16,6 +16,7 @@ const placesSchema = z.object({
             name: z.string().trim().min(1), slug: slugSchema,
             type: z.enum(['peak', 'lake', 'hut']),
             elevation: z.number().int().min(-500).max(9000).nullable(),
+            description: z.string().trim().min(1).max(2000).optional(),
             region: slugSchema, source: z.url(),
             osmId: z.string().regex(/^(node|way|relation)\/[0-9]+$/).optional(),
             wikidataId: z.string().regex(/^Q[0-9]+$/).optional(),

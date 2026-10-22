@@ -9,7 +9,11 @@
         "type": "peak",
         "elevation": 3404,
         "source": "https://es.wikipedia.org/wiki/Pico_Aneto",
-        "region": "valle-de-benasque"
+        "region": "valle-de-benasque",
+        "description": "Cima más alta de los Pirineos, en el macizo Aneto-Maladeta y dentro del Parque Natural Posets-Maladeta.",
+        "additionalSources": [
+          "https://www.aragon.es/documents/20127/95060794/MEMORIA-GESTIONGLACIARES-2012.pdf/8bacd656-f593-1bb8-7b9a-4081664b5f75?t=1684753040609"
+        ]
       },
       "geometry": {
         "type": "Point",
@@ -26,9 +30,13 @@
         "name": "Posets",
         "slug": "posets",
         "type": "peak",
-        "elevation": null,
+        "elevation": 3369,
         "source": "https://es.wikipedia.org/wiki/Pico_Posets",
-        "region": "valle-de-benasque"
+        "region": "valle-de-benasque",
+        "description": "También llamado Llardana, domina los valles de Chistau, Estós y Eriste desde el Parque Natural Posets-Maladeta.",
+        "additionalSources": [
+          "https://www.aragon.es/documents/20127/95060794/MEMORIA-GESTION-GLACIARES-2010-2011.pdf/5b9802c4-eefd-7f6c-08cd-2a524d01e4b4?t=1684753038500"
+        ]
       },
       "geometry": {
         "type": "Point",
@@ -45,9 +53,13 @@
         "name": "Monte Perdido",
         "slug": "monte-perdido",
         "type": "peak",
-        "elevation": null,
+        "elevation": 3355,
         "source": "https://es.wikipedia.org/wiki/Monte_Perdido",
-        "region": "ordesa-monte-perdido"
+        "region": "ordesa-monte-perdido",
+        "description": "Cumbre principal del macizo de Monte Perdido, en el Parque Nacional de Ordesa y Monte Perdido.",
+        "additionalSources": [
+          "https://www.aragon.es/documents/20127/3427740/Ordesa.%2BMemoria%2BRB%2B84014.%2B2018.pdf/50548743-1d51-6675-1b46-cc44b71a7ee8?t=1585302156492"
+        ]
       },
       "geometry": {
         "type": "Point",
@@ -66,7 +78,12 @@
         "type": "lake",
         "elevation": 1910,
         "source": "https://es.wikipedia.org/wiki/Ib%C3%B3n_de_Plan",
-        "region": "pirineo-aragones"
+        "region": "pirineo-aragones",
+        "description": "También conocido como Basa de la Mora, se encuentra en el valle de Chistau, bajo el macizo de Cotiella.",
+        "additionalSources": [
+          "https://www.aragon.es/-/zepa-cotiella-sierra-ferrera",
+          "https://icearagon.aragon.es/toponimia/t22182.htm"
+        ]
       },
       "geometry": {
         "type": "Point",
