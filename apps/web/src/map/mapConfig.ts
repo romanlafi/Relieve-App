@@ -1,5 +1,5 @@
 import type {HillshadeLayerSpecification, Map, MapOptions, RasterDEMSourceSpecification} from 'maplibre-gl';
-import {mapColors, placeColors} from '../styles/theme.css';
+import {mapColors} from '../styles/theme.css';
 
 export const mapConfig = {
     style: 'https://tiles.openfreemap.org/styles/dark',
@@ -45,6 +45,7 @@ export function configurePlaceIcons(map: Map) {
     const size = 64;
     const icons: Record<string, (context: CanvasRenderingContext2D) => void> = {
         'place-peak': (context) => {
+            context.fillStyle = mapColors.background;
             context.beginPath();
             context.moveTo(9, 48);
             context.lineTo(27, 20);
@@ -64,6 +65,7 @@ export function configurePlaceIcons(map: Map) {
             context.fill();
         },
         'place-lake': (context) => {
+            context.strokeStyle = mapColors.text;
             context.lineWidth = 5;
             context.lineCap = 'round';
             context.beginPath();
@@ -76,6 +78,7 @@ export function configurePlaceIcons(map: Map) {
             context.stroke();
         },
         'place-hut': (context) => {
+            context.fillStyle = mapColors.text;
             context.beginPath();
             context.moveTo(9, 31);
             context.lineTo(32, 12);
@@ -86,20 +89,17 @@ export function configurePlaceIcons(map: Map) {
             context.lineTo(15, 31);
             context.closePath();
             context.fill();
-            context.fillStyle = placeColors.hut;
+            context.fillStyle = mapColors.background;
             context.fillRect(28, 36, 9, 14);
         },
         'place-favorite': (context) => {
             context.fillStyle = mapColors.route;
             context.beginPath();
-            for (let point = 0; point < 10; point += 1) {
-                const angle = -Math.PI / 2 + point * Math.PI / 5;
-                const radius = point % 2 === 0 ? 25 : 11;
-                const x = 32 + Math.cos(angle) * radius;
-                const y = 32 + Math.sin(angle) * radius;
-                if (point === 0) context.moveTo(x, y);
-                else context.lineTo(x, y);
-            }
+            context.moveTo(32, 54);
+            context.bezierCurveTo(27, 49, 12, 38, 12, 27);
+            context.bezierCurveTo(12, 15, 26, 14, 32, 24);
+            context.bezierCurveTo(38, 14, 52, 15, 52, 27);
+            context.bezierCurveTo(52, 38, 37, 49, 32, 54);
             context.closePath();
             context.fill();
         },

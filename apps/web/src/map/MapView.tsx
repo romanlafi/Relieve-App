@@ -134,17 +134,23 @@ export function MapView() {
                 </span>)}
                 <span className={styles.legendItem}><span className={styles.pendingSwatch} aria-hidden="true"/>Pendiente: hueco</span>
                 <span className={styles.legendItem}><span className={styles.visitedSwatch} aria-hidden="true"/>Visitado: borde claro</span>
-                <span className={styles.legendItem}><span className={styles.favoriteSwatch} aria-hidden="true">★</span>Favorito</span>
+                <span className={styles.legendItem}><span className={styles.favoriteSwatch} aria-hidden="true">♥</span>Favorito</span>
             </div>
             {selectedPlace && <aside key={selectedPlace.id} className={styles.details} aria-label="Lugar seleccionado"
                                      data-place-id={selectedPlace.id}>
-                <button className={styles.close} type="button" aria-label="Cerrar lugar seleccionado"
-                        onClick={closePlace}>×
-                </button>
-                <p className={styles.type}>{placeTypeLabels[selectedPlace.type]}</p>
-                <h2 className={styles.placeName}>{selectedPlace.name}</h2>
-                <p className={styles.elevation}>{selectedPlace.elevation === null
-                    ? 'Altitud no verificada' : `${elevationFormat.format(selectedPlace.elevation)} m`}</p>
+                <header className={styles.detailsHeader}>
+                    <span className={styles.sheetGrabber} aria-hidden="true"/>
+                    <div className={styles.detailsHeading}>
+                        <p className={styles.type}>{placeTypeLabels[selectedPlace.type]}</p>
+                        <h2 className={styles.placeName}>{selectedPlace.name}</h2>
+                        <p className={styles.elevation}>{selectedPlace.elevation === null
+                            ? 'Altitud no verificada' : `${elevationFormat.format(selectedPlace.elevation)} m`}</p>
+                    </div>
+                    <button className={styles.close} type="button" aria-label="Cerrar lugar seleccionado"
+                            onClick={closePlace}>×
+                    </button>
+                </header>
+                <div className={styles.detailsContent}>
                 <dl className={styles.metadata}>
                     <dt>Región</dt>
                     <dd>{selectedRegion?.name ?? (selectedPlace.regionId
@@ -153,12 +159,13 @@ export function MapView() {
                     <dd>{selectedPlace.latitude.toFixed(5)}, {selectedPlace.longitude.toFixed(5)}</dd>
                 </dl>
                 {selectedPlace.description && <p className={styles.muted}>{selectedPlace.description}</p>}
-                {canEditCatalog && <PlaceCatalogForm key={selectedPlace.id} place={selectedPlace}
+                {canEditCatalog && <PlaceCatalogForm key={`catalog-${selectedPlace.id}`} place={selectedPlace}
                                                      regions={regionState.regions} onSaved={visitsChanged}/>}
-                <PlacePersonalForm key={`${selectedPlace.id}-${selectedPlace.userState?.status ?? ''}`}
+                <PlacePersonalForm key={`personal-${selectedPlace.id}-${selectedPlace.userState?.status ?? ''}`}
                                    place={selectedPlace} saveState={personalSave}
                                    onSave={saveUserPlace}/>
-                <PlaceVisitHistory key={selectedPlace.id} placeId={selectedPlace.id} onChanged={visitsChanged}/>
+                <PlaceVisitHistory key={`visits-${selectedPlace.id}`} placeId={selectedPlace.id} onChanged={visitsChanged}/>
+                </div>
             </aside>}
         </section>
     );

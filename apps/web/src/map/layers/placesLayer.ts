@@ -37,7 +37,7 @@ export const placesIconsLayer: SymbolLayerSpecification = {
     layout: {
         'icon-image': ['match', ['get', 'type'],
             'peak', 'place-peak', 'lake', 'place-lake', 'hut', 'place-hut', 'place-peak'],
-        'icon-size': ['interpolate', ['linear'], ['zoom'], 7, 0.55, 11, 0.7, 15, 0.8],
+        'icon-size': ['interpolate', ['linear'], ['zoom'], 7, 0.62, 11, 0.76, 15, 0.86],
         'icon-allow-overlap': true,
         'icon-ignore-placement': true,
         'icon-anchor': 'center',
@@ -56,7 +56,7 @@ export const placesFavoritesLayer: SymbolLayerSpecification = {
     filter: ['==', ['get', 'favorite'], true],
     layout: {
         'icon-image': 'place-favorite',
-        'icon-size': 0.42,
+        'icon-size': 0.5,
         'icon-offset': [17, -17],
         'icon-allow-overlap': true,
         'icon-ignore-placement': true,
