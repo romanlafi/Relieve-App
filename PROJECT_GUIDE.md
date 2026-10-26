@@ -1,6 +1,6 @@
 # Proyecto: Mountain App / mapa personal de montaña
 
-## Estado de desarrollo — 22 de octubre de 2026
+## Estado de desarrollo — 26 de octubre de 2026
 
 Este apartado registra el estado real; las fases siguientes siguen siendo el roadmap de referencia.
 
@@ -10,8 +10,8 @@ Este apartado registra el estado real; las fases siguientes siguen siendo el roa
 - Fase 6: filtros por tipo, estado, favoritos, región, macizo y rango de altitud con descendientes.
 - Fase 7: resumen SQL del catálogo completo: visitados por tipo, pendientes, favoritos, tresmiles con altitud conocida y
   pico más alto visitado, con desgloses por región/macizo/año.
-- Fase 8: barra de controles desplazable y ficha inferior en móvil, con comprobación en navegador. Queda pulido
-  adicional con uso real.
+- Fase 8: barra de controles desplazable y ficha inferior en móvil. La ficha tiene cabecera fija al desplazarse y
+  se comprobó en Chromium a 320×640 y 390×844; queda validar el acabado en dispositivos reales.
 - Producción preparada: web estática y `/api/*` en un mismo Worker, validación de sesiones Cloudflare Access y
   separación de usuarios por identidad verificada.
 - Preview `dev` desplegada con Cloudflare Access y Neon de desarrollo; producción no publicada. El dominio y la
@@ -23,7 +23,8 @@ Este apartado registra el estado real; las fases siguientes siguen siendo el roa
 - Edición del catálogo global: formulario en la ficha, validación y permiso por
   allowlist de administradores; `CATALOG_EDITOR_EMAILS` configurado para previews.
 - Curación inicial del dataset: cuatro descripciones con fuentes institucionales y cotas oficiales revisadas para
-  Posets y Monte Perdido. La auditoría muestra 64 de 74 cotas aún sin confirmar.
+  Posets y Perdiguero. Monte Perdido queda sin cota por discrepancia entre fuentes oficiales; la auditoría muestra 64 de 74
+  cotas aún sin confirmar.
 
 Para ejecutar y publicar, consultar `README.md` y `apps/api/DEPLOYMENT.md`.
 

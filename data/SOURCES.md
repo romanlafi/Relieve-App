@@ -68,8 +68,13 @@ No se usa la sección meteorológica de las fichas como dataset ni servicio.
   Natural de los Glaciares Pirenaicos, que identifica la cumbre como Posets.
   Se prefiere esta fuente pública explícita frente a los valores discrepantes
   de páginas secundarias.
-- Monte Perdido: **3355 m**, según la memoria del Parque Nacional de Ordesa y
-  Monte Perdido, que sitúa en esa cota el máximo del macizo.
+- Perdiguero: **3222 m**, respaldado por el folleto de senderismo del Gobierno de
+  Aragón y por *Datos básicos de Aragón 2009*. Ambos identifican esa cota para
+  Pico Perdiguero.
+- Monte Perdido permanece **sin cota (`null`)**: la página actual del Gobierno de
+  Aragón publica 3348 m, mientras que la memoria del parque de 2018 publica
+  3355 m; OSM reporta 3349 m. Al no coincidir las fuentes, no se elige una cifra
+  sin una referencia cartográfica oficial concluyente.
 
 Las descripciones de Aneto, Posets, Monte Perdido e Ibón de Plan son textos
 editoriales breves, no copiados de las fuentes. Sus `additionalSources` enlazan
@@ -94,7 +99,8 @@ Se mantienen sus UUID, coordenadas y decisiones previas:
 
 - [Aneto](https://es.wikipedia.org/wiki/Pico_Aneto): 3404 m.
 - [Posets](https://es.wikipedia.org/wiki/Pico_Posets): 3369 m según la memoria oficial citada arriba (otras fuentes secundarias discrepan).
-- [Monte Perdido](https://es.wikipedia.org/wiki/Monte_Perdido): 3355 m según la memoria oficial citada arriba (OSM reporta 3349).
+- [Monte Perdido](https://es.wikipedia.org/wiki/Monte_Perdido): cota `null` por la discrepancia entre la página actual del Gobierno de Aragón (3348 m), su memoria de 2018 (3355 m) y OSM (3349 m).
+- Pico Perdiguero: 3222 m, según dos publicaciones oficiales del Gobierno de Aragón citadas arriba.
 - [Ibón de Plan](https://es.wikipedia.org/wiki/Ib%C3%B3n_de_Plan): 1910 m; asociado directamente al sector aragonés.
 - [Góriz](https://www.alberguesyrefugios.com/goriz/): null por cotas 2200/2215.
 - [Ángel Orús](https://www.alberguesyrefugios.com/angelorus/): 2150 m.
