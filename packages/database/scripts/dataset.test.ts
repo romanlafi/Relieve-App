@@ -16,11 +16,12 @@ test('versioned dataset validates and covers each initial zone with all three ty
 });
 
 test('curated descriptions and confirmed elevations have traceable sources', () => {
+    assert.ok(dataset.places.features.every((feature) => feature.properties.elevation !== null));
     const places = new Map(dataset.places.features.map((feature) => [feature.properties.slug, feature.properties]));
     assert.equal(places.get('posets')?.elevation, 3369);
     assert.equal(places.get('pico-perdiguero')?.elevation, 3222);
     assert.equal(places.get('pico-perdiguero')?.additionalSources?.length, 2);
-    assert.equal(places.get('monte-perdido')?.elevation, null);
+    assert.equal(places.get('monte-perdido')?.elevation, 3355);
     for (const slug of ['aneto', 'posets', 'monte-perdido', 'ibon-de-plan']) {
         const place = places.get(slug);
         assert.ok(place?.description);

@@ -37,9 +37,17 @@ haber auditado la inclusión de cada centro dentro del agua. Revisar puntos
 representativos con los polígonos originales antes de usos de navegación/proximidad
 de precisión. No se mezclan esas coordenadas con las de un refugio cercano.
 
-Las cotas OSM no se aceptaron como verdad absoluta: `reportedElevation` queda en
-`sources/osm-selection.json`; las cotas sin corroboración independiente permanecen **null** en el dataset. Tampoco se
-deducen del DEM de MapLibre. `hut` agrupa refugios
+Las cotas OSM (`ele`) se incorporan como referencia cartográfica cuando existen.
+Para los elementos sin ese dato se consultó el [servicio de altitud del IGN](https://api-processes.idee.es/processes/getElevation?f=html),
+que obtiene muestras del MDT05 en las coordenadas del dataset; se redondearon al
+metro. Se usó este fallback para Ibón Blanco de Literola, Ibón Llardaneta,
+Ibón de Barrancs, Bernatuara, Lapazosa, Sabocos, Brazato, Bajo de Brazato,
+Anayet grande y pequeño, Tebarray, Espelunciecha, Ibón de Acherito, Estanés,
+refugio de Petrechema y Guarrinza. Góriz conserva la cota publicada por FAM
+(2200 m); Monte Perdido usa la cota de 3355 m de la memoria del parque de 2018.
+Las cotas son informativas para el portfolio y pueden variar según fuente,
+resolución del modelo y precisión de las coordenadas; no se deducen del DEM de
+MapLibre. `hut` agrupa refugios
 guardados y libres, sin garantizar servicios, apertura ni disponibilidad.
 
 ## Federación Aragonesa de Montañismo
@@ -56,9 +64,9 @@ con OSM; se utiliza `coordinateMethod: official-published`.
 | [Casa de Piedra](https://www.alberguesyrefugios.com/casadepiedra/)           |           1636 | FAM y OSM coinciden                                    |
 | [Pineta](https://www.alberguesyrefugios.com/pineta/)                         |           1240 | FAM y OSM coinciden                                    |
 | [Ibones de Bachimaña](https://www.alberguesyrefugios.com/ibonesdebachimana/) |           2200 | FAM y OSM coinciden; no es un lago                     |
-| [Respomuso](https://www.alberguesyrefugios.com/respomuso/)                   |           null | FAM 2200 / OSM 2220                                    |
-| [Linza](https://www.alberguesyrefugios.com/linza/)                           |           null | Ficha FAM 1344 / OSM 1330; webcam FAM también usa 1330 |
-| [Gabardito](https://www.alberguesyrefugios.com/gabardito/)                   |           null | Ficha FAM 1360 / OSM 1400; webcam FAM también usa 1400 |
+| [Respomuso](https://www.alberguesyrefugios.com/respomuso/)                   |           2220 | OSM                                                   |
+| [Linza](https://www.alberguesyrefugios.com/linza/)                           |           1330 | OSM; webcam FAM también usa 1330                      |
+| [Gabardito](https://www.alberguesyrefugios.com/gabardito/)                   |           1400 | OSM; webcam FAM también usa 1400                      |
 
 No se usa la sección meteorológica de las fichas como dataset ni servicio.
 
@@ -71,10 +79,8 @@ No se usa la sección meteorológica de las fichas como dataset ni servicio.
 - Perdiguero: **3222 m**, respaldado por el folleto de senderismo del Gobierno de
   Aragón y por *Datos básicos de Aragón 2009*. Ambos identifican esa cota para
   Pico Perdiguero.
-- Monte Perdido permanece **sin cota (`null`)**: la página actual del Gobierno de
-  Aragón publica 3348 m, mientras que la memoria del parque de 2018 publica
-  3355 m; OSM reporta 3349 m. Al no coincidir las fuentes, no se elige una cifra
-  sin una referencia cartográfica oficial concluyente.
+- Monte Perdido: **3355 m** según la memoria del parque de 2018; otras fuentes
+  publican cotas entre 3348 y 3355 m.
 
 Las descripciones de Aneto, Posets, Monte Perdido e Ibón de Plan son textos
 editoriales breves, no copiados de las fuentes. Sus `additionalSources` enlazan
@@ -99,10 +105,10 @@ Se mantienen sus UUID, coordenadas y decisiones previas:
 
 - [Aneto](https://es.wikipedia.org/wiki/Pico_Aneto): 3404 m.
 - [Posets](https://es.wikipedia.org/wiki/Pico_Posets): 3369 m según la memoria oficial citada arriba (otras fuentes secundarias discrepan).
-- [Monte Perdido](https://es.wikipedia.org/wiki/Monte_Perdido): cota `null` por la discrepancia entre la página actual del Gobierno de Aragón (3348 m), su memoria de 2018 (3355 m) y OSM (3349 m).
+- [Monte Perdido](https://es.wikipedia.org/wiki/Monte_Perdido): 3355 m según la memoria oficial de 2018; hay fuentes que publican cotas algo distintas.
 - Pico Perdiguero: 3222 m, según dos publicaciones oficiales del Gobierno de Aragón citadas arriba.
 - [Ibón de Plan](https://es.wikipedia.org/wiki/Ib%C3%B3n_de_Plan): 1910 m; asociado directamente al sector aragonés.
-- [Góriz](https://www.alberguesyrefugios.com/goriz/): null por cotas 2200/2215.
+- [Góriz](https://www.alberguesyrefugios.com/goriz/): 2200 m según FAM (OSM publica 2215 m).
 - [Ángel Orús](https://www.alberguesyrefugios.com/angelorus/): 2150 m.
 
 Los puntos originales de Monte Perdido e Ibón de Plan difieren de OSM (del orden

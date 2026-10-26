@@ -22,9 +22,7 @@ Este apartado registra el estado real; las fases siguientes siguen siendo el roa
   las fechas existentes.
 - Edición del catálogo global: formulario en la ficha, validación y permiso por
   allowlist de administradores; `CATALOG_EDITOR_EMAILS` configurado para previews.
-- Curación inicial del dataset: cuatro descripciones con fuentes institucionales y cotas oficiales revisadas para
-  Posets y Perdiguero. Monte Perdido queda sin cota por discrepancia entre fuentes oficiales; la auditoría muestra 64 de 74
-  cotas aún sin confirmar.
+- Dataset de 74 lugares con cotas rellenadas desde OpenStreetMap, fuentes institucionales y muestras del MDT05 del IGN.
 
 Para ejecutar y publicar, consultar `README.md` y `apps/api/DEPLOYMENT.md`.
 
