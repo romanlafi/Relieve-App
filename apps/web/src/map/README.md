@@ -1,5 +1,28 @@
 # Primera experiencia cartográfica
 
+## Sistema visual
+
+Los controles se agrupan en un panel flotante con pestañas Lugares/Mis rutas,
+secciones desplegables y acceso a una vista de mapa sin controles. La ficha
+prioriza el registro personal y deja la edición global al final. En móvil se
+presenta como un panel inferior con cabecera fija y contenido desplazable.
+La leyenda comparte una columna flexible con los controles: al desplegarla,
+el panel superior reduce su altura y permite desplazarse sin quedar tapado.
+Hasta 900 px, seleccionar un lugar oculta esa columna y muestra la ficha inferior.
+
+`PlaceSearch.tsx` muestra los resultados en el propio buscador, con tipo,
+altitud y favorito. Busca por nombre sin distinguir tildes entre los lugares
+que cumplen los filtros actuales. El combobox permite recorrer opciones con
+las flechas, seleccionar con Enter y cerrar con Escape, además de ratón y tacto.
+La lista tiene desplazamiento propio y ocupa espacio dentro del panel.
+
+Los tokens de color viven en `styles/theme.css.ts`; campos, botones y acciones
+principales comparten estilos de `MapView.css.ts`. Los pictogramas SVG de
+`ui/Icon.tsx` usan los mismos trazados de `ui/iconPaths.ts` que los sprites
+canvas del mapa. Los pendientes tienen una variante clara para conservar el
+contraste sobre el terreno. Los iconos decorativos se ocultan al lector de
+pantalla y los controles con solo icono mantienen un nombre accesible.
+
 ## Estructura
 
 - `MapView.tsx` y `MapView.css.ts`: composición a pantalla completa, leyenda,

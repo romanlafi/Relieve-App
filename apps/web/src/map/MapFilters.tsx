@@ -3,6 +3,7 @@ import type {PlaceFilters, PlaceType} from '@relieve/shared';
 import type {useRegions} from './useRegions';
 import type {PersonalFilter} from './placeFilters';
 import * as styles from './MapFilters.css';
+import {Icon} from '../ui/Icon';
 
 interface Props {
     filters: PlaceFilters;
@@ -40,8 +41,8 @@ export function MapFilters({filters, disabled, onChange, regionState}: Props) {
         && (minimum === undefined || maximum === undefined || minimum <= maximum);
 
     return <details className={styles.panel}>
-        <summary className={styles.summary}>Filtros del
-            mapa{activeCount > 0 ? ` · ${activeCount} ${activeCount === 1 ? 'activo' : 'activos'}` : ''}</summary>
+        <summary className={styles.summary}><Icon name="filters" size={17}/>Filtros del mapa
+            {activeCount > 0 && <span className={styles.badge}>{activeCount} {activeCount === 1 ? 'activo' : 'activos'}</span>}</summary>
         <div className={styles.fields}>
             <label className={styles.label}>Tipo
                 <select id="map-filter-type" className={styles.select} disabled={disabled} value={filters.type ?? ''}

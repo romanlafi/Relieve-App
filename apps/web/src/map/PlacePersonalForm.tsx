@@ -2,6 +2,7 @@ import {useState} from 'react';
 import type {PlaceStatus, PlaceWithUserState, UpdateUserPlace, UserPlaceState} from '@relieve/shared';
 import type {PersonalSaveState} from './usePlaces';
 import * as styles from './PlacePersonalForm.css';
+import {Icon} from '../ui/Icon';
 
 interface Props {
     place: PlaceWithUserState;
@@ -38,7 +39,7 @@ export function PlacePersonalForm({place, saveState, onSave}: Props) {
         <p className={styles.message}>Estado guardado: {place.userState?.status === 'visited' ? 'Visitado'
             : place.userState?.status === 'pending' ? 'Pendiente' : 'Sin registrar'}{place.userState?.favorite ? ' · Favorito' : ''}</p>
         <fieldset className={styles.fields} disabled={busy}>
-            <legend className={styles.message}>Mi registro personal</legend>
+            <legend className={styles.personalHeading}>Mi registro personal</legend>
             <label className={styles.field}>Estado personal
                 <select className={styles.control} value={status} onChange={(event) => {
                     const next = event.target.value as PlaceStatus | '';
@@ -51,7 +52,7 @@ export function PlacePersonalForm({place, saveState, onSave}: Props) {
             </label>
             <label className={styles.checkbox}>
                 <input type="checkbox" checked={favorite} disabled={!status}
-                       onChange={(event) => setFavorite(event.target.checked)}/> Favorito
+                       onChange={(event) => setFavorite(event.target.checked)}/><Icon name="star" size={16}/> Favorito
             </label>
             <label className={styles.field}>Notas
                 <textarea className={styles.notes} value={notes} maxLength={5000} disabled={!status}
@@ -59,7 +60,7 @@ export function PlacePersonalForm({place, saveState, onSave}: Props) {
             </label>
             <p className={styles.message}>El historial de visitas se conserva aunque cambies el estado actual.</p>
             <div className={styles.actions}>
-                <button className={styles.button} type="submit" disabled={!status || !hasChanges}>Guardar</button>
+                <button className={styles.primaryButton} type="submit" disabled={!status || !hasChanges}><Icon name="save" size={16}/>Guardar cambios</button>
                 <button className={styles.button} type="button" disabled={!place.userState}
                         onClick={() => void save(true)}>
                     Quitar registro

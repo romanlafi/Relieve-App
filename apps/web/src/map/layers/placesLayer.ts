@@ -35,8 +35,9 @@ export const placesIconsLayer: SymbolLayerSpecification = {
     type: 'symbol',
     source: placesSourceId,
     layout: {
-        'icon-image': ['match', ['get', 'type'],
+        'icon-image': ['concat', ['match', ['get', 'type'],
             'peak', 'place-peak', 'lake', 'place-lake', 'hut', 'place-hut', 'place-peak'],
+            ['case', ['==', ['get', 'status'], 'pending'], '-pending', '']],
         'icon-size': ['interpolate', ['linear'], ['zoom'], 7, 0.62, 11, 0.76, 15, 0.86],
         'icon-allow-overlap': true,
         'icon-ignore-placement': true,
@@ -45,7 +46,7 @@ export const placesIconsLayer: SymbolLayerSpecification = {
         'icon-rotation-alignment': 'viewport',
     },
     paint: {
-        'icon-opacity': ['case', ['==', ['get', 'status'], 'pending'], 0.55, 1],
+        'icon-opacity': ['case', ['==', ['get', 'status'], 'pending'], 0.85, 1],
     },
 };
 
@@ -56,14 +57,10 @@ export const placesFavoritesLayer: SymbolLayerSpecification = {
     filter: ['==', ['get', 'favorite'], true],
     layout: {
         'icon-image': 'place-favorite',
-        'icon-size': 0.5,
-        'icon-offset': [17, -17],
+        'icon-size': 0.8,
+        'icon-offset': [20, -20],
         'icon-allow-overlap': true,
         'icon-ignore-placement': true,
         'icon-anchor': 'center',
-    },
-    paint: {
-        'icon-halo-color': mapColors.background,
-        'icon-halo-width': 1.5,
     },
 };

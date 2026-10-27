@@ -202,7 +202,7 @@ export function usePlacesMap(container: React.RefObject<HTMLDivElement | null>, 
     function focusPlace(longitude: number, latitude: number) {
         const map = mapRef.current;
         if (!map) return;
-        const mobile = map.getContainer().clientWidth <= 640;
+        const mobile = map.getContainer().clientWidth <= 900;
         map.flyTo({
             center: [longitude, latitude], zoom: Math.max(map.getZoom(), 12),
             padding: mobile ? {top: 0, bottom: map.getContainer().clientHeight * 0.4, left: 0, right: 0}

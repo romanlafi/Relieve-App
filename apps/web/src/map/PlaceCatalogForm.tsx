@@ -2,6 +2,7 @@ import {useState} from 'react';
 import type {FormEvent} from 'react';
 import type {PlaceType, PlaceWithUserState, Region} from '@relieve/shared';
 import * as styles from './PlaceCatalogForm.css';
+import {Icon} from '../ui/Icon';
 
 interface Props {
     place: PlaceWithUserState;
@@ -53,7 +54,7 @@ export function PlaceCatalogForm({place, regions, onSaved}: Props) {
     return <section className={styles.section} aria-label="Catálogo global">
         <h3 className={styles.heading}>Catálogo global</h3>
         {!editing ? <button className={styles.button} type="button" onClick={() => setEditing(true)}>
-            Editar datos del lugar
+            <Icon name="edit" size={16}/>Editar datos del lugar
         </button> : <form onSubmit={(event) => void save(event)}>
             <fieldset className={styles.fields} disabled={saving}>
                 <legend className={styles.message}>Estos cambios afectan a todas las cuentas.</legend>
@@ -90,7 +91,7 @@ export function PlaceCatalogForm({place, regions, onSaved}: Props) {
                 </label>
                 {error && <p className={styles.message} role="alert">{error}</p>}
                 <div className={styles.actions}>
-                    <button className={styles.button} type="submit" disabled={saving}>
+                    <button className={styles.primaryButton} type="submit" disabled={saving}>
                         {saving ? 'Guardando…' : 'Guardar catálogo'}
                     </button>
                     <button className={styles.button} type="button" disabled={saving} onClick={() => {

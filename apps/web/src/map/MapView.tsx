@@ -1,6 +1,7 @@
 import {RoutesPanel} from '../routes/RoutesPanel';
 import {useRoutes} from '../routes/useRoutes';
-import {tabs} from '../routes/RoutesPanel.css';
+import {tabs, tab} from '../routes/RoutesPanel.css';
+import {Icon} from '../ui/Icon';
 import {useEffect, useMemo, useRef, useState} from 'react';
 import type {PlaceFilters, PlaceWithUserState} from '@relieve/shared';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -11,6 +12,7 @@ import {PlacePersonalForm} from './PlacePersonalForm';
 import {PlaceVisitHistory} from './PlaceVisitHistory';
 import {PlaceCatalogForm} from './PlaceCatalogForm';
 import {MapFilters} from './MapFilters';
+import {PlaceSearch} from './PlaceSearch';
 import {useRegions} from './useRegions';
 import {useCatalogAccess} from './useCatalogAccess';
 import {StatsSummary} from './StatsSummary';
@@ -40,20 +42,17 @@ export function MapView() {
         focusPlace
     } = usePlacesMap(container, geoJson, selectedId, setSelectedId, frameRegion, routes.detail);
     const selectedPlace = places.find((place) => place.id === selectedId);
-    const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es').trim();
-    const searchResults = places.filter((place) => visiblePlaceTypes.some((type) => type === place.type)
-        && normalize(place.name).includes(normalize(search)));
     const selectedRegion = regionState.regions.find((region) => region.id === selectedPlace?.regionId);
     const selectedPlaceId = selectedPlace?.id;
     useEffect(() => {
-        if (selectedPlaceId && window.matchMedia('(max-width: 640px)').matches) {
+        if (selectedPlaceId && window.matchMedia('(max-width: 900px)').matches) {
             document.querySelector<HTMLButtonElement>('aside[data-place-id] button')?.focus();
         }
     }, [selectedPlaceId]);
 
     function closePlace() {
         setSelectedId(null);
-        requestAnimationFrame(() => document.getElementById('place-picker')?.focus());
+        requestAnimationFrame(() => document.getElementById(controlsHidden ? 'map-show-controls' : 'place-search')?.focus());
     }
 
     return (
@@ -64,11 +63,21 @@ export function MapView() {
                      }
                  }}>
             <div ref={container} className={styles.map} aria-label="Mapa de lugares de montaña"/>
-            {controlsHidden && <button className={styles.showControls} type="button" onClick={() => setControlsHidden(false)}>Mostrar controles</button>}
+            {controlsHidden && !selectedPlace && <button id="map-show-controls" className={styles.showControls} type="button" onClick={() => {
+                setControlsHidden(false);
+                requestAnimationFrame(() => document.getElementById('map-hide-controls')?.focus());
+            }}><Icon name="layers"/>Mostrar controles</button>}
+            <div className={styles.controlRail}>
             <div className={styles.toolbar} hidden={controlsHidden}>
             <header className={styles.brand}>
-                <h1 className={styles.title}>Relieve</h1>
-                <p className={styles.subtitle}>Pirineos · explora el terreno</p>
+                <span className={styles.brandMark}><Icon name="peak" size={28}/></span>
+                <div><h1 className={styles.title}>Relieve</h1>
+                <p className={styles.subtitle}>Tu atlas de los Pirineos</p></div>
+                <button id="map-hide-controls" className={styles.iconButton} type="button" aria-label="Ocultar controles" title="Ver solo el mapa"
+                        onClick={() => {
+                            setControlsHidden(true);
+                            requestAnimationFrame(() => document.getElementById('map-show-controls')?.focus());
+                        }}><Icon name="close" size={16}/></button>
             </header>
             <div className={styles.status} role="status" aria-live="polite">
                 {status === 'loading' && <p>Cargando mapa…</p>}
@@ -87,37 +96,17 @@ export function MapView() {
                     && state.status === 'success' && !selectedPlace &&
                     <p>Registro guardado. El lugar ya no cumple los filtros actuales.</p>}
             </div>
-                {section === 'routes' && <button className={styles.button} type="button" onClick={() => setControlsHidden(true)}>Ver mapa · ocultar controles</button>}
                 <div className={tabs} aria-label="Secciones">
-                    <button className={styles.button} type="button" aria-pressed={section === 'places'} onClick={() => setSection('places')}>Lugares</button>
-                    <button className={styles.button} type="button" aria-pressed={section === 'routes'} onClick={() => { setSection('routes'); setSelectedId(null); }}>Rutas</button>
+                    <button className={tab} type="button" aria-pressed={section === 'places'} onClick={() => setSection('places')}><Icon name="pin" size={16}/>Lugares</button>
+                    <button className={tab} type="button" aria-pressed={section === 'routes'} onClick={() => { setSection('routes'); setSelectedId(null); }}><Icon name="route" size={16}/>Mis rutas</button>
                 </div>
                 {section === 'routes' && <RoutesPanel key={routes.selectedId ?? 'import'} state={routes}/>}
                 {section === 'places' && <>
-                <div className={styles.placePicker}>
-                    <label htmlFor="place-search">Buscar un lugar</label>
-                    <input id="place-search" className={styles.select} type="search" placeholder="Aneto, ibón, refugio…"
-                           value={search} onChange={(event) => setSearch(event.target.value)}
-                           aria-describedby="search-scope"/>
-                    <p id="search-scope" className={styles.muted}>Busca entre los resultados de los filtros
-                        actuales.</p>
-                    <label
-                        htmlFor="place-picker">{searchResults.length} {searchResults.length === 1 ? 'lugar disponible' : 'lugares disponibles'}</label>
-                    <select id="place-picker" className={styles.select}
-                            value={searchResults.some((place) => place.id === selectedId) ? selectedId ?? '' : ''}
-                            onChange={(event) => {
-                                const id = event.target.value;
-                                setSelectedId(id || null);
-                                const place = places.find((item) => item.id === id);
-                                if (place) focusPlace(place.longitude, place.latitude);
-                            }}>
-                        <option value="">Selecciona un lugar</option>
-                        {searchResults.map((place) => <option key={place.id} value={place.id}>{place.name}</option>)}
-                    </select>
-                    {state.status === 'success' && searchResults.length === 0 &&
-                        <p className={styles.muted} role="status">Sin coincidencias. Prueba otro nombre o cambia los
-                            filtros.</p>}
-                </div>
+                <PlaceSearch places={places} query={search} onQueryChange={setSearch} status={state.status}
+                             onSelect={(place) => {
+                                 setSelectedId(place.id);
+                                 focusPlace(place.longitude, place.latitude);
+                             }}/>
                 <MapFilters regionState={regionState} filters={filters} disabled={personalSave?.status === 'saving'}
                             onChange={(next) => {
                 setSelectedId(null);
@@ -127,27 +116,31 @@ export function MapView() {
                 </>}
                 <StatsSummary version={mutationVersion}/>
             </div>
-            <div className={styles.legend} aria-label="Leyenda del mapa">
+            <details className={styles.legend}>
+                <summary className={styles.summary}><Icon name="layers" size={16}/>Leyenda del mapa</summary>
+                <div className={styles.legendContent}>
                 {routes.detail && <span className={styles.legendItem}><span className={styles.routeSwatch} aria-hidden="true"/>Ruta GPX</span>}
                 {visiblePlaceTypes.map((type) => <span className={styles.legendItem} key={type}>
-                    <span className={styles.swatch[type]} aria-hidden="true"/>{placeTypeLabels[type]}
+                    <Icon name={type} className={styles.typeColor[type]}/>{placeTypeLabels[type]}
                 </span>)}
                 <span className={styles.legendItem}><span className={styles.pendingSwatch} aria-hidden="true"/>Pendiente: hueco</span>
                 <span className={styles.legendItem}><span className={styles.visitedSwatch} aria-hidden="true"/>Visitado: borde claro</span>
-                <span className={styles.legendItem}><span className={styles.favoriteSwatch} aria-hidden="true">♥</span>Favorito</span>
+                <span className={styles.legendItem}><Icon name="star" className={styles.favoriteSwatch} size={18}/>Favorito</span>
+                </div>
+            </details>
             </div>
             {selectedPlace && <aside key={selectedPlace.id} className={styles.details} aria-label="Lugar seleccionado"
                                      data-place-id={selectedPlace.id}>
                 <header className={styles.detailsHeader}>
                     <span className={styles.sheetGrabber} aria-hidden="true"/>
                     <div className={styles.detailsHeading}>
-                        <p className={styles.type}>{placeTypeLabels[selectedPlace.type]}</p>
+                        <p className={`${styles.type} ${styles.typeColor[selectedPlace.type]}`}><Icon name={selectedPlace.type} size={17}/>{placeTypeLabels[selectedPlace.type]}</p>
                         <h2 className={styles.placeName}>{selectedPlace.name}</h2>
                         <p className={styles.elevation}>{selectedPlace.elevation === null
                             ? 'Altitud no verificada' : `${elevationFormat.format(selectedPlace.elevation)} m`}</p>
                     </div>
                     <button className={styles.close} type="button" aria-label="Cerrar lugar seleccionado"
-                            onClick={closePlace}>×
+                            onClick={closePlace}><Icon name="close"/>
                     </button>
                 </header>
                 <div className={styles.detailsContent}>
@@ -159,12 +152,12 @@ export function MapView() {
                     <dd>{selectedPlace.latitude.toFixed(5)}, {selectedPlace.longitude.toFixed(5)}</dd>
                 </dl>
                 {selectedPlace.description && <p className={styles.muted}>{selectedPlace.description}</p>}
-                {canEditCatalog && <PlaceCatalogForm key={`catalog-${selectedPlace.id}`} place={selectedPlace}
-                                                     regions={regionState.regions} onSaved={visitsChanged}/>}
                 <PlacePersonalForm key={`personal-${selectedPlace.id}-${selectedPlace.userState?.status ?? ''}`}
                                    place={selectedPlace} saveState={personalSave}
                                    onSave={saveUserPlace}/>
                 <PlaceVisitHistory key={`visits-${selectedPlace.id}`} placeId={selectedPlace.id} onChanged={visitsChanged}/>
+                {canEditCatalog && <PlaceCatalogForm key={`catalog-${selectedPlace.id}`} place={selectedPlace}
+                                                     regions={regionState.regions} onSaved={visitsChanged}/>}
                 </div>
             </aside>}
         </section>

@@ -1,5 +1,6 @@
 import type {HillshadeLayerSpecification, Map, MapOptions, RasterDEMSourceSpecification} from 'maplibre-gl';
 import {mapColors} from '../styles/theme.css';
+import {iconPaths} from '../ui/iconPaths';
 
 export const mapConfig = {
     style: 'https://tiles.openfreemap.org/styles/dark',
@@ -43,78 +44,39 @@ export const hillshadeLayer: HillshadeLayerSpecification = {
 
 export function configurePlaceIcons(map: Map) {
     const size = 64;
-    const icons: Record<string, (context: CanvasRenderingContext2D) => void> = {
-        'place-peak': (context) => {
-            context.fillStyle = mapColors.background;
-            context.beginPath();
-            context.moveTo(9, 48);
-            context.lineTo(27, 20);
-            context.lineTo(36, 33);
-            context.lineTo(43, 24);
-            context.lineTo(57, 48);
-            context.closePath();
-            context.fill();
-            context.fillStyle = mapColors.text;
-            context.beginPath();
-            context.moveTo(22, 28);
-            context.lineTo(27, 20);
-            context.lineTo(33, 29);
-            context.lineTo(29, 27);
-            context.lineTo(26, 31);
-            context.closePath();
-            context.fill();
-        },
-        'place-lake': (context) => {
-            context.strokeStyle = mapColors.text;
-            context.lineWidth = 5;
-            context.lineCap = 'round';
-            context.beginPath();
-            context.moveTo(10, 25);
-            context.bezierCurveTo(17, 19, 23, 31, 30, 25);
-            context.bezierCurveTo(37, 19, 43, 31, 54, 24);
-            context.moveTo(10, 39);
-            context.bezierCurveTo(17, 33, 23, 45, 30, 39);
-            context.bezierCurveTo(37, 33, 43, 45, 54, 38);
-            context.stroke();
-        },
-        'place-hut': (context) => {
-            context.fillStyle = mapColors.text;
-            context.beginPath();
-            context.moveTo(9, 31);
-            context.lineTo(32, 12);
-            context.lineTo(55, 31);
-            context.lineTo(49, 31);
-            context.lineTo(49, 50);
-            context.lineTo(15, 50);
-            context.lineTo(15, 31);
-            context.closePath();
-            context.fill();
-            context.fillStyle = mapColors.background;
-            context.fillRect(28, 36, 9, 14);
-        },
-        'place-favorite': (context) => {
-            context.fillStyle = mapColors.route;
-            context.beginPath();
-            context.moveTo(32, 54);
-            context.bezierCurveTo(27, 49, 12, 38, 12, 27);
-            context.bezierCurveTo(12, 15, 26, 14, 32, 24);
-            context.bezierCurveTo(38, 14, 52, 15, 52, 27);
-            context.bezierCurveTo(52, 38, 37, 49, 32, 54);
-            context.closePath();
-            context.fill();
-        },
-    };
+    const icons = {'place-peak': iconPaths.peak, 'place-lake': iconPaths.lake,
+        'place-hut': iconPaths.hut, 'place-favorite': iconPaths.star,
+        'place-peak-pending': iconPaths.peak, 'place-lake-pending': iconPaths.lake, 'place-hut-pending': iconPaths.hut};
 
-    for (const [id, draw] of Object.entries(icons)) {
+    for (const [id, path] of Object.entries(icons)) {
         if (map.hasImage(id)) continue;
         const canvas = document.createElement('canvas');
         canvas.width = size;
         canvas.height = size;
         const context = canvas.getContext('2d');
         if (!context) continue;
-        context.fillStyle = mapColors.background;
-        context.strokeStyle = mapColors.background;
-        draw(context);
+        context.scale(size / 24, size / 24);
+        if (id === 'place-favorite') {
+            context.beginPath();
+            context.arc(12, 12, 11, 0, Math.PI * 2);
+            context.fillStyle = mapColors.background;
+            context.fill();
+            context.lineWidth = 1;
+            context.strokeStyle = mapColors.route;
+            context.stroke();
+        }
+        context.translate(4, 4);
+        context.scale(2 / 3, 2 / 3);
+        context.lineWidth = 2;
+        context.lineCap = 'round';
+        context.lineJoin = 'round';
+        context.strokeStyle = id === 'place-favorite' ? mapColors.route
+            : id.endsWith('-pending') ? mapColors.text : mapColors.background;
+        if (id === 'place-favorite') {
+            context.fillStyle = mapColors.route;
+            context.fill(new Path2D(path));
+        }
+        context.stroke(new Path2D(path));
         map.addImage(id, context.getImageData(0, 0, size, size), {pixelRatio: 2});
     }
 }

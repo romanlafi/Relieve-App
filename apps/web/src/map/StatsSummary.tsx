@@ -2,6 +2,7 @@ import {useEffect, useState} from 'react';
 import {z} from 'zod';
 import type {PersonalStats} from '@relieve/shared';
 import * as styles from './MapView.css';
+import {Icon} from '../ui/Icon';
 
 const count = z.number().int().nonnegative();
 const statsSchema: z.ZodType<PersonalStats> = z.object({
@@ -51,8 +52,8 @@ export function StatsSummary({version}: { version: number }) {
         return () => controller.abort();
     }, [version, retry]);
     return <details className={styles.section}>
-        <summary className={styles.summary}>Mi
-            progreso{status === 'ready' && stats ? ` · ${stats.visited} / ${stats.total}` : ''}</summary>
+        <summary className={styles.summary}><Icon name="chart" size={17}/>Mi progreso
+            {status === 'ready' && stats && <span className={styles.badge}>{stats.visited} / {stats.total}</span>}</summary>
         <div className={styles.stack} aria-live="polite">
             {status === 'loading' && <p className={styles.muted}>Cargando progreso…</p>}
             {status === 'error' && <p className={styles.muted}>No se ha podido actualizar el progreso.
@@ -61,6 +62,11 @@ export function StatsSummary({version}: { version: number }) {
                     setRetry((value) => value + 1);
                 }}>Reintentar</button></p>}
             {status === 'ready' && stats && <>
+                <div className={styles.statGrid}>
+                    <div className={styles.stat}><Icon name="check" size={16}/><strong>{stats.visited}</strong>Visitados</div>
+                    <div className={styles.stat}><Icon name="pin" size={16}/><strong>{stats.pending}</strong>Pendientes</div>
+                    <div className={styles.stat}><Icon name="star" size={16}/><strong>{stats.favorites}</strong>Favoritos</div>
+                </div>
                 <p className={styles.muted}>Sobre los {stats.total} lugares del catálogo completo, sin aplicar los
                     filtros del mapa.</p>
                 {stats.byType.map((row) => <div className={styles.progressRow} key={row.type}>
@@ -68,7 +74,6 @@ export function StatsSummary({version}: { version: number }) {
                     <progress className={styles.progress} aria-label={`${labels[row.type]} visitados`}
                               value={row.visited} max={Math.max(1, row.total)}/>
                 </div>)}
-                <p className={styles.muted}>{stats.pending} pendientes · {stats.favorites} favoritos</p>
                 <p className={styles.muted}>Tresmiles con cota
                     conocida: {stats.threeThousands.visited} / {stats.threeThousands.total}</p>
                 <p className={styles.muted}>{stats.highestPeak

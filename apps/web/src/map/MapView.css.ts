@@ -1,192 +1,146 @@
 import {globalStyle, style, styleVariants} from '@vanilla-extract/css';
 import {vars} from '../styles/theme.css';
 
-const floatingPanel = style({
-    position: 'absolute',
-    zIndex: 1,
-    color: vars.color.text,
-    background: 'rgba(32, 35, 31, 0.94)',
-    border: '1px solid rgba(236, 236, 232, 0.12)',
-    borderRadius: '14px',
-    padding: vars.space.md,
-    boxShadow: '0 12px 32px rgba(0, 0, 0, 0.3)',
-    backdropFilter: 'blur(14px)',
-});
-
+const panel = {
+    color: vars.color.text, background: 'rgba(25, 32, 28, 0.96)',
+    border: '1px solid rgba(218, 229, 212, 0.14)', borderRadius: '20px',
+    boxShadow: '0 16px 48px rgba(0, 0, 0, 0.3)', backdropFilter: 'blur(20px)',
+};
 export const view = style({position: 'relative', width: '100%', height: '100%', overflow: 'hidden'});
+export const map = style({position: 'absolute', inset: 0, background: vars.color.background,
+    selectors: {'&.maplibregl-map': {position: 'absolute'}}});
+export const controlRail = style({
+    position: 'absolute', zIndex: 1, top: '24px', bottom: '36px', left: '24px', width: '316px',
+    display: 'flex', flexDirection: 'column', gap: '12px', pointerEvents: 'none',
+    '@media': {'(max-width: 640px)': {top: '12px', bottom: '48px', left: '12px', width: 'min(316px, calc(100% - 76px))'}},
+    selectors: {[`${view}[data-selected="true"] &`]: {'@media': {'(max-width: 900px)': {display: 'none'}}}},
+});
 export const toolbar = style({
-    position: 'absolute', zIndex: 1, top: vars.space.md, left: vars.space.md,
-    width: 'min(290px, calc(100% - 80px))', display: 'grid', gap: vars.space.sm,
-    maxHeight: 'calc(100% - 160px)', overflowY: 'auto', overscrollBehavior: 'contain',
-    '@media': {'(max-width: 640px)': {maxHeight: 'calc(100% - 160px)'}},
-    selectors: {
-        '&[hidden]': {display: 'none'},
-        [`${view}[data-selected="true"] &`]: {
-            '@media': {'(max-width: 640px)': {display: 'none'}},
-        }
-    },
+    ...panel, minHeight: 0, flexShrink: 1, pointerEvents: 'auto', overflowY: 'auto',
+    overscrollBehavior: 'contain', padding: '20px', display: 'grid', gap: '20px',
+    '@media': {'(max-width: 640px)': {padding: '16px', gap: '16px', borderRadius: '16px'}},
+    selectors: {'&[hidden]': {display: 'none'}, [`${view}[data-selected="true"] &`]: {
+        '@media': {'(max-width: 640px)': {display: 'none'}},
+    }},
 });
-export const stack = style({display: 'grid', gap: vars.space.sm, marginTop: vars.space.sm});
-export const section = style({
-    color: vars.color.text, background: 'rgba(32, 35, 31, 0.94)',
-    border: '1px solid rgba(236, 236, 232, 0.12)', borderRadius: '12px',
-    padding: vars.space.md, fontSize: '0.8rem', boxShadow: '0 8px 24px rgba(0, 0, 0, 0.24)',
-    backdropFilter: 'blur(14px)',
-});
-export const summary = style({cursor: 'pointer', fontWeight: 600});
-export const muted = style({margin: 0, color: vars.color.textMuted, fontSize: '0.75rem'});
-export const progressRow = style({display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto', gap: vars.space.sm});
-export const progress = style({width: '100%', height: '6px', gridColumn: '1 / -1', accentColor: vars.color.hut});
-export const metadata = style({
-    display: 'grid', gridTemplateColumns: 'auto 1fr', gap: vars.space.sm,
-    fontSize: '0.75rem', color: vars.color.textMuted, margin: `${vars.space.md} 0`
-});
-globalStyle(`${metadata} dd`, {margin: 0, textAlign: 'right', overflowWrap: 'anywhere'});
-export const map = style({
-    position: 'absolute', inset: 0, background: vars.color.background,
-    selectors: {'&.maplibregl-map': {position: 'absolute'}},
-});
-export const brand = style([floatingPanel, {
-    position: 'relative',
-    padding: `${vars.space.sm} ${vars.space.md}`,
-    selectors: {[`${view}[data-selected="true"] &`]: {'@media': {'(max-width: 640px)': {display: 'none'}}}},
-}]);
-export const title = style({margin: 0, fontSize: '1.25rem', fontWeight: 650, letterSpacing: '0.04em'});
-export const subtitle = style({margin: 0, color: vars.color.textMuted, fontSize: '0.75rem'});
-export const status = style([floatingPanel, {
-    position: 'relative',
-    fontSize: '0.8rem', padding: vars.space.sm,
-    selectors: {'&:empty': {display: 'none'}},
-    '@media': {'(max-width: 640px)': {selectors: {[`${view}[data-selected="true"] &`]: {display: 'none'}}}},
-}]);
+export const brand = style({display: 'flex', alignItems: 'center', gap: '12px'});
+export const brandMark = style({display: 'grid', placeItems: 'center', width: '42px', height: '42px', flexShrink: 0,
+    borderRadius: '13px', color: vars.color.route, background: vars.color.accentSurface,
+    border: '1px solid rgba(232, 197, 139, 0.2)'});
+export const title = style({margin: 0, fontSize: '1.5rem', fontWeight: 650, lineHeight: 1.15, letterSpacing: '-0.05em'});
+export const subtitle = style({margin: '4px 0 0', color: vars.color.textMuted, fontSize: '0.72rem', letterSpacing: '0.025em'});
+export const iconButton = style({display: 'grid', placeItems: 'center', flexShrink: 0, width: '36px', height: '36px',
+    borderRadius: '10px', background: 'transparent', color: vars.color.textMuted,
+    border: `1px solid ${vars.color.border}`, cursor: 'pointer', marginLeft: 'auto',
+    ':hover': {background: vars.color.accentSurface, color: vars.color.text}});
+export const status = style({fontSize: '0.75rem', color: vars.color.textMuted, marginTop: '-6px',
+    borderBottom: `1px solid ${vars.color.border}`, paddingBottom: '16px', selectors: {'&:empty': {display: 'none'}}});
 globalStyle(`${status} p`, {margin: 0});
-export const legend = style([floatingPanel, {
-    bottom: '64px', left: vars.space.md, display: 'flex', flexWrap: 'wrap', gap: vars.space.md,
-    maxWidth: 'min(360px, calc(100% - 32px))',
-    padding: vars.space.sm, fontSize: '0.75rem',
-    '@media': {'(max-width: 640px)': {bottom: '64px', maxWidth: 'calc(100% - 32px)', gap: vars.space.sm}},
-    selectors: {[`${view}[data-selected="true"] &`]: {'@media': {'(max-width: 640px)': {display: 'none'}}}},
-}]);
-export const legendItem = style({display: 'flex', alignItems: 'center', gap: vars.space.sm});
-const swatchBase = style({display: 'inline-block', width: '9px', height: '9px', borderRadius: '50%'});
-export const pendingSwatch = style([swatchBase, {border: `2px solid ${vars.color.textMuted}`}]);
-export const visitedSwatch = style([swatchBase, {
-    background: vars.color.textMuted,
-    border: `2px solid ${vars.color.text}`
-}]);
-export const favoriteSwatch = style({color: vars.color.route, fontSize: '16px', lineHeight: 1});
-export const swatch = styleVariants({
-    peak: {background: vars.color.peak}, lake: {background: vars.color.lake}, hut: {background: vars.color.hut},
-}, (color) => [swatchBase, color]);
-export const placePicker = style([floatingPanel, {
-    position: 'relative', display: 'grid', gap: vars.space.sm, fontSize: '0.75rem',
-}]);
-export const select = style({
-    width: '100%', font: 'inherit', color: vars.color.text, background: vars.color.background,
-    border: `1px solid ${vars.color.border}`, borderRadius: '10px', padding: vars.space.sm,
-    ':focus-visible': {borderColor: vars.color.route},
+export const stack = style({display: 'grid', gap: '14px', marginTop: '16px'});
+export const section = style({borderTop: `1px solid ${vars.color.border}`, paddingTop: '18px', fontSize: '0.8125rem'});
+export const summary = style({display: 'flex', alignItems: 'center', gap: '10px', listStyle: 'none', fontWeight: 600,
+    fontSize: '0.8125rem', minHeight: '28px', cursor: 'pointer',
+    '::after': {content: '""', width: '6px', height: '6px', borderRight: '1.5px solid currentColor',
+        borderBottom: '1.5px solid currentColor', transform: 'rotate(-45deg)', marginLeft: 'auto',
+        flexShrink: 0, transition: 'transform 160ms ease'},
+    selectors: {'details[open] > &::after': {transform: 'rotate(45deg)'}}});
+globalStyle(`${summary}::-webkit-details-marker`, {display: 'none'});
+export const badge = style({fontSize: '0.65rem', fontWeight: 600, borderRadius: '6px', padding: '2px 6px',
+    color: vars.color.route, background: vars.color.accentSurface, fontVariantNumeric: 'tabular-nums'});
+export const muted = style({margin: 0, color: vars.color.textMuted, fontSize: '0.75rem', lineHeight: 1.65});
+export const placePicker = style({display: 'grid', gap: '10px', fontSize: '0.75rem'});
+export const fieldLabel = style({fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.04em', color: vars.color.textMuted});
+export const searchField = style({position: 'relative', display: 'flex', alignItems: 'center', color: vars.color.textMuted});
+export const searchIcon = style({position: 'absolute', left: '12px', pointerEvents: 'none'});
+export const select = style({width: '100%', minWidth: 0, minHeight: '42px', font: 'inherit', color: vars.color.text,
+    background: 'rgba(8, 14, 10, 0.35)', border: `1px solid ${vars.color.border}`, borderRadius: '10px', padding: '10px 12px',
+    transition: 'border-color 150ms ease, background-color 150ms ease',
+    ':hover': {borderColor: '#596653'}, ':focus-visible': {borderColor: vars.color.route}});
+export const searchInput = style([select, {paddingLeft: '38px', paddingRight: '36px',
+    ':focus-visible': {outline: 'none', outlineOffset: 0, borderColor: '#a69a76'},
+    selectors: {'&[aria-expanded="true"]': {borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}}]);
+export const clearSearch = style({position: 'absolute', right: '4px', display: 'grid', placeItems: 'center',
+    width: '32px', height: '34px', padding: 0, border: 0, borderRadius: '6px',
+    background: 'transparent', color: vars.color.textMuted, cursor: 'pointer',
+    ':hover': {color: vars.color.text, background: vars.color.accentSurface}});
+export const searchResults = style({
+    maxHeight: 'min(280px, 35dvh)', overflowY: 'auto', overscrollBehavior: 'contain',
+    border: `1px solid ${vars.color.border}`, borderTop: 0, borderRadius: '0 0 10px 10px',
+    background: vars.color.background, padding: '4px',
+    selectors: {'&[hidden]': {display: 'none'}, '&:empty': {border: 0, padding: 0}},
 });
-export const button = style({
-    color: vars.color.text, background: vars.color.background, font: 'inherit',
-    border: `1px solid ${vars.color.border}`, borderRadius: '10px',
-    padding: `${vars.space.sm} ${vars.space.md}`, marginTop: vars.space.sm, cursor: 'pointer',
-    transition: 'background-color 140ms ease, border-color 140ms ease, transform 140ms ease',
-    ':hover': {borderColor: vars.color.textMuted, background: '#292d27', transform: 'translateY(-1px)'},
-    ':active': {transform: 'translateY(0)'},
+export const searchResult = style({
+    display: 'flex', alignItems: 'center', gap: '10px', width: '100%', minHeight: '58px',
+    padding: '10px 8px', border: 0, borderRadius: '7px', background: 'transparent',
+    color: vars.color.text, textAlign: 'left', cursor: 'pointer',
+    ':hover': {background: vars.color.accentSurface},
+    selectors: {'&[aria-selected="true"]': {background: vars.color.accentSurface, boxShadow: `inset 2px 0 ${vars.color.route}`}},
 });
-export const details = style([floatingPanel, {
-    bottom: '64px', right: vars.space.md, width: 'min(340px, calc(100% - 32px))',
-    maxHeight: 'calc(100% - 160px)', overflowY: 'auto', padding: 0,
-    borderRadius: '12px', boxShadow: '0 16px 48px rgba(0, 0, 0, 0.38)',
-    zIndex: 2,
+export const resultIcon = style({display: 'grid', placeItems: 'center', width: '30px', height: '34px', flexShrink: 0});
+export const resultText = style({display: 'grid', gap: '3px', flex: 1, minWidth: 0});
+export const resultName = style({fontSize: '0.8125rem', fontWeight: 550, lineHeight: 1.35, overflowWrap: 'anywhere'});
+export const resultMeta = style({fontSize: '0.6875rem', color: vars.color.textMuted});
+export const searchEmpty = style({margin: 0, padding: '14px 12px', border: `1px solid ${vars.color.border}`,
+    borderTop: 0, borderRadius: '0 0 10px 10px', fontSize: '0.75rem', color: vars.color.textMuted});
+export const button = style({display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', minHeight: '40px',
+    font: 'inherit', fontSize: '0.8125rem', fontWeight: 550, color: vars.color.text,
+    background: 'rgba(255, 255, 255, 0.035)', border: `1px solid ${vars.color.border}`,
+    borderRadius: '10px', padding: '9px 12px', cursor: 'pointer',
+    transition: 'background-color 150ms ease, border-color 150ms ease',
+    selectors: {'&:hover:not(:disabled)': {borderColor: '#71806a', background: vars.color.accentSurface}}});
+export const primaryButton = style([button, {background: vars.color.route, color: vars.color.background, borderColor: vars.color.route,
+    selectors: {'&:hover:not(:disabled)': {background: '#f2d6a7', borderColor: '#f2d6a7'}}}]);
+export const progressRow = style({display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto', gap: '8px', fontSize: '0.75rem'});
+export const progress = style({width: '100%', height: '5px', gridColumn: '1 / -1', accentColor: vars.color.hut, border: 0, borderRadius: '8px', overflow: 'hidden'});
+globalStyle(`${progress}::-webkit-progress-bar`, {background: vars.color.border});
+globalStyle(`${progress}::-webkit-progress-value`, {background: vars.color.hut, borderRadius: '8px'});
+export const statGrid = style({display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px'});
+export const stat = style({display: 'grid', gap: '5px', padding: '12px 8px', borderRadius: '10px', background: 'rgba(255, 255, 255, 0.035)', color: vars.color.textMuted, fontSize: '0.65rem'});
+globalStyle(`${stat} strong`, {color: vars.color.route, fontSize: '1.4rem', fontWeight: 550, lineHeight: 1.2, fontVariantNumeric: 'tabular-nums'});
+export const metadata = style({display: 'grid', gridTemplateColumns: 'auto minmax(0, 1fr)', gap: '12px', fontSize: '0.75rem', color: vars.color.textMuted, margin: '0 0 18px'});
+globalStyle(`${metadata} dd`, {margin: 0, textAlign: 'right', overflowWrap: 'anywhere', color: vars.color.text, fontVariantNumeric: 'tabular-nums'});
+export const legend = style({...panel, flexShrink: 0, pointerEvents: 'auto', marginTop: 'auto',
+    maxHeight: '40%', overflowY: 'auto', padding: '12px 16px', borderRadius: '14px',
+    selectors: {[`${view}[data-selected="true"] &`]: {'@media': {'(max-width: 640px)': {display: 'none'}}}}});
+export const legendContent = style({display: 'flex', flexWrap: 'wrap', gap: '14px', paddingTop: '16px', fontSize: '0.7rem'});
+export const legendItem = style({display: 'inline-flex', alignItems: 'center', gap: '7px'});
+export const typeColor = styleVariants({peak: {color: vars.color.peak}, lake: {color: vars.color.lake}, hut: {color: vars.color.hut}, pass: {color: vars.color.peak}, viewpoint: {color: vars.color.peak}});
+const swatchBase = style({display: 'inline-block', width: '12px', height: '12px', borderRadius: '50%'});
+export const pendingSwatch = style([swatchBase, {border: `1.5px solid ${vars.color.textMuted}`}]);
+export const visitedSwatch = style([swatchBase, {background: vars.color.hut, border: `2px solid ${vars.color.text}`}]);
+export const favoriteSwatch = style({color: vars.color.route});
+export const routeSwatch = style({width: '18px', height: '3px', borderRadius: '2px', background: vars.color.route});
+export const details = style({...panel, position: 'absolute', zIndex: 2, top: '24px', right: '80px',
+    width: 'min(360px, calc(100% - 32px))', maxHeight: 'calc(100% - 64px)', overflowY: 'auto',
     '@media': {
-        '(max-width: 640px)': {
-            bottom: 'calc(64px + env(safe-area-inset-bottom))',
-            left: vars.space.md,
-            right: 'auto',
-            maxHeight: 'min(70dvh, calc(100% - 128px))',
-            width: 'calc(100% - 32px)',
-            borderRadius: `${vars.radius.sm} ${vars.radius.sm} 0 0`,
-            overscrollBehavior: 'contain',
-            touchAction: 'pan-y'
-        }
-    },
-}]);
-export const close = style({
-    flex: '0 0 44px', width: '44px', height: '44px', color: vars.color.text,
-    background: 'rgba(255, 255, 255, 0.06)', border: `1px solid ${vars.color.border}`,
-    borderRadius: '50%', fontSize: '1.5rem', cursor: 'pointer',
-    ':hover': {background: 'rgba(255, 255, 255, 0.12)'},
-});
-export const detailsHeader = style({
-    position: 'sticky', top: 0, zIndex: 1, display: 'flex', alignItems: 'flex-start',
-    justifyContent: 'space-between', gap: vars.space.md, padding: vars.space.md,
-    background: 'linear-gradient(135deg, #292d27, #20231f 72%)',
-    borderBottom: `1px solid ${vars.color.border}`,
-});
+        '(max-width: 900px)': {top: 'auto', bottom: 'calc(48px + env(safe-area-inset-bottom))', left: '12px', right: '12px', width: 'auto', maxHeight: 'min(72dvh, calc(100% - 208px))', borderRadius: '20px', overscrollBehavior: 'contain', touchAction: 'pan-y'},
+    }});
+export const detailsHeader = style({position: 'sticky', top: 0, zIndex: 1, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', padding: '24px', background: '#232d25', borderBottom: `1px solid ${vars.color.border}`,
+    '@media': {'(max-width: 640px)': {padding: '24px 20px 20px'},
+        '(max-width: 900px) and (max-height: 500px)': {padding: '12px 16px'}}});
 export const detailsHeading = style({minWidth: 0});
-export const detailsContent = style({padding: vars.space.md});
-export const sheetGrabber = style({
-    display: 'none', position: 'absolute', top: '7px', left: '50%', transform: 'translateX(-50%)',
-    width: '36px', height: '4px', borderRadius: '999px', background: vars.color.border,
-    '@media': {'(max-width: 640px)': {display: 'block'}},
-});
-export const type = style({
-    display: 'inline-flex', margin: '4px 0 0', padding: '3px 8px',
-    color: vars.color.textMuted, background: 'rgba(255, 255, 255, 0.06)',
-    border: `1px solid ${vars.color.border}`, borderRadius: '999px',
-    fontSize: '0.68rem', fontWeight: 650, letterSpacing: '0.04em', textTransform: 'uppercase',
-});
-export const placeName = style({
-    margin: `${vars.space.sm} 0 4px`,
-    overflowWrap: 'anywhere',
-    fontSize: '1.3rem', fontWeight: 700,
-    lineHeight: 1.2
-});
-export const elevation = style({margin: 0, color: vars.color.route, fontSize: '0.9rem', fontWeight: 650});
+export const detailsContent = style({padding: '24px', '@media': {'(max-width: 640px)': {padding: '20px'}}});
+export const close = style([iconButton, {width: '44px', height: '44px', background: 'rgba(0, 0, 0, 0.12)'}]);
+export const sheetGrabber = style({display: 'none', '@media': {'(max-width: 640px)': {display: 'block', position: 'absolute', top: '8px', left: 'calc(50% - 18px)', width: '36px', height: '3px', borderRadius: '8px', background: vars.color.border}}});
+export const type = style({display: 'inline-flex', alignItems: 'center', gap: '7px', margin: 0, fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase'});
+export const placeName = style({margin: '12px 0 8px', overflowWrap: 'anywhere', fontSize: '1.7rem', fontWeight: 600, letterSpacing: '-0.035em', lineHeight: 1.15});
+export const elevation = style({margin: 0, color: vars.color.route, fontSize: '1.1rem', fontWeight: 500, fontVariantNumeric: 'tabular-nums'});
+export const showControls = style([button, {...panel, position: 'absolute', top: '24px', left: '24px', zIndex: 3, borderRadius: '12px', '@media': {'(max-width: 640px)': {top: '12px', left: '12px'}}}]);
 
-globalStyle(`${view} .maplibregl-ctrl-top-right`, {top: vars.space.sm, right: vars.space.sm});
-globalStyle(`${view} .maplibregl-ctrl-group`, {
-    background: vars.color.surface, border: `1px solid ${vars.color.border}`, boxShadow: 'none',
-});
-globalStyle(`${view} .maplibregl-ctrl-group button`, {width: '36px', height: '36px'});
+globalStyle(`${view} .maplibregl-ctrl-top-right`, {top: '14px', right: '14px', '@media': {'(max-width: 640px)': {top: '2px', right: '2px'}}});
+globalStyle(`${view} .maplibregl-ctrl-group`, {...panel, borderRadius: '12px', overflow: 'hidden'});
+globalStyle(`${view} .maplibregl-ctrl-group button`, {width: '40px', height: '42px'});
 globalStyle(`${view} .maplibregl-ctrl-group button + button`, {borderTopColor: vars.color.border});
-globalStyle(`${view} .maplibregl-ctrl-icon`, {filter: 'invert(1)'});
-globalStyle(`${view} .maplibregl-ctrl-attrib`, {background: vars.color.surface, color: vars.color.textMuted});
+globalStyle(`${view} .maplibregl-ctrl-icon`, {filter: 'invert(0.9)'});
+globalStyle(`${view} .maplibregl-ctrl-attrib`, {background: vars.color.surface, color: vars.color.textMuted, fontSize: '10px'});
 globalStyle(`${view} .maplibregl-ctrl-attrib a`, {color: vars.color.textMuted});
+globalStyle(`${view} .maplibregl-ctrl-attrib-button`, {filter: 'invert(0.85)'});
 globalStyle(`${view} .maplibregl-ctrl-attrib.maplibregl-compact`, {
-    '@media': {'(max-width: 640px)': {
-        width: '28px', minHeight: '28px', margin: vars.space.sm, padding: 0,
-        background: 'transparent', borderRadius: '50%', boxShadow: 'none',
-    }},
+    background: vars.color.surface, color: vars.color.textMuted, border: `1px solid ${vars.color.border}`,
+    '@media': {'(max-width: 640px)': {maxWidth: 'calc(100vw - 24px)'}},
 });
-globalStyle(`${view} .maplibregl-ctrl-attrib-button`, {
-    '@media': {'(max-width: 640px)': {
-        width: '28px', height: '28px',
-        backgroundColor: vars.color.surface,
-        backgroundImage: 'url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 fill=%22%23ecece8%22 fill-rule=%22evenodd%22 viewBox=%220 0 20 20%22%3E%3Cpath d=%22M4 10a6 6 0 1 0 12 0 6 6 0 1 0-12 0m5-3a1 1 0 1 0 2 0 1 1 0 1 0-2 0m0 3a1 1 0 1 1 2 0v3a1 1 0 1 1-2 0%22/%3E%3C/svg%3E")',
-        border: `1px solid ${vars.color.border}`, borderRadius: '50%',
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)', opacity: 0.95,
-    }},
+globalStyle(`${view} .maplibregl-ctrl-attrib.maplibregl-compact a`, {color: vars.color.textMuted});
+globalStyle(`${view} input[type="file"]::file-selector-button`, {
+    background: vars.color.accentSurface, color: vars.color.text, border: 0,
+    borderRadius: '6px', padding: '6px 8px', marginRight: '8px', font: 'inherit', cursor: 'pointer',
 });
-globalStyle(`${view} .maplibregl-ctrl-attrib-button:focus:not(:focus-visible)`, {
-    '@media': {'(max-width: 640px)': {outline: 'none', boxShadow: 'none'}},
-});
-globalStyle(`${view} .maplibregl-ctrl-attrib-button:focus-visible`, {
-    '@media': {'(max-width: 640px)': {boxShadow: `0 0 0 2px ${vars.color.route}`}},
-});
-globalStyle(`${view} .maplibregl-ctrl-attrib.maplibregl-compact-show`, {
-    '@media': {'(max-width: 640px)': {
-        width: 'auto', maxWidth: 'calc(100vw - 32px)', minHeight: '28px',
-        margin: vars.space.sm, padding: '8px 36px 8px 10px',
-        color: vars.color.textMuted, background: vars.color.surface,
-        border: `1px solid ${vars.color.border}`, borderRadius: vars.radius.sm,
-        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.32)', fontSize: '0.65rem', lineHeight: 1.35,
-    }},
-});
-
-export const routeSwatch = style({width: '16px', height: '4px', background: vars.color.route});
-
-export const showControls = style([button, {
-    position: 'absolute', top: vars.space.sm, left: vars.space.md, zIndex: 3,
-}]);

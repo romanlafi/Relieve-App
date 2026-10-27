@@ -1,25 +1,13 @@
 import {style} from '@vanilla-extract/css';
 import {vars} from '../styles/theme.css';
+import {section, summary as disclosureSummary, select as fieldControl, button as actionButton} from './MapView.css';
+export {badge} from './MapView.css';
 
-export const panel = style({
-    padding: vars.space.sm,
-    color: vars.color.text, background: vars.color.surface,
-    border: `1px solid ${vars.color.border}`, borderRadius: vars.radius.sm, fontSize: '0.8rem',
-});
-export const summary = style({cursor: 'pointer', fontWeight: 600});
-export const fields = style({display: 'grid', gap: vars.space.sm, marginTop: vars.space.sm});
-export const label = style({display: 'grid', gap: vars.space.sm});
-export const select = style({
-    width: '100%', font: 'inherit', color: vars.color.text, background: vars.color.background,
-    border: `1px solid ${vars.color.border}`, borderRadius: vars.radius.sm, padding: vars.space.sm,
-});
-export const numberInput = style({
-    width: '100%', font: 'inherit', color: vars.color.text, background: vars.color.background,
-    border: `1px solid ${vars.color.border}`, borderRadius: vars.radius.sm, padding: vars.space.sm,
-});
-export const button = style({
-    width: '100%', font: 'inherit', color: vars.color.text, background: vars.color.background,
-    border: `1px solid ${vars.color.border}`, borderRadius: vars.radius.sm, padding: vars.space.sm,
-    cursor: 'pointer', ':disabled': {cursor: 'not-allowed', opacity: 0.55},
-});
-export const message = style({margin: 0, color: vars.color.textMuted});
+export const panel = section;
+export const summary = disclosureSummary;
+export const fields = style({display: 'grid', gap: '14px', marginTop: '16px'});
+export const label = style({display: 'grid', gap: '7px', fontSize: '0.75rem', color: vars.color.textMuted});
+export const select = fieldControl;
+export const numberInput = fieldControl;
+export const button = style([actionButton, {width: '100%'}]);
+export const message = style({margin: 0, color: vars.color.textMuted, fontSize: '0.75rem'});

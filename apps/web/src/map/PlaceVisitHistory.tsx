@@ -12,17 +12,17 @@ interface Props {
 export function PlaceVisitHistory({placeId, onChanged}: Props) {
     const [visits, setVisits] = useState<PlaceVisit[]>([]);
     const [date, setDate] = useState('');
-    const [loading, setLoading] = useState(true);
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState(false);
-    const [loadError, setLoadError] = useState(false);
     const [retry, setRetry] = useState(0);
+    const [loadState, setLoadState] = useState<{key: string; failed: boolean} | null>(null);
+    const requestKey = `${placeId}:${retry}`;
+    const loading = loadState?.key !== requestKey;
+    const loadError = !loading && loadState?.failed === true;
 
     useEffect(() => {
         const controller = new AbortController();
         let active = true;
-        setLoading(true);
-        setLoadError(false);
         void fetch(`/api/user/places/${encodeURIComponent(placeId)}/visits`, {
             signal: controller.signal,
             headers: {Accept: 'application/json'},
@@ -30,17 +30,18 @@ export function PlaceVisitHistory({placeId, onChanged}: Props) {
             if (!response.ok) throw new Error('Unable to load visit history');
             const result = placeVisitsSchema.safeParse(await response.json());
             if (!result.success) throw new Error('Invalid visit history');
-            if (active) setVisits(result.data);
+            if (active) {
+                setVisits(result.data);
+                setLoadState({key: requestKey, failed: false});
+            }
         }).catch(() => {
-            if (active && !controller.signal.aborted) setLoadError(true);
-        }).finally(() => {
-            if (active) setLoading(false);
+            if (active && !controller.signal.aborted) setLoadState({key: requestKey, failed: true});
         });
         return () => {
             active = false;
             controller.abort();
         };
-    }, [placeId, retry]);
+    }, [placeId, requestKey]);
 
     async function addVisit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();

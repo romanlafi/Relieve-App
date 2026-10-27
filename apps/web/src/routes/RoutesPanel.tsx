@@ -2,6 +2,7 @@ import {useState} from 'react';
 import type {useRoutes} from './useRoutes';
 import * as styles from '../map/MapView.css';
 import * as routeStyles from './RoutesPanel.css';
+import {Icon} from '../ui/Icon';
 
 export function RoutesPanel({state}: {state: ReturnType<typeof useRoutes>}) {
     const [file, setFile] = useState<File | null>(null);
@@ -14,7 +15,7 @@ export function RoutesPanel({state}: {state: ReturnType<typeof useRoutes>}) {
     return <section className={styles.section} aria-label="Rutas GPX">
         <h2 className={routeStyles.heading}>Rutas</h2>
         <details open={!route}>
-            <summary className={styles.summary}>Importar GPX</summary>
+            <summary className={styles.summary}><Icon name="upload" size={17}/>Importar GPX</summary>
         <form className={styles.stack} onSubmit={(event) => { event.preventDefault(); if (file) void state.upload(file, name); }}>
             <label htmlFor="gpx-file">Importar un recorrido GPX</label>
             <input className={styles.select} id="gpx-file" type="file" accept=".gpx" disabled={state.busy}
@@ -23,7 +24,7 @@ export function RoutesPanel({state}: {state: ReturnType<typeof useRoutes>}) {
             <label htmlFor="route-name">Nombre opcional</label>
             <input className={styles.select} id="route-name" maxLength={200} value={name} disabled={state.busy}
                    onChange={(event) => setName(event.target.value)}/>
-            <button className={styles.button} disabled={!file || state.busy}>Importar GPX</button>
+            <button className={styles.primaryButton} disabled={!file || state.busy}><Icon name="upload" size={16}/>Importar GPX</button>
         </form>
         </details>
         {state.progress !== null && <div className={styles.stack} role="status">
@@ -39,7 +40,7 @@ export function RoutesPanel({state}: {state: ReturnType<typeof useRoutes>}) {
                 {state.routes.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
             </select>
         </div>}
-        <button className={styles.button} type="button" disabled={state.busy} onClick={state.retry}>Actualizar rutas</button>
+        <button className={styles.button} type="button" disabled={state.busy} onClick={state.retry}><Icon name="refresh" size={16}/>Actualizar rutas</button>
         {state.loadingDetail && <p role="status">Cargando recorrido y lugares…</p>}
         {route && <div className={styles.stack}>
             <h3 className={routeStyles.heading}>{route.name}</h3>

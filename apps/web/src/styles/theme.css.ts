@@ -1,26 +1,27 @@
 import {createGlobalTheme} from '@vanilla-extract/css';
 
 export const placeColors = {
-    peak: '#c2aa8e',
-    lake: '#75aac2',
-    hut: '#a8b991',
+    peak: '#dfb987',
+    lake: '#82c4d7',
+    hut: '#b1ca98',
 };
 
 export const mapColors = {
-    route: '#e5bd6b', background: '#161816', text: '#ecece8', terrain: '#8a806c', terrainShadow: '#20231f', terrainAccent: '#413f37',
+    route: '#e8c58b', background: '#141917', text: '#f3f1e9', terrain: '#8a806c', terrainShadow: '#20231f', terrainAccent: '#413f37',
 };
 
 export const vars = createGlobalTheme(':root', {
     color: {
         background: mapColors.background,
-        surface: '#20231f',
+        surface: '#1d2420',
         text: mapColors.text,
-        textMuted: '#a7aaa3',
-        border: '#383c35',
+        textMuted: '#adb7ad',
+        border: '#364139',
+        accentSurface: '#32392b',
         terrain: mapColors.terrain,
         route: mapColors.route,
         ...placeColors,
     },
     space: {sm: '8px', md: '16px', lg: '24px'},
-    radius: {sm: '6px'},
+    radius: {sm: '10px'},
 });
