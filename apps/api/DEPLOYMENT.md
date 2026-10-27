@@ -1,5 +1,68 @@
 # Publicación con Cloudflare Access
 
+## Staging operativo
+
+La primera promoción de `dev` a `staging` se ha desplegado el 27 de octubre de 2026.
+
+| Recurso | Configuración |
+| --- | --- |
+| Rama Git | `staging` |
+| Worker / preview | `relieve-app` / `staging` |
+| URL estable | https://staging-relieve-app.romanoscense10.workers.dev |
+| Acceso | Cloudflare Access, en la misma aplicación de acceso de las previews |
+| Proyecto Neon | `Relieve` (`damp-wave-97795543`) |
+| Rama Neon | `staging` (`br-super-morning-b2b1mdr5`), creada desde `dev` |
+| Conexión del Worker | `DATABASE_URL` propia de la preview `staging`, con pool |
+
+La rama Neon empieza con una copia del esquema y los datos de `dev`; desde su
+creación las escrituras quedan separadas. Se han aplicado las migraciones,
+actualizado el seed a 74 lugares y comprobado PostGIS sobre esa rama. Los cambios
+de código posteriores no copian ni reinician automáticamente su base de datos.
+
+La preview hereda `ACCESS_TEAM_DOMAIN`, `ACCESS_AUDIENCE` y
+`CATALOG_EDITOR_EMAILS` de Previews Base. `DATABASE_URL` se ha sobrescrito
+específicamente en staging. No cambiar la conexión de Previews Base para apuntar
+a staging: esa configuración también se aplica al crear otras previews.
+
+Para una promoción posterior, partiendo de un árbol limpio:
+
+```sh
+git fetch origin
+git switch staging
+git merge --ff-only origin/dev
+npm run lint
+npm run typecheck
+npm test
+npm run build
+git push origin staging
+```
+
+Workers Builds puede publicar la preview de la rama al recibir el push, usando
+la configuración descrita más abajo. El primer despliegue se ha realizado con
+Wrangler. Para publicar manualmente desde `staging`, después del build:
+
+```sh
+npm run deploy:preview -- --name staging
+```
+
+Si una futura promoción incorpora migraciones, aplicarlas antes de publicar
+usando las conexiones de staging, nunca las de `.env` de desarrollo. La
+preparación inicial ha guardado ambas conexiones en `.env.staging.local`,
+ignorado por Git. Los scripts de base de datos no seleccionan ese archivo
+automáticamente: pasar sus valores mediante `DATABASE_URL` y
+`DATABASE_URL_DIRECT` en el entorno del proceso. El Worker recibe únicamente
+la conexión pooled; las credenciales no se versionan.
+
+Para rotar esa conexión sin afectar a `dev`:
+
+```sh
+npx wrangler preview secret put DATABASE_URL --name staging --config wrangler.jsonc
+```
+
+Después de cada promoción, entrar con Access y comprobar el mapa, filtros,
+registro personal, persistencia e importación GPX. `main` continúa siendo la
+rama de producción y se promueve por separado, después de validar staging.
+
 La web compilada y la API se sirven desde un mismo Worker. El navegador usa
 `/api/*`; `worker.ts` retira ese prefijo antes de pasar la petición a Hono.
 `wrangler.jsonc` de la raíz sirve los assets de `apps/web/dist` y ejecuta el

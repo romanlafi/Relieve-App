@@ -164,6 +164,11 @@ en previews, configurar la allowlist en Previews Base config y crear una preview
 nueva para que herede el secreto.
 El estado de fases se registra al principio de `PROJECT_GUIDE.md`.
 
+Staging está desplegado en https://staging-relieve-app.romanoscense10.workers.dev,
+protegido por Cloudflare Access y con una rama Neon propia. El procedimiento de
+promoción y las conexiones por entorno están en
+[Staging operativo](./apps/api/DEPLOYMENT.md#staging-operativo).
+
 ## Previews de Cloudflare Workers
 
 Después de `npm run build`, `npm run deploy:preview` crea o actualiza la preview

@@ -1,6 +1,6 @@
 # Proyecto: Mountain App / mapa personal de montaña
 
-## Estado de desarrollo — 26 de octubre de 2026
+## Estado de desarrollo — 27 de octubre de 2026
 
 Este apartado registra el estado real; las fases siguientes siguen siendo el roadmap de referencia.
 
@@ -23,6 +23,9 @@ Este apartado registra el estado real; las fases siguientes siguen siendo el roa
 - Edición del catálogo global: formulario en la ficha, validación y permiso por
   allowlist de administradores; `CATALOG_EDITOR_EMAILS` configurado para previews.
 - Dataset de 74 lugares con cotas rellenadas desde OpenStreetMap, fuentes institucionales y muestras del MDT05 del IGN.
+- Staging operativo desde el 27 de octubre de 2026: preview `staging` protegida
+  con Access y rama Neon `staging` independiente, creada desde `dev`.
+  Promoción y mantenimiento documentados en `apps/api/DEPLOYMENT.md`.
 
 Para ejecutar y publicar, consultar `README.md` y `apps/api/DEPLOYMENT.md`.
 
