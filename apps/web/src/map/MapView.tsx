@@ -29,7 +29,7 @@ export function MapView() {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [search, setSearch] = useState('');
     const regionState = useRegions();
-    const canEditCatalog = useCatalogAccess();
+    const {canEditCatalog, publicReadOnly} = useCatalogAccess();
     const [filters, setFilters] = useState<PlaceFilters>({region: 'pirineo-aragones'});
     const {state, retry, personalSave, saveUserPlace, mutationVersion, visitsChanged} = usePlaces(filters);
     const routes = useRoutes(visitsChanged);
@@ -98,7 +98,7 @@ export function MapView() {
             </div>
                 <div className={tabs} aria-label="Secciones">
                     <button className={tab} type="button" aria-pressed={section === 'places'} onClick={() => setSection('places')}><Icon name="pin" size={16}/>Lugares</button>
-                    <button className={tab} type="button" aria-pressed={section === 'routes'} onClick={() => { setSection('routes'); setSelectedId(null); }}><Icon name="route" size={16}/>Mis rutas</button>
+                    {!publicReadOnly && <button className={tab} type="button" aria-pressed={section === 'routes'} onClick={() => { setSection('routes'); setSelectedId(null); }}><Icon name="route" size={16}/>Mis rutas</button>}
                 </div>
                 {section === 'routes' && <RoutesPanel key={routes.selectedId ?? 'import'} state={routes}/>}
                 {section === 'places' && <>
@@ -107,14 +107,14 @@ export function MapView() {
                                  setSelectedId(place.id);
                                  focusPlace(place.longitude, place.latitude);
                              }}/>
-                <MapFilters regionState={regionState} filters={filters} disabled={personalSave?.status === 'saving'}
+                <MapFilters regionState={regionState} filters={filters} publicReadOnly={publicReadOnly} disabled={personalSave?.status === 'saving'}
                             onChange={(next) => {
                 setSelectedId(null);
                                 setSearch('');
                 setFilters(next);
             }}/>
                 </>}
-                <StatsSummary version={mutationVersion}/>
+                {!publicReadOnly && <StatsSummary version={mutationVersion}/>}
             </div>
             <details className={styles.legend}>
                 <summary className={styles.summary}><Icon name="layers" size={16}/>Leyenda del mapa</summary>
@@ -123,9 +123,11 @@ export function MapView() {
                 {visiblePlaceTypes.map((type) => <span className={styles.legendItem} key={type}>
                     <Icon name={type} className={styles.typeColor[type]}/>{placeTypeLabels[type]}
                 </span>)}
-                <span className={styles.legendItem}><span className={styles.pendingSwatch} aria-hidden="true"/>Pendiente: hueco</span>
-                <span className={styles.legendItem}><span className={styles.visitedSwatch} aria-hidden="true"/>Visitado: borde claro</span>
-                <span className={styles.legendItem}><Icon name="star" className={styles.favoriteSwatch} size={18}/>Favorito</span>
+                {!publicReadOnly && <>
+                    <span className={styles.legendItem}><span className={styles.pendingSwatch} aria-hidden="true"/>Pendiente: hueco</span>
+                    <span className={styles.legendItem}><span className={styles.visitedSwatch} aria-hidden="true"/>Visitado: borde claro</span>
+                    <span className={styles.legendItem}><Icon name="star" className={styles.favoriteSwatch} size={18}/>Favorito</span>
+                </>}
                 </div>
             </details>
             </div>
@@ -152,10 +154,12 @@ export function MapView() {
                     <dd>{selectedPlace.latitude.toFixed(5)}, {selectedPlace.longitude.toFixed(5)}</dd>
                 </dl>
                 {selectedPlace.description && <p className={styles.muted}>{selectedPlace.description}</p>}
-                <PlacePersonalForm key={`personal-${selectedPlace.id}-${selectedPlace.userState?.status ?? ''}`}
-                                   place={selectedPlace} saveState={personalSave}
-                                   onSave={saveUserPlace}/>
-                <PlaceVisitHistory key={`visits-${selectedPlace.id}`} placeId={selectedPlace.id} onChanged={visitsChanged}/>
+                {!publicReadOnly && <>
+                    <PlacePersonalForm key={`personal-${selectedPlace.id}-${selectedPlace.userState?.status ?? ''}`}
+                                       place={selectedPlace} saveState={personalSave}
+                                       onSave={saveUserPlace}/>
+                    <PlaceVisitHistory key={`visits-${selectedPlace.id}`} placeId={selectedPlace.id} onChanged={visitsChanged}/>
+                </>}
                 {canEditCatalog && <PlaceCatalogForm key={`catalog-${selectedPlace.id}`} place={selectedPlace}
                                                      regions={regionState.regions} onSaved={visitsChanged}/>}
                 </div>

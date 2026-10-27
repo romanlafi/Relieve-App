@@ -10,9 +10,10 @@ interface Props {
     disabled: boolean;
     onChange: (filters: PlaceFilters) => void;
     regionState: ReturnType<typeof useRegions>;
+    publicReadOnly?: boolean;
 }
 
-export function MapFilters({filters, disabled, onChange, regionState}: Props) {
+export function MapFilters({filters, disabled, onChange, regionState, publicReadOnly = false}: Props) {
     const [minimumInput, setMinimumInput] = useState(String(filters.elevationMin ?? ''));
     const [maximumInput, setMaximumInput] = useState(String(filters.elevationMax ?? ''));
     const {regions, status, retry} = regionState;
@@ -56,7 +57,7 @@ export function MapFilters({filters, disabled, onChange, regionState}: Props) {
                     <option value="hut">Refugios</option>
                 </select>
             </label>
-            <label className={styles.label}>Estado
+            {!publicReadOnly && <label className={styles.label}>Estado
                 <select id="map-filter-state" className={styles.select} disabled={disabled} value={personal} onChange={(event) => {
                     const value = event.target.value as PersonalFilter;
                     onChange({
@@ -70,7 +71,7 @@ export function MapFilters({filters, disabled, onChange, regionState}: Props) {
                     <option value="favorite">Favoritos</option>
                     <option value="unregistered">Sin registrar</option>
                 </select>
-            </label>
+            </label>}
             <label className={styles.label}>Región
                 <select id="map-filter-region" className={styles.select} disabled={disabled || status !== 'ready'} value={filters.region ?? ''}
                         onChange={(event) => onChange({...filters, region: event.target.value || undefined})}>

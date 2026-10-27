@@ -1,4 +1,4 @@
-# Publicación con Cloudflare Access
+# Publicación de staging y producción
 
 ## Staging operativo
 
@@ -68,37 +68,30 @@ La web compilada y la API se sirven desde un mismo Worker. El navegador usa
 `wrangler.jsonc` de la raíz sirve los assets de `apps/web/dist` y ejecuta el
 Worker primero para `/api/*`. La configuración local no requiere compilar la web.
 
-## Configuración de la cuenta
+## Producción pública
 
-1. Elegir un dominio propio gestionado en Cloudflare y asociarlo al Worker
-   `relieve-app` mediante un Custom Domain. Alternativamente añadir `routes`
-   con `custom_domain: true` al archivo de producción con el dominio real.
-2. Crear una aplicación Self-hosted de Cloudflare Access que proteja **todo el
-   dominio**, incluida la web y `/api/*`, con una política que permita únicamente
-   los usuarios deseados. Access se encarga de la pantalla de inicio de sesión.
-3. Configurar `ACCESS_TEAM_DOMAIN` como `https://TU-EQUIPO.cloudflareaccess.com`
-   (sin barra final) y `ACCESS_AUDIENCE` con el Application Audience (AUD) de esa
-   aplicación. Son configuración del Worker, no variables `VITE_*`.
-4. Configurar `DATABASE_URL` como secreto del Worker. No subir la conexión directa.
-   No configurar `LOCAL_DEVELOPMENT` en producción ni en previews. `workers_dev`
-   permanece deshabilitado; las URLs de preview están habilitadas y deben
-   protegerse también mediante Access, según el apartado de previews.
-5. Aplicar las migraciones con `npm run db:migrate` y compilar con `npm run build`.
-   El build de API es un dry-run y **no publica**.
+Producción se sirve públicamente en https://relieve.romanlafi.org. El Worker usa
+`wrangler.production.jsonc`, con ese dominio como Custom Domain y `workers.dev`
+deshabilitado. Producción no usa Cloudflare Access.
 
-Desde `apps/api`, después de configurar cuenta y dominio:
+`PUBLIC_READ_ONLY=true` habilita la exploración pública del catálogo sin identidad.
+La API devuelve el catálogo sin estado personal; las rutas, estadísticas y
+acciones personales no se muestran, y todas las peticiones de escritura reciben
+403. Staging sigue usando Cloudflare Access y conserva sus funciones personales.
+
+La rama `production` del proyecto Neon contiene el catálogo y las migraciones.
+El Worker usa una conexión pooled guardada como secreto `DATABASE_URL`; nunca
+subir la conexión ni añadirla a `vars`. Para publicar cambios desde `main`:
 
 ```sh
-npx wrangler secret put DATABASE_URL --config ../../wrangler.jsonc
-npx wrangler secret put ACCESS_TEAM_DOMAIN --config ../../wrangler.jsonc
-npx wrangler secret put ACCESS_AUDIENCE --config ../../wrangler.jsonc
-npx wrangler secret put CATALOG_EDITOR_EMAILS --config ../../wrangler.jsonc
-npx wrangler deploy --config ../../wrangler.jsonc
+npm run build
+npm run deploy:production
 ```
 
-Los comandos `secret put` piden el valor de forma interactiva. No incluir
-credenciales en scripts, argumentos de terminal ni archivos versionados.
-
+La compilación no publica; `deploy:production` usa la configuración de producción.
+Tras desplegar, comprobar la portada, `/api/health`, `/api/places`, `/api/regions`,
+`/api/me` y que las escrituras respondan 403. No ejecutar seed sobre producción
+como parte de una publicación normal: conserva los datos del catálogo existentes.
 ## Previews por rama
 
 Wrangler 4.145 del proyecto soporta Worker Previews (`wrangler preview`).

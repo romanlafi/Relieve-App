@@ -24,6 +24,13 @@ export async function verifyAccessIdentity(token: string, issuer: string, audien
 }
 
 export const authenticate = createMiddleware<ApiEnvironment>(async (context, next) => {
+    if (context.env?.PUBLIC_READ_ONLY === 'true') {
+        // Unregistered visitor identity: joins return no personal state, and the
+        // API's public read-only guard blocks every write below.
+        context.set('userId', '00000000-0000-0000-0000-000000000000');
+        context.set('canEditCatalog', false);
+        return next();
+    }
     const hostname = new URL(context.req.url).hostname;
     if (context.env?.LOCAL_DEVELOPMENT === 'true' && ['localhost', '127.0.0.1', '[::1]'].includes(hostname)) {
         context.set('userId', developmentUserId);

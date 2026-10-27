@@ -18,6 +18,10 @@ app.notFound((context) => context.json({error: {code: 'NOT_FOUND', message: 'Rou
 
 app.use('*', async (context, next) => {
     context.header('Cache-Control', 'private, no-store');
+    if (context.env?.PUBLIC_READ_ONLY === 'true'
+        && !['GET', 'HEAD', 'OPTIONS'].includes(context.req.method)) {
+        return context.json({error: {code: 'READ_ONLY', message: 'This public portfolio is read-only'}}, 403);
+    }
     if (!['GET', 'HEAD', 'OPTIONS'].includes(context.req.method)) {
         const origin = context.req.header('Origin');
         const url = new URL(context.req.url);
@@ -47,7 +51,10 @@ app.route('/user/places', userPlacesRoutes);
 app.route('/regions', regionsRoutes);
 app.route('/stats', statsRoutes);
 
-app.get('/me', (context) => context.json({canEditCatalog: context.get('canEditCatalog')}));
+app.get('/me', (context) => context.json({
+    canEditCatalog: context.get('canEditCatalog'),
+    publicReadOnly: context.env?.PUBLIC_READ_ONLY === 'true',
+}));
 
 app.get('/health', (c) => {
     const response: HealthResponse = {status: 'ok'};
