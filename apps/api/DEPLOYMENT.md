@@ -71,12 +71,16 @@ Worker primero para `/api/*`. La configuración local no requiere compilar la we
 ## Producción pública con cuentas
 
 Producción se sirve en https://relieve.romanlafi.org usando
-`wrangler.production.jsonc`. El catálogo y el mapa son públicos. Los visitantes
+`wrangler.jsonc`. Los despliegues manuales y los builds de Cloudflare usan este
+mismo archivo de la raíz. El catálogo y el mapa son públicos. Los visitantes
 pueden crear una cuenta con nombre, correo y contraseña, confirmar su correo
 mediante un código y recuperar la contraseña desde la propia aplicación.
 Neon Auth gestiona las credenciales; producción no usa Cloudflare Access.
 
-`NEON_AUTH_URL` apunta al servicio de la rama `production` de Neon. Las sesiones
+`NEON_AUTH_URL` apunta al servicio de la rama `production` de Neon y se guarda
+como secreto del Worker, igual que `DATABASE_URL`. No declararlo como una
+variable de texto en Wrangler: esa declaración sustituiría el secreto y otro
+despliegue podría borrar la configuración de autenticación. Las sesiones
 se guardan en cookies del dominio de Relieve; el Worker valida cada petición
 personal contra el servicio de Neon y resuelve una identidad de aplicación.
 Las lecturas anónimas del catálogo devuelven `userState: null`. Los datos
@@ -111,7 +115,15 @@ npx wrangler preview secret put NEON_AUTH_URL --name staging --config wrangler.j
 ```
 
 Las URLs de Auth son configuración pública; las conexiones PostgreSQL y el
-listado administrativo se mantienen como secretos del Worker. El build no
+listado administrativo se mantienen como secretos del Worker. La URL de Auth
+también se almacena como secreto para conservarla entre despliegues y separar
+producción de las previews. Para configurarla en producción:
+
+```sh
+npx wrangler secret put NEON_AUTH_URL --config wrangler.jsonc
+```
+
+El build no
 necesita credenciales ni conexión a Neon.
 
 ## Previews por rama

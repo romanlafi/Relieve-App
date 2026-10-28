@@ -5,6 +5,11 @@
   "compatibility_date": "2026-09-30",
   "workers_dev": false,
   "preview_urls": true,
+  "routes": [
+    {"pattern": "relieve.romanlafi.org", "custom_domain": true}
+  ],
+  // Production runtime configuration (including NEON_AUTH_URL) is stored as
+  // Worker secrets so every deployment entry point preserves it.
   // Runtime secrets for branch previews are configured in the Previews Base config.
   // Assets and compatibility settings stay at the top level for both deployments.
   "previews": {},

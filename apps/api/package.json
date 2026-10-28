@@ -7,7 +7,7 @@
     "dev": "node ../../scripts/dev-api.mjs",
     "build": "tsc --noEmit && wrangler deploy --config ../../wrangler.jsonc --dry-run --outdir dist",
     "deploy:preview": "wrangler preview --config ../../wrangler.jsonc",
-    "deploy:production": "wrangler deploy --config ../../wrangler.production.jsonc",
+    "deploy:production": "wrangler deploy --config ../../wrangler.jsonc",
     "typecheck": "tsc --noEmit && tsc --project tsconfig.tests.json"
   },
   "dependencies": {
