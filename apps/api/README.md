@@ -3,8 +3,10 @@
 ## Endpoints
 
 En local se usa el usuario definido en `packages/database/src/developmentUser.ts`.
-En producción se valida una sesión Cloudflare Access y se resuelve su usuario
-por identidad estable; cada usuario conserva relaciones personales separadas.
+En producción el catálogo es público. Neon Auth gestiona registro, correo
+verificado, contraseña y sesión; cada cuenta conserva relaciones personales
+separadas. Los endpoints personales requieren una sesión verificada. Las
+previews pueden mantener Cloudflare Access como barrera externa.
 Consultar [DEPLOYMENT.md](./DEPLOYMENT.md) para configurar cuenta y dominio.
 
 | Método | Ruta                    | Respuesta                                                      |
@@ -12,7 +14,7 @@ Consultar [DEPLOYMENT.md](./DEPLOYMENT.md) para configurar cuenta y dominio.
 | GET    | `/places`               | Array de lugares con `userState` nullable                      |
 | GET    | `/places/:id`           | Lugar con `userState` nullable                                 |
 | PUT    | `/places/:id`           | Edita datos globales; requiere email en `CATALOG_EDITOR_EMAILS` |
-| GET    | `/me`                   | Indica si el usuario puede editar el catálogo                   |
+| GET    | `/me`                   | Identidad, disponibilidad de login y permiso de edición         |
 | GET    | `/user/places`          | Array de relaciones personales                                 |
 | GET    | `/user/places/:placeId` | Relación personal, o `null` si el lugar existe sin registro    |
 | PUT    | `/user/places/:placeId` | Upsert; devuelve la relación guardada                          |
@@ -37,10 +39,26 @@ La relación expuesta contiene `placeId`, `status`, `favorite`, `visitedAt` y
 Los lugares inexistentes responden 404; los UUID o cuerpos inválidos, 400.
 DELETE es idempotente para un lugar existente, aunque no tuviera registro.
 
+## Registro y sesiones
+
+Con `NEON_AUTH_URL`, `GET /me` y las lecturas del catálogo permiten visitantes;
+los registros personales, estadísticas, GPX y cualquier escritura exigen sesión.
+El Worker comprueba la cookie contra `get-session` de Neon en cada petición,
+sin caché de sesión, y exige correo verificado. El identificador estable de Neon
+se guarda con prefijo de proveedor en la columna histórica `users.access_subject`.
+No se vinculan automáticamente cuentas de distintos proveedores por email.
+
+El proxy del mismo origen expone únicamente estos POST bajo `/api/auth`:
+`sign-up/email`, `sign-in/email`, `sign-out`, `email-otp/verify-email`,
+`email-otp/send-verification-otp`, `email-otp/request-password-reset` y
+`email-otp/reset-password`. Valida cuerpos, tamaño y Origin antes de reenviar.
+Las cookies son host-only, HttpOnly, Secure y SameSite=Lax; las respuestas no
+exponen tokens y no hay almacenamiento de credenciales en localStorage.
+
 ## Edición del catálogo
 
-`PUT /places/:id` requiere autenticación y que el email verificado de Cloudflare
-Access aparezca en `CATALOG_EDITOR_EMAILS`, una lista separada por comas y
+`PUT /places/:id` requiere autenticación y que el email verificado de la cuenta
+aparezca en `CATALOG_EDITOR_EMAILS`, una lista separada por comas y
 comparada sin distinguir mayúsculas. En desarrollo local, `LOCAL_DEVELOPMENT`
 solo habilita al usuario local en localhost. La API devuelve 403 a los demás;
 ocultar el formulario en la web no sustituye esta comprobación.

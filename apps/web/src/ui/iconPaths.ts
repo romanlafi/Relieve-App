@@ -1,5 +1,6 @@
 // Shared by interface SVGs and the map's canvas sprites.
 export const iconPaths = {
+    user: 'M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM4 21v-2a8 8 0 0 1 16 0v2',
     star: 'm12 3 2.8 5.7 6.3.9-4.5 4.4 1.1 6.2-5.7-3-5.7 3 1.1-6.2L3.2 9.6l6-.9L12 3Z',
     peak: 'M3 19 10 5l4 8 3-5 5 11H3ZM7.5 10l2.5 2 2.5-2',
     lake: 'M3 8c3-4 6 4 9 0s6 4 9 0M3 14c3-4 6 4 9 0s6 4 9 0M5 20h14',

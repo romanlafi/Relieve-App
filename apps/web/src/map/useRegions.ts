@@ -1,3 +1,4 @@
+import {apiFetch} from '../auth/apiFetch';
 import {useEffect, useState} from 'react';
 import {z} from 'zod';
 import type {Region} from '@relieve/shared';
@@ -16,7 +17,7 @@ export function useRegions() {
 
         async function load() {
             try {
-                const response = await fetch('/api/regions', {
+                const response = await apiFetch('/api/regions', {
                     signal: controller.signal,
                     headers: {Accept: 'application/json'}
                 });

@@ -1,26 +1,7 @@
-import {useEffect, useState} from 'react';
-import {z} from 'zod';
-
-const accessSchema = z.object({canEditCatalog: z.boolean(), publicReadOnly: z.boolean().optional()});
+import {useAuth} from '../auth/authContext';
 
 export function useCatalogAccess() {
-    const [canEditCatalog, setCanEditCatalog] = useState(false);
-    const [publicReadOnly, setPublicReadOnly] = useState(false);
-    useEffect(() => {
-        const controller = new AbortController();
-        void fetch('/api/me', {signal: controller.signal, headers: {Accept: 'application/json'}})
-            .then(async (response) => {
-                if (!response.ok) return null;
-                return accessSchema.safeParse(await response.json());
-            })
-            .then((result) => {
-                if (!controller.signal.aborted && result?.success) {
-                    setCanEditCatalog(result.data.canEditCatalog);
-                    setPublicReadOnly(result.data.publicReadOnly ?? false);
-                }
-            })
-            .catch(() => {});
-        return () => controller.abort();
-    }, []);
-    return {canEditCatalog, publicReadOnly};
+    const auth = useAuth();
+    return {canEditCatalog: auth.canEditCatalog, publicReadOnly: !auth.authenticated,
+        authenticated: auth.authenticated, authAvailable: auth.authAvailable};
 }

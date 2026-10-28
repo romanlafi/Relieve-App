@@ -131,8 +131,9 @@ una única consulta, sin N+1. El panel permite guardar estado, favorito, fecha y
 notas sin recargar la página. Los detalles del contrato están en
 [apps/api/README.md](./apps/api/README.md).
 
-En desarrollo local se usa el usuario fijo existente. En producción la API valida
-sesiones Cloudflare Access con `jose` y resuelve usuarios separados por identidad
+En desarrollo local se usa el usuario fijo existente. En producción el catálogo
+es público y Neon Auth permite registrarse e iniciar sesión con correo verificado
+y contraseña. La API comprueba la sesión y resuelve usuarios separados por identidad
 verificada. El modo local exige hostname localhost/loopback y no está presente
 en la configuración de producción. No se aceptan IDs de usuario del cliente;
 las respuestas personales no se cachean. La migración `0002` añade una identidad
@@ -152,8 +153,9 @@ y la ficha se sitúa abajo en móvil.
 La configuración de producción reúne web y `/api/*` en un Worker con assets
 estáticos; `npm run build` compila primero la web y valida el Worker con dry-run.
 La configuración local sigue funcionando sin build previo. Consultar
-[publicación y Cloudflare Access](./apps/api/DEPLOYMENT.md) para dominio,
-políticas y variables. La preview `dev` está desplegada; producción aún no se ha publicado.
+[publicación y autenticación](./apps/api/DEPLOYMENT.md) para dominio y variables.
+Producción está publicada en https://relieve.romanlafi.org; staging tiene su propia
+rama Neon y servicio de autenticación, con Cloudflare Access como barrera externa.
 El panel de progreso incluye estadísticas por región/macizo y año. El historial
 personal conserva varias fechas por lugar y las estadísticas anuales cuentan
 cada visita registrada, incluso si repites un lugar. La edición del catálogo

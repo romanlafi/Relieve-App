@@ -26,7 +26,8 @@ try {
 if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required for local API development');
 const temporaryDirectory = await mkdtemp(join(tmpdir(), 'relieve-api-'));
 const envFile = join(temporaryDirectory, '.env');
-await writeFile(envFile, `DATABASE_URL=${JSON.stringify(process.env.DATABASE_URL)}\nLOCAL_DEVELOPMENT=true\n`, {mode: 0o600});
+await writeFile(envFile, `DATABASE_URL=${JSON.stringify(process.env.DATABASE_URL)}\nLOCAL_DEVELOPMENT=true\n`
+    + (process.env.NEON_AUTH_URL ? `NEON_AUTH_URL=${JSON.stringify(process.env.NEON_AUTH_URL)}\n` : ''), {mode: 0o600});
 const childEnvironment = {...process.env};
 delete childEnvironment.DATABASE_URL;
 delete childEnvironment.DATABASE_URL_DIRECT;

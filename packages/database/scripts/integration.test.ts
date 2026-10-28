@@ -20,6 +20,57 @@ import {databaseUrl} from './environment.js';
 import {loadDataset} from './dataset.js';
 import {seedDataset} from './seedDataset.js';
 import type {PlaceWithUserState, Region} from '@relieve/shared';
+type IdentityResponse = {user: {id: string}; authenticated: boolean; canEditCatalog: boolean};
+
+test('Neon sessions keep public catalog reads open and isolate personal data by verified identity', async () => {
+    const authUrl = 'https://ep-integration.neonauth.us-east-2.aws.neon.tech/neondb/auth';
+    const unique = randomUUID();
+    const subjects = [`neon:${authUrl}|${unique}-a`, `neon:${authUrl}|${unique}-b`];
+    const originalFetch = globalThis.fetch;
+    let revoked = false;
+    globalThis.fetch = async (input, init) => {
+        if (String(input).startsWith(authUrl + '/get-session')) {
+            const cookie = new Headers(init?.headers).get('Cookie') ?? '';
+            const identity = cookie.includes('account-a') ? 'a' : 'b';
+            return Response.json(revoked ? null : {session: {expiresAt: new Date(Date.now() + 60000).toISOString()},
+                user: {id: `${unique}-${identity}`, name: `Test ${identity}`, email: 'same-verified@example.com', emailVerified: true}});
+        }
+        return originalFetch(input, init);
+    };
+    const pool = new pg.Pool({connectionString: databaseUrl('DATABASE_URL_DIRECT'), max: 1});
+    const env = {DATABASE_URL: databaseUrl('DATABASE_URL'), NEON_AUTH_URL: authUrl};
+    const request = (path: string, account?: 'a' | 'b', method = 'GET', body?: unknown) => app.request(`https://relieve.test${path}`, {
+        method, headers: {Origin: 'https://relieve.test', ...(account ? {Cookie: `__Secure-neon-auth.session_token=account-${account}`} : {}),
+            ...(body ? {'Content-Type': 'application/json'} : {})}, ...(body ? {body: JSON.stringify(body)} : {}),
+    }, env);
+    try {
+        const publicPlaces = await (await request('/places')).json() as PlaceWithUserState[];
+        assert.ok(publicPlaces.length >= 74);
+        assert.ok(publicPlaces.every((place) => place.userState === null));
+        assert.equal((await request('/user/places')).status, 401);
+        const [a, b] = await Promise.all(['a', 'b'].map(async (account) =>
+            (await request('/me', account as 'a' | 'b')).json() as Promise<IdentityResponse>));
+        assert.ok(a && b);
+        assert.notEqual(a.user.id, b.user.id);
+        assert.equal(a.authenticated, true);
+        assert.equal(a.canEditCatalog, false);
+        const id = publicPlaces[0]!.id;
+        assert.equal((await request(`/user/places/${id}`, 'a', 'PUT', {status: 'visited', favorite: true, notes: 'Private to A'})).status, 200);
+        const own = await (await request(`/places/${id}`, 'a')).json() as PlaceWithUserState;
+        assert.equal(own.userState?.notes, 'Private to A');
+        assert.equal((await (await request(`/places/${id}`, 'b')).json() as PlaceWithUserState).userState, null);
+        assert.equal((await (await request('/stats', 'b')).json() as {favorites: number}).favorites, 0);
+        assert.deepEqual(await (await request('/user/places', 'b')).json(), []);
+        assert.equal((await request(`/places/${id}`, 'a', 'PUT', {})).status, 403);
+        revoked = true;
+        assert.equal((await request('/user/places', 'a')).status, 401);
+        assert.equal((await (await request(`/places/${id}`, 'a')).json() as PlaceWithUserState).userState, null);
+    } finally {
+        globalThis.fetch = originalFetch;
+        await pool.query('DELETE FROM users WHERE access_subject = ANY($1::text[])', [subjects]);
+        await pool.end();
+    }
+});
 
 test('signed Access sessions resolve separate users throughout personal API reads and writes', async () => {
     const issuer = 'https://relieve-integration.cloudflareaccess.com';
@@ -47,11 +98,13 @@ test('signed Access sessions resolve separate users throughout personal API read
         const secondToken = await token(`${subject}-other`, 'another@example.com');
         const headers = {'Cf-Access-Jwt-Assertion': firstToken};
         const access = await app.request('https://example.com/me', {headers}, environment);
-        assert.deepEqual(await access.json(), {canEditCatalog: true});
+        const editorIdentity = await access.json() as IdentityResponse;
+        assert.equal(editorIdentity.canEditCatalog, true);
+        assert.equal(editorIdentity.authenticated, true);
         const nonEditorAccess = await app.request('https://example.com/me', {
             headers: {'Cf-Access-Jwt-Assertion': secondToken},
         }, environment);
-        assert.deepEqual(await nonEditorAccess.json(), {canEditCatalog: false});
+        assert.equal((await nonEditorAccess.json() as IdentityResponse).canEditCatalog, false);
         const response = await app.request('https://example.com/places', {headers}, environment);
         assert.equal(response.status, 200);
         const catalog = await response.json() as PlaceWithUserState[];

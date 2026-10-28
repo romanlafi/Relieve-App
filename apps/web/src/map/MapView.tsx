@@ -17,6 +17,7 @@ import {useRegions} from './useRegions';
 import {useCatalogAccess} from './useCatalogAccess';
 import {StatsSummary} from './StatsSummary';
 import * as styles from './MapView.css';
+import {AccountPanel, SignInPrompt} from '../auth/AccountPanel';
 
 const emptyPlaces: PlaceWithUserState[] = [];
 const placeTypeLabels = {peak: 'Pico', lake: 'Ibón', hut: 'Refugio', pass: 'Collado', viewpoint: 'Mirador'};
@@ -29,10 +30,10 @@ export function MapView() {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [search, setSearch] = useState('');
     const regionState = useRegions();
-    const {canEditCatalog, publicReadOnly} = useCatalogAccess();
+    const {canEditCatalog, publicReadOnly, authenticated, authAvailable} = useCatalogAccess();
     const [filters, setFilters] = useState<PlaceFilters>({region: 'pirineo-aragones'});
     const {state, retry, personalSave, saveUserPlace, mutationVersion, visitsChanged} = usePlaces(filters);
-    const routes = useRoutes(visitsChanged);
+    const routes = useRoutes(visitsChanged, authenticated);
     const places = state.status === 'success' ? state.places : emptyPlaces;
     const geoJson = useMemo(() => placesToGeoJson(places), [places]);
     const frameRegion = state.status === 'success' ? new URLSearchParams(state.query).get('region') ?? '' : null;
@@ -79,6 +80,7 @@ export function MapView() {
                             requestAnimationFrame(() => document.getElementById('map-show-controls')?.focus());
                         }}><Icon name="close" size={16}/></button>
             </header>
+            <AccountPanel/>
             <div className={styles.status} role="status" aria-live="polite">
                 {status === 'loading' && <p>Cargando mapa…</p>}
                 {status === 'error' &&
@@ -98,9 +100,10 @@ export function MapView() {
             </div>
                 <div className={tabs} aria-label="Secciones">
                     <button className={tab} type="button" aria-pressed={section === 'places'} onClick={() => setSection('places')}><Icon name="pin" size={16}/>Lugares</button>
-                    {!publicReadOnly && <button className={tab} type="button" aria-pressed={section === 'routes'} onClick={() => { setSection('routes'); setSelectedId(null); }}><Icon name="route" size={16}/>Mis rutas</button>}
+                    <button className={tab} type="button" aria-pressed={section === 'routes'} onClick={() => { setSection('routes'); setSelectedId(null); }}><Icon name="route" size={16}/>Mis rutas</button>
                 </div>
-                {section === 'routes' && <RoutesPanel key={routes.selectedId ?? 'import'} state={routes}/>}
+                {section === 'routes' && (authenticated ? <RoutesPanel key={routes.selectedId ?? 'import'} state={routes}/>
+                    : <SignInPrompt>Inicia sesión para importar tus GPX, explorar tus rutas y registrar los lugares que visitas.</SignInPrompt>)}
                 {section === 'places' && <>
                 <PlaceSearch places={places} query={search} onQueryChange={setSearch} status={state.status}
                              onSelect={(place) => {
@@ -154,6 +157,7 @@ export function MapView() {
                     <dd>{selectedPlace.latitude.toFixed(5)}, {selectedPlace.longitude.toFixed(5)}</dd>
                 </dl>
                 {selectedPlace.description && <p className={styles.muted}>{selectedPlace.description}</p>}
+                {publicReadOnly && authAvailable && <SignInPrompt/>}
                 {!publicReadOnly && <>
                     <PlacePersonalForm key={`personal-${selectedPlace.id}-${selectedPlace.userState?.status ?? ''}`}
                                        place={selectedPlace} saveState={personalSave}

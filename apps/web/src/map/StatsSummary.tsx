@@ -1,3 +1,4 @@
+import {apiFetch} from '../auth/apiFetch';
 import {useEffect, useState} from 'react';
 import {z} from 'zod';
 import type {PersonalStats} from '@relieve/shared';
@@ -33,7 +34,7 @@ export function StatsSummary({version}: { version: number }) {
 
         async function load() {
             try {
-                const response = await fetch('/api/stats', {
+                const response = await apiFetch('/api/stats', {
                     signal: controller.signal,
                     headers: {Accept: 'application/json'}
                 });

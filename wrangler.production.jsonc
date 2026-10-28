@@ -4,11 +4,12 @@
   "main": "apps/api/src/worker.ts",
   "compatibility_date": "2026-09-30",
   "workers_dev": false,
+  "preview_urls": true,
   "routes": [
     {"pattern": "relieve.romanlafi.org", "custom_domain": true}
   ],
   "vars": {
-    "PUBLIC_READ_ONLY": "true"
+    "NEON_AUTH_URL": "https://ep-dawn-silence-b2zhfv5u.neonauth.c-6.eu-central-1.aws.neon.tech/neondb/auth"
   },
   "assets": {
     "directory": "apps/web/dist",

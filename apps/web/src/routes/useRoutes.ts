@@ -2,13 +2,14 @@ import {useEffect, useRef, useState} from 'react';
 import type {NearbyRoutePlace, RouteDetail, RouteSummary} from '@relieve/shared';
 import {nearbyPlacesSchema, routeDetailSchema, routeSummarySchema} from './routeSchemas';
 import {userPlaceSchema} from '../map/placeSchemas';
+import {apiFetch} from '../auth/apiFetch';
 
 async function request(url: string, init?: RequestInit): Promise<unknown> {
-    const response = await fetch(url, init);
+    const response = await apiFetch(url, init);
     if (!response.ok) throw new Error('No se ha podido completar la operación. Vuelve a intentarlo.');
     return response.status === 204 ? null : response.json();
 }
-export function useRoutes(onVisitsChanged: () => void) {
+export function useRoutes(onVisitsChanged: () => void, enabled = true) {
     const [routes, setRoutes] = useState<RouteSummary[]>([]);
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [detail, setDetail] = useState<RouteDetail | null>(null);
@@ -27,12 +28,13 @@ export function useRoutes(onVisitsChanged: () => void) {
         return () => { mounted.current = false; uploadRef.current?.abort(); };
     }, []);
     useEffect(() => {
+        if (!enabled) return;
         const controller = new AbortController();
         void request('/api/routes', {signal: controller.signal})
             .then((body) => { setRoutes(routeSummarySchema.array().parse(body)); setLoading(false); })
             .catch(() => { if (!controller.signal.aborted) { setMessage('No se han podido cargar las rutas.'); setLoading(false); } });
         return () => controller.abort();
-    }, [version]);
+    }, [version, enabled]);
     useEffect(() => {
         if (!selectedId) return;
         const controller = new AbortController();
@@ -61,8 +63,11 @@ export function useRoutes(onVisitsChanged: () => void) {
                 const xhr = new XMLHttpRequest(); uploadRef.current = xhr;
                 xhr.open('POST', '/api/routes'); xhr.responseType = 'json'; xhr.timeout = 120000;
                 xhr.upload.onprogress = (event) => { if (mounted.current && event.lengthComputable) setProgress(Math.round(event.loaded / event.total * 100)); };
-                xhr.onload = () => xhr.status >= 200 && xhr.status < 300 ? resolve(xhr.response)
-                    : reject(new Error(xhr.response?.error?.message ?? 'No se ha podido importar el GPX.'));
+                xhr.onload = () => {
+                    if (xhr.status === 401) window.dispatchEvent(new Event('relieve-session-expired'));
+                    if (xhr.status >= 200 && xhr.status < 300) resolve(xhr.response);
+                    else reject(new Error(xhr.response?.error?.message ?? 'No se ha podido importar el GPX.'));
+                };
                 xhr.onerror = xhr.ontimeout = xhr.onabort = () => reject(new Error('No se ha podido importar el GPX.'));
                 xhr.send(body);
             });

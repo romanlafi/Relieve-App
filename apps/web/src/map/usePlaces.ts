@@ -1,3 +1,4 @@
+import {apiFetch} from '../auth/apiFetch';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import type {PlaceFilters, PlaceWithUserState, UpdateUserPlace, UserPlaceState} from '@relieve/shared';
 import {placesSchema, userPlaceSchema} from './placeSchemas';
@@ -36,7 +37,7 @@ export function usePlaces(filters: PlaceFilters) {
 
         async function load() {
             try {
-                const response = await fetch(`/api/places?${query}`, {
+                const response = await apiFetch(`/api/places?${query}`, {
                     signal: controller.signal,
                     headers: {Accept: 'application/json'},
                 });
@@ -88,7 +89,7 @@ export function usePlaces(filters: PlaceFilters) {
         mutationController.current = controller;
         setPersonalSave({placeId, status: 'saving'});
         try {
-            const response = await fetch(`/api/user/places/${encodeURIComponent(placeId)}`, {
+            const response = await apiFetch(`/api/user/places/${encodeURIComponent(placeId)}`, {
                 method: input === null ? 'DELETE' : 'PUT',
                 signal: controller.signal,
                 headers: {Accept: 'application/json', ...(input === null ? {} : {'Content-Type': 'application/json'})},

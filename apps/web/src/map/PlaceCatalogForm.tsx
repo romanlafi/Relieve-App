@@ -1,3 +1,4 @@
+import {apiFetch} from '../auth/apiFetch';
 import {useState} from 'react';
 import type {FormEvent} from 'react';
 import type {PlaceType, PlaceWithUserState, Region} from '@relieve/shared';
@@ -28,7 +29,7 @@ export function PlaceCatalogForm({place, regions, onSaved}: Props) {
         setSaving(true);
         setError('');
         try {
-            const response = await fetch(`/api/places/${encodeURIComponent(place.id)}`, {
+            const response = await apiFetch(`/api/places/${encodeURIComponent(place.id)}`, {
                 method: 'PUT',
                 headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
                 body: JSON.stringify({

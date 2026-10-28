@@ -1,3 +1,4 @@
+import {apiFetch} from '../auth/apiFetch';
 import {useEffect, useState} from 'react';
 import type {FormEvent} from 'react';
 import type {PlaceVisit} from '@relieve/shared';
@@ -23,7 +24,7 @@ export function PlaceVisitHistory({placeId, onChanged}: Props) {
     useEffect(() => {
         const controller = new AbortController();
         let active = true;
-        void fetch(`/api/user/places/${encodeURIComponent(placeId)}/visits`, {
+        void apiFetch(`/api/user/places/${encodeURIComponent(placeId)}/visits`, {
             signal: controller.signal,
             headers: {Accept: 'application/json'},
         }).then(async (response) => {
@@ -49,7 +50,7 @@ export function PlaceVisitHistory({placeId, onChanged}: Props) {
         setBusy(true);
         setError(false);
         try {
-            const response = await fetch(`/api/user/places/${encodeURIComponent(placeId)}/visits`, {
+            const response = await apiFetch(`/api/user/places/${encodeURIComponent(placeId)}/visits`, {
                 method: 'POST',
                 headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
                 body: JSON.stringify({visitedAt: date}),
@@ -73,7 +74,7 @@ export function PlaceVisitHistory({placeId, onChanged}: Props) {
         setBusy(true);
         setError(false);
         try {
-            const response = await fetch(`/api/user/places/${encodeURIComponent(placeId)}/visits/${encodeURIComponent(visitId)}`, {
+            const response = await apiFetch(`/api/user/places/${encodeURIComponent(placeId)}/visits/${encodeURIComponent(visitId)}`, {
                 method: 'DELETE',
                 headers: {Accept: 'application/json'},
             });

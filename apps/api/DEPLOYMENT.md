@@ -68,30 +68,52 @@ La web compilada y la API se sirven desde un mismo Worker. El navegador usa
 `wrangler.jsonc` de la raíz sirve los assets de `apps/web/dist` y ejecuta el
 Worker primero para `/api/*`. La configuración local no requiere compilar la web.
 
-## Producción pública
+## Producción pública con cuentas
 
-Producción se sirve públicamente en https://relieve.romanlafi.org. El Worker usa
-`wrangler.production.jsonc`, con ese dominio como Custom Domain y `workers.dev`
-deshabilitado. Producción no usa Cloudflare Access.
+Producción se sirve en https://relieve.romanlafi.org usando
+`wrangler.production.jsonc`. El catálogo y el mapa son públicos. Los visitantes
+pueden crear una cuenta con nombre, correo y contraseña, confirmar su correo
+mediante un código y recuperar la contraseña desde la propia aplicación.
+Neon Auth gestiona las credenciales; producción no usa Cloudflare Access.
 
-`PUBLIC_READ_ONLY=true` habilita la exploración pública del catálogo sin identidad.
-La API devuelve el catálogo sin estado personal; las rutas, estadísticas y
-acciones personales no se muestran, y todas las peticiones de escritura reciben
-403. Staging sigue usando Cloudflare Access y conserva sus funciones personales.
+`NEON_AUTH_URL` apunta al servicio de la rama `production` de Neon. Las sesiones
+se guardan en cookies del dominio de Relieve; el Worker valida cada petición
+personal contra el servicio de Neon y resuelve una identidad de aplicación.
+Las lecturas anónimas del catálogo devuelven `userState: null`. Los datos
+personales requieren sesión y la edición global exige además un email
+verificado incluido en el secreto `CATALOG_EDITOR_EMAILS`.
 
-La rama `production` del proyecto Neon contiene el catálogo y las migraciones.
-El Worker usa una conexión pooled guardada como secreto `DATABASE_URL`; nunca
-subir la conexión ni añadirla a `vars`. Para publicar cambios desde `main`:
+Configuración de Neon Auth por rama:
+
+- Email y contraseña habilitados, registro abierto y verificación obligatoria.
+- Verificación OTP, envío al registrarse e intentar entrar sin verificar.
+- Dominio de producción permitido; localhost deshabilitado en producción.
+- Los correos usan inicialmente el remitente compartido de Neon. Se puede
+  configurar SMTP propio para personalizar el remitente y ampliar los límites.
+
+La rama `production` contiene el catálogo y las migraciones. El Worker usa su
+conexión pooled como secreto `DATABASE_URL`. No ejecutar seed en una publicación
+normal. Las nuevas tablas de identidad y sesión las administra Neon Auth en el
+esquema `neon_auth`, sin alterar los registros personales existentes.
+
+Para publicar desde `main` después de validar staging:
 
 ```sh
 npm run build
 npm run deploy:production
 ```
 
-La compilación no publica; `deploy:production` usa la configuración de producción.
-Tras desplegar, comprobar la portada, `/api/health`, `/api/places`, `/api/regions`,
-`/api/me` y que las escrituras respondan 403. No ejecutar seed sobre producción
-como parte de una publicación normal: conserva los datos del catálogo existentes.
+Staging usa su propio servicio Neon Auth, junto a su base de datos aislada.
+Configurar su URL exclusivamente en la preview staging:
+
+```sh
+npx wrangler preview secret put NEON_AUTH_URL --name staging --config wrangler.jsonc
+```
+
+Las URLs de Auth son configuración pública; las conexiones PostgreSQL y el
+listado administrativo se mantienen como secretos del Worker. El build no
+necesita credenciales ni conexión a Neon.
+
 ## Previews por rama
 
 Wrangler 4.145 del proyecto soporta Worker Previews (`wrangler preview`).
@@ -186,34 +208,31 @@ y [Access para Workers](https://developers.cloudflare.com/workers/configuration/
 
 ## Identidad y comportamiento
 
-La API valida la firma RS256 de `Cf-Access-Jwt-Assertion` con las claves públicas
-del dominio de equipo configurado. Verifica issuer, audience, expiración, `iat`,
-`sub` y email. No confía en la cabecera de email ni en IDs del cliente.
-La identidad estable `issuer|sub` resuelve una fila propia de `users`; el email
-es solo su nombre. Las consultas y escrituras personales usan ese ID de usuario.
-Dos identidades con el mismo email siguen siendo usuarios independientes.
+En producción, las cookies de Neon Auth son HttpOnly, Secure y SameSite=Lax,
+restringidas al dominio de Relieve. La API comprueba la sesión con Neon en cada
+petición personal, incluida su caducidad y que el correo esté verificado. Un
+cierre de sesión revoca la cookie en Neon. `/api/me` informa de la sesión sin
+exponer tokens; el navegador remonta el mapa al cambiar de identidad para
+limpiar datos personales y sincroniza el cambio entre pestañas.
 
-Sin configuración válida, los endpoints personales responden 503; sin sesión
-o con token inválido, 401. Las respuestas de API usan `private, no-store`.
-Las escrituras con Origin ajeno se rechazan con 403. No hay CORS abierto.
-
-`npm run dev:api` inyecta `LOCAL_DEVELOPMENT=true` únicamente en su archivo temporal
-local. El usuario fijo solo se permite cuando el hostname de la petición es
-localhost/loopback. Sus visitas existentes **no se transfieren automáticamente**
-a una cuenta de Access.
+Las previews que no tengan `NEON_AUTH_URL` conservan la validación de JWT RS256
+de Cloudflare Access. `LOCAL_DEVELOPMENT=true` solo funciona en localhost; si se
+configura Neon Auth, este tiene prioridad para poder probar el login real.
+No se aceptan IDs de usuario enviados por el cliente ni se enlazan identidades
+por compartir un email. Las respuestas de la API usan `private, no-store`.
+Las escrituras requieren el mismo origen y los permisos se comprueban en la API.
 
 ## Comprobación tras publicar
 
-- Abrir el dominio sin sesión: debe aparecer el login de Access.
-- Entrar y comprobar `/api/places`, `/api/regions` y `/api/stats`.
-- Guardar una visita, recargar y comprobar persistencia y progreso.
-- Entrar con otra identidad autorizada: no debe ver el registro de la primera.
-- Comprobar assets, terrain, atribuciones y ausencia de rutas alternativas públicas.
+- Abrir el dominio sin sesión: mapa y catálogo disponibles, con botones de acceso.
+- Registrarse, confirmar el código e iniciar sesión.
+- Guardar favorito, nota y visita; recargar y comprobar persistencia.
+- Entrar con otra cuenta y comprobar que no ve datos ni GPX de la primera.
+- Recuperar la contraseña y volver a entrar.
+- Cerrar sesión y comprobar que la cookie anterior ya no da acceso personal.
+- Revisar escritorio, móvil y navegación con teclado del diálogo de acceso.
 
-Las pruebas locales incluyen JWTs firmados de prueba y aislamiento real en Neon.
-El login y las políticas de la cuenta de Cloudflare requieren comprobarse con la
-aplicación Access real; no se han desplegado ni creado recursos de Cloudflare.
-
-Referencias
-oficiales: [validación de JWTs de Access](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/)
-y [assets estáticos del Worker](https://developers.cloudflare.com/workers/static-assets/).
+Referencias: [Neon Auth con React](https://neon.com/docs/auth/quick-start/react),
+[verificación del correo](https://neon.com/docs/auth/guides/email-verification),
+[producción](https://neon.com/docs/auth/production-checklist) y
+[API de códigos OTP](https://better-auth.com/docs/plugins/email-otp).
