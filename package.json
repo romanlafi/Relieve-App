@@ -56,7 +56,13 @@
       "packages/shared/src/**/*.ts"
     ],
     "exclude": [
-      "**/*.d.ts"
+      "**/*.d.ts",
+      "**/*.css.ts",
+      "apps/web/src/main.tsx",
+      "apps/api/src/environment.ts",
+      "packages/shared/src/index.ts",
+      "packages/shared/src/types/**/*.ts",
+      "packages/database/src/index.ts"
     ],
     "reporter": [
       "text",
