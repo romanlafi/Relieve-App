@@ -26,11 +26,13 @@
     "typecheck": "npm run typecheck --workspaces",
     "data:check": "npm run data:check --workspace=@relieve/database",
     "test": "npm run test:config && npm run build --workspace=@relieve/database && npm run test --workspaces --if-present",
+    "test:coverage": "c8 npm test",
     "test:config": "node --test scripts/wrangler.test.mjs",
     "test:integration": "npm run build --workspace=@relieve/database && npm run test:integration --workspace=@relieve/database"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "c8": "^12.0.0",
     "concurrently": "^10.0.5",
     "eslint": "^10.11.0",
     "eslint-plugin-react-hooks": "^7.1.1",
@@ -41,5 +43,21 @@
   },
   "dependencies": {
     "jose": "^6.2.12"
+  },
+  "c8": {
+    "all": true,
+    "include": [
+      "apps/api/src/**/*.ts",
+      "apps/web/src/**/*.{ts,tsx}",
+      "packages/database/src/**/*.ts",
+      "packages/shared/src/**/*.ts"
+    ],
+    "exclude": [
+      "**/*.d.ts"
+    ],
+    "reporter": [
+      "text",
+      "lcov"
+    ]
   }
 }
