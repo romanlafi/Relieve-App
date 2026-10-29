@@ -69,3 +69,43 @@ test('API rejects unauthenticated routes and malformed uploads before database a
         assert.equal((await app.request(`https://example.com${path}`, {}, secured)).status, 401);
     }
 });
+
+test('route endpoints reject invalid distances and confirmations before database access', async () => {
+    const env = {DATABASE_URL: '', LOCAL_DEVELOPMENT: 'true'};
+    const id = '00000000-0000-4000-8000-000000000002';
+    for (const distance of ['0', '-1', '501', 'abc']) {
+        const response = await app.request(`http://localhost/routes/${id}/nearby-places?distance=${distance}`, {}, env);
+        assert.equal(response.status, 400, distance);
+        assert.equal((await response.json() as {error: {code: string}}).error.code, 'INVALID_DISTANCE');
+    }
+
+    const malformed = await app.request(`http://localhost/routes/${id}/confirm-places`, {
+        method: 'POST', headers: {'Content-Type': 'application/json'}, body: '{',
+    }, env);
+    assert.equal(malformed.status, 400);
+    assert.equal((await malformed.json() as {error: {code: string}}).error.code, 'INVALID_JSON');
+
+    for (const body of [{placeIds: [], useActivityDate: true}, {placeIds: [id, id], useActivityDate: false}, {}]) {
+        const response = await app.request(`http://localhost/routes/${id}/confirm-places`, {
+            method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body),
+        }, env);
+        assert.equal(response.status, 400);
+        assert.equal((await response.json() as {error: {code: string}}).error.code, 'INVALID_CONFIRMATION');
+    }
+});
+
+test('route upload rejects missing and duplicate form fields before parsing GPX', async () => {
+    const env = {DATABASE_URL: '', LOCAL_DEVELOPMENT: 'true'};
+    const absent = await app.request('http://localhost/routes', {
+        method: 'POST', headers: {'Content-Type': 'application/json'}, body: '{}',
+    }, env);
+    assert.equal(absent.status, 400);
+    assert.equal((await absent.json() as {error: {code: string}}).error.code, 'INVALID_UPLOAD');
+
+    const form = new FormData();
+    form.append('file', new File(['<gpx/>'], 'valid.gpx'));
+    form.append('file', new File(['<gpx/>'], 'duplicate.gpx'));
+    const duplicate = await app.request('http://localhost/routes', {method: 'POST', body: form}, env);
+    assert.equal(duplicate.status, 400);
+    assert.equal((await duplicate.json() as {error: {code: string}}).error.code, 'INVALID_UPLOAD');
+});

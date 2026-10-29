@@ -46,3 +46,25 @@ test('health and invalid IDs retain their existing contracts', async () => {
         LOCAL_DEVELOPMENT: 'true'
     })).status, 400);
 });
+
+test('personal place and catalog endpoints reject malformed requests before database access', async () => {
+    const env = {DATABASE_URL: '', LOCAL_DEVELOPMENT: 'true'};
+    const id = '00000000-0000-4000-8000-000000000001';
+    assert.equal((await app.request('/user/places/not-a-uuid', {}, env)).status, 400);
+    assert.equal((await app.request(`/user/places/${id}/visits`, {
+        method: 'POST', headers: {'Content-Type': 'application/json'}, body: '{',
+    }, env)).status, 400);
+    assert.equal((await app.request(`/user/places/${id}/visits`, {
+        method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({visitedAt: 'yesterday'}),
+    }, env)).status, 400);
+    assert.equal((await app.request(`/user/places/${id}/visits/not-a-uuid`, {method: 'DELETE'}, env)).status, 400);
+    assert.equal((await app.request(`/user/places/${id}`, {
+        method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({favorite: 'yes'}),
+    }, env)).status, 400);
+    assert.equal((await app.request(`/places/${id}`, {
+        method: 'PUT', headers: {'Content-Type': 'application/json'}, body: '{',
+    }, env)).status, 400);
+    assert.equal((await app.request(`/places/${id}`, {
+        method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({type: 'peak'}),
+    }, env)).status, 400);
+});
