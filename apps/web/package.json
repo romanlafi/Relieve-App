@@ -8,7 +8,9 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test test/*.test.ts"
+    "test": "npm run test:node && npm run test:components",
+    "test:node": "tsx --test test/*.test.ts",
+    "test:components": "vitest run --coverage"
   },
   "dependencies": {
     "@relieve/shared": "*",
@@ -19,12 +21,16 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^24.19.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vanilla-extract/vite-plugin": "^5.2.6",
     "@vitejs/plugin-react": "^6.1.1",
+    "@vitest/coverage-v8": "^5.0.5",
+    "jsdom": "^30.1.3",
     "tsx": "^4.23.15",
-    "vite": "^8.3.1"
+    "vite": "^8.3.1",
+    "vitest": "^5.0.5"
   }
 }

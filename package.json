@@ -26,7 +26,7 @@
     "typecheck": "npm run typecheck --workspaces",
     "data:check": "npm run data:check --workspace=@relieve/database",
     "test": "npm run test:config && npm run build --workspace=@relieve/database && npm run test --workspaces --if-present",
-    "test:coverage": "c8 npm test",
+    "test:coverage": "npm run test:config && npm run build --workspace=@relieve/database && c8 --reporter=json --report-dir=coverage/node npm run test:node --workspaces --if-present && npm run test:components --workspace=@relieve/web && node scripts/merge-coverage.mjs",
     "test:config": "node --test scripts/wrangler.test.mjs",
     "test:integration": "npm run build --workspace=@relieve/database && npm run test:integration --workspace=@relieve/database"
   },
@@ -38,6 +38,9 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",
     "globals": "^17.12.0",
+    "istanbul-lib-coverage": "^3.2.2",
+    "istanbul-lib-report": "^3.0.1",
+    "istanbul-reports": "^3.2.0",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.71.0"
   },

@@ -17,7 +17,8 @@
     "db:seed": "tsx scripts/seed.ts",
     "db:check": "tsx scripts/check.ts",
     "data:check": "tsx scripts/checkDataset.ts",
-    "test": "tsx --test scripts/dataset.test.ts scripts/dto.test.ts ../../apps/api/test/*.test.ts",
+    "test": "npm run test:node",
+    "test:node": "tsx --test scripts/dataset.test.ts scripts/dto.test.ts scripts/queries.test.ts ../../apps/api/test/*.test.ts",
     "test:integration": "tsx --test scripts/integration.test.ts"
   },
   "dependencies": {
